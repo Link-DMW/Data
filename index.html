@@ -1,924 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>店铺运营BI看板</title>
-    <style>
-        :root {
-            --primary: #7c3aed;
-            --primary-light: #f3e8ff;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --danger: #ef4444;
-            --danger-light: #fef2f2;
-            --success: #10b981;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* 纯CSS路由控制 (Radio Hack) */
-        input[type="radio"] { display: none; }
-
-        .layout {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* 侧边栏样式 */
-        .sidebar {
-            width: 260px;
-            background-color: var(--card-bg);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
-
-        .logo {
-            padding: 1.5rem;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--primary);
-            border-bottom: 1px solid var(--border);
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu-group {
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .menu-title {
-            padding: 0 1.5rem;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .sidebar label {
-            display: block;
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            color: var(--text-main);
-            transition: all 0.2s ease;
-            border-left: 4px solid transparent;
-            font-size: 0.9rem;
-        }
-
-        .sidebar label:hover {
-            background-color: #f1f5f9;
-        }
-
-        /* 主内容区样式 */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            background-color: var(--bg);
-        }
-
-        .page {
-            display: none;
-            animation: fadeIn 0.3s ease;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 路由激活逻辑 */
-        #nav-overview:checked ~ .layout #page-overview,
-        #nav-profile:checked ~ .layout #page-profile,
-        #nav-Sara:checked ~ .layout #page-Sara,
-        #nav-8Li:checked ~ .layout #page-8Li,
-        #nav-Catherine:checked ~ .layout #page-Catherine,
-        #nav-Imice:checked ~ .layout #page-Imice,
-        #nav-nexusclick:checked ~ .layout #page-nexusclick,
-        #nav-NexusPOP:checked ~ .layout #page-NexusPOP,
-        #nav-David:checked ~ .layout #page-David,
-        #nav-nancytuo:checked ~ .layout #page-nancytuo,
-        #nav-Linda:checked ~ .layout #page-Linda,
-        #nav-bana:checked ~ .layout #page-bana,
-        #nav-Otmil:checked ~ .layout #page-Otmil,
-        #nav-Ella:checked ~ .layout #page-Ella,
-        #nav-Eric:checked ~ .layout #page-Eric,
-        #nav-sam:checked ~ .layout #page-sam,
-        #nav-Elong:checked ~ .layout #page-Elong,
-        #nav-Petery:checked ~ .layout #page-Petery,
-        #nav-NKtuo:checked ~ .layout #page-NKtuo {
-            display: block;
-        }
-
-        /* 侧边栏激活高亮 */
-        #nav-overview:checked ~ .layout label[for="nav-overview"],
-        #nav-profile:checked ~ .layout label[for="nav-profile"],
-        #nav-Sara:checked ~ .layout label[for="nav-Sara"],
-        #nav-8Li:checked ~ .layout label[for="nav-8Li"],
-        #nav-Catherine:checked ~ .layout label[for="nav-Catherine"],
-        #nav-Imice:checked ~ .layout label[for="nav-Imice"],
-        #nav-nexusclick:checked ~ .layout label[for="nav-nexusclick"],
-        #nav-NexusPOP:checked ~ .layout label[for="nav-NexusPOP"],
-        #nav-David:checked ~ .layout label[for="nav-David"],
-        #nav-nancytuo:checked ~ .layout label[for="nav-nancytuo"],
-        #nav-Linda:checked ~ .layout label[for="nav-Linda"],
-        #nav-bana:checked ~ .layout label[for="nav-bana"],
-        #nav-Otmil:checked ~ .layout label[for="nav-Otmil"],
-        #nav-Ella:checked ~ .layout label[for="nav-Ella"],
-        #nav-Eric:checked ~ .layout label[for="nav-Eric"],
-        #nav-sam:checked ~ .layout label[for="nav-sam"],
-        #nav-Elong:checked ~ .layout label[for="nav-Elong"],
-        #nav-Petery:checked ~ .layout label[for="nav-Petery"],
-        #nav-NKtuo:checked ~ .layout label[for="nav-NKtuo"] {
-            background-color: var(--primary-light);
-            color: var(--primary);
-            border-left-color: var(--primary);
-            font-weight: 600;
-        }
-
-        /* 卡片通用样式 */
-        .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-        }
-
-        .card-header {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-        }
-
-        /* 总览数据统计卡片 */
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-title {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .stat-value.danger { color: var(--danger); }
-
-        /* 静态柱状图 */
-        .chart-container {
-            height: 250px;
-            display: flex;
-            align-items: flex-end;
-            gap: 2rem;
-            padding-top: 2rem;
-            margin-top: 1rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        .bar-wrapper {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            height: 100%;
-            position: relative;
-        }
-
-        .bar {
-            width: 50px;
-            background: linear-gradient(180deg, var(--primary) 0%, #a78bfa 100%);
-            border-radius: 6px 6px 0 0;
-            position: relative;
-            transition: height 0.5s ease;
-        }
-
-        .bar-value {
-            position: absolute;
-            top: -25px;
-            width: 100%;
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .bar-label {
-            margin-top: 10px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        /* 数据表格 */
-        .table-container {
-            overflow-x: auto;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            background: var(--card-bg);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            white-space: nowrap;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.875rem;
-        }
-
-        th {
-            background-color: #f8fafc;
-            font-weight: 600;
-            color: var(--text-muted);
-            position: sticky;
-            top: 0;
-        }
-
-        tr:hover td {
-            background-color: #f1f5f9;
-        }
-
-        .text-danger {
-            color: var(--danger);
-            font-weight: 600;
-            background: var(--danger-light);
-            padding: 2px 8px;
-            border-radius: 12px;
-        }
-
-        /* 详情页网格 */
-        .detail-header {
-            margin-bottom: 2rem;
-        }
-
-        .detail-header h2 {
-            font-size: 1.5rem;
-            color: var(--text-main);
-        }
-
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px dashed var(--border);
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .detail-val {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 1024px) {
-            .stat-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 768px) {
-            .layout { flex-direction: column; }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                overflow-x: auto;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                padding: 0;
-            }
-            .logo { display: none; }
-            .menu-group {
-                display: flex;
-                padding: 0;
-                border-bottom: none;
-            }
-            .menu-title { display: none; }
-            .sidebar label {
-                border-left: none;
-                border-bottom: 3px solid transparent;
-                white-space: nowrap;
-            }
-            #nav-overview:checked ~ .layout label[for="nav-overview"],
-            #nav-profile:checked ~ .layout label[for="nav-profile"],
-            #nav-Sara:checked ~ .layout label[for="nav-Sara"],
-            #nav-8Li:checked ~ .layout label[for="nav-8Li"] {
-                border-left: none;
-                border-bottom-color: var(--primary);
-            }
-            .detail-grid { grid-template-columns: 1fr; }
-            .chart-container { overflow-x: auto; padding-bottom: 1rem; }
-            .bar { width: 40px; }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>运营看板</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;background:#f8fafc;color:#0f172a;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}a{text-decoration:none;color:inherit}.s{position:fixed;inset:0 auto 0 0;width:220px;background:#fff;border-right:1px solid #e2e8f0;overflow:auto;padding:16px}.t{font-size:20px;font-weight:700;margin:0 0 12px}.sg{margin:12px 0 6px;color:#64748b;font-size:12px}.n a{display:block;padding:8px 10px;border-radius:10px;white-space:nowrap}.n a.on,.n a:hover{background:#e2e8f0}.m{margin-left:220px;padding:16px}.c{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(15,23,42,.08);padding:14px;margin:0 0 16px}.h{margin:0 0 12px;font-size:18px}.g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.k{padding:12px;border:1px solid #e2e8f0;border-radius:14px}.k b,.i b{display:block;color:#64748b;font-size:12px;margin:0 0 4px}.k span{font-size:22px;font-weight:700}.x{overflow:auto}.x table{width:100%;min-width:1100px;border-collapse:collapse}.x th,.x td{padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;white-space:nowrap}.x th{font-size:12px;color:#64748b;background:#f8fafc;position:sticky;top:0}.r{color:#dc2626;font-weight:700}.bars{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end;height:220px}.b{display:flex;flex-direction:column;align-items:center;gap:6px}.b i{display:flex;align-items:flex-end;justify-content:center;width:100%;height:160px;font-style:normal}.b i s{display:block;width:100%;max-width:54px;background:#3b82f6;border-radius:10px 10px 0 0;text-decoration:none}.b em,.b small{font-style:normal;text-align:center;word-break:break-all}.d{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.i{padding:12px;border:1px solid #e2e8f0;border-radius:14px}.i span{font-weight:700}.sub{margin:0 0 10px;color:#64748b}.sec{scroll-margin-top:16px}
+@media (max-width:768px){
+.s{position:sticky;inset:0 0 auto 0;width:auto;padding:12px;z-index:9}.t{margin:0 0 8px}.n{display:flex;gap:8px;overflow:auto;padding-bottom:2px}.n a{display:inline-block;background:#f8fafc}.sg{display:inline-block;margin:8px 4px 0 0}.m{margin:0;padding:12px}.g,.d{grid-template-columns:1fr}.bars{grid-template-columns:repeat(6,minmax(88px,1fr));overflow:auto;padding-bottom:4px}
+}
+</style>
 </head>
 <body>
-
-    <!-- 纯静态路由控制 (隐藏的Radio按钮) -->
-    <input type="radio" name="nav" id="nav-overview" checked>
-    
-    <!-- POP 店铺 -->
-    <input type="radio" name="nav" id="nav-profile">
-    <input type="radio" name="nav" id="nav-Sara">
-    <input type="radio" name="nav" id="nav-8Li">
-    <input type="radio" name="nav" id="nav-Catherine">
-    <input type="radio" name="nav" id="nav-Imice">
-    <input type="radio" name="nav" id="nav-NexusPOP">
-    <input type="radio" name="nav" id="nav-David">
-    <input type="radio" name="nav" id="nav-Otmil">
-    <input type="radio" name="nav" id="nav-Ella">
-    <input type="radio" name="nav" id="nav-Eric">
-    <input type="radio" name="nav" id="nav-Elong">
-    <input type="radio" name="nav" id="nav-Petery">
-
-    <!-- 全托管 店铺 -->
-    <input type="radio" name="nav" id="nav-nexusclick">
-    <input type="radio" name="nav" id="nav-nancytuo">
-    <input type="radio" name="nav" id="nav-Linda">
-    <input type="radio" name="nav" id="nav-bana">
-    <input type="radio" name="nav" id="nav-sam">
-    <input type="radio" name="nav" id="nav-NKtuo">
-
-    <div class="layout">
-        <!-- 左侧边栏 -->
-        <aside class="sidebar">
-            <div class="logo">📊 运营看板</div>
-            
-            <div class="menu-group">
-                <div class="menu-title">数据总览</div>
-                <label for="nav-overview">总览仪表盘</label>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-title">POP 店铺</div>
-                <label for="nav-profile">profile</label>
-                <label for="nav-Sara">Sara</label>
-                <label for="nav-8Li">8Li</label>
-                <label for="nav-Catherine">Catherine</label>
-                <label for="nav-Imice">Imice</label>
-                <label for="nav-NexusPOP">NexusPOP</label>
-                <label for="nav-David">David</label>
-                <label for="nav-Otmil">Otmil</label>
-                <label for="nav-Ella">Ella</label>
-                <label for="nav-Eric">Eric</label>
-                <label for="nav-Elong">Elong</label>
-                <label for="nav-Petery">Petery</label>
-            </div>
-
-            <div class="menu-group">
-                <div class="menu-title">全托管店铺</div>
-                <label for="nav-nexusclick">nexusclick</label>
-                <label for="nav-nancytuo">nancytuo</label>
-                <label for="nav-Linda">Linda</label>
-                <label for="nav-bana">bana</label>
-                <label for="nav-sam">sam</label>
-                <label for="nav-NKtuo">NKtuo</label>
-            </div>
-        </aside>
-
-        <!-- 右侧主内容区 -->
-        <main class="main-content">
-            
-            <!-- 总览页面 -->
-            <div class="page" id="page-overview">
-                <div class="detail-header"><h2>总览仪表盘</h2></div>
-                
-                <!-- 4个数据统计卡片 -->
-                <div class="stat-grid">
-                    <div class="stat-card">
-                        <div class="stat-title">总支付金额 (POP)</div>
-                        <div class="stat-value">$9,498.52</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">总订单数</div>
-                        <div class="stat-value">221</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">7天广告总花费</div>
-                        <div class="stat-value">$2,101.86</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-title">待处理纠纷总数</div>
-                        <div class="stat-value danger">21</div>
-                    </div>
-                </div>
-
-                <!-- 静态TOP店铺柱状图 -->
-                <div class="card">
-                    <div class="card-header">🏆 TOP5 店铺支付金额 (静态分析)</div>
-                    <div class="chart-container">
-                        <div class="bar-wrapper">
-                            <div class="bar-value">$3917</div>
-                            <div class="bar" style="height: 100%;"></div>
-                            <div class="bar-label">Sara</div>
-                        </div>
-                        <div class="bar-wrapper">
-                            <div class="bar-value">$2475</div>
-                            <div class="bar" style="height: 63.2%;"></div>
-                            <div class="bar-label">profile</div>
-                        </div>
-                        <div class="bar-wrapper">
-                            <div class="bar-value">$1511</div>
-                            <div class="bar" style="height: 38.6%;"></div>
-                            <div class="bar-label">8Li</div>
-                        </div>
-                        <div class="bar-wrapper">
-                            <div class="bar-value">$561</div>
-                            <div class="bar" style="height: 14.3%;"></div>
-                            <div class="bar-label">Catherine</div>
-                        </div>
-                        <div class="bar-wrapper">
-                            <div class="bar-value">$370</div>
-                            <div class="bar" style="height: 9.5%;"></div>
-                            <div class="bar-label">Elong</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 完整店铺数据表格 -->
-                <div class="card">
-                    <div class="card-header">📋 完整店铺数据报表</div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>店铺</th>
-                                    <th>支付金额</th>
-                                    <th>曝光量</th>
-                                    <th>访客数</th>
-                                    <th>点击率</th>
-                                    <th>订单数</th>
-                                    <th>转化率</th>
-                                    <th>昨天广告花费</th>
-                                    <th>7天广告花费</th>
-                                    <th>广告账户余额</th>
-                                    <th>等待处理纠纷</th>
-                                    <th>一天内到期纠纷</th>
-                                    <th>负责人</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>profile</td><td>$2475.93</td><td>24285</td><td>1168</td><td>4.81%</td><td>53</td><td>4.20%</td><td>$53.87</td><td>$366.97</td><td>$439.71</td><td><span class="text-danger">5</span></td><td>0</td><td>Yasso</td></tr>
-                                <tr><td>Sara</td><td>$3917.76</td><td>32996</td><td>1880</td><td>5.70%</td><td>76</td><td>3.72%</td><td>$74.65</td><td>$794.85</td><td>$650.33</td><td><span class="text-danger">8</span></td><td><span class="text-danger">2</span></td><td>-</td></tr>
-                                <tr><td>8Li</td><td>$1511.53</td><td>18229</td><td>980</td><td>5.38%</td><td>30</td><td>2.96%</td><td>$55.00</td><td>$445.00</td><td>$288.92</td><td><span class="text-danger">3</span></td><td>0</td><td>Angelia</td></tr>
-                                <tr><td>Catherine</td><td>$561.21</td><td>18919</td><td>911</td><td>4.82%</td><td>25</td><td>2.74%</td><td>$65.00</td><td>$455.00</td><td>$128.55</td><td>0</td><td>0</td><td>-</td></tr>
-                                <tr><td>Imice</td><td>$158.79</td><td>2728</td><td>229</td><td>8.39%</td><td>4</td><td>1.75%</td><td>$0.00</td><td>$0.00</td><td>$0.01</td><td><span class="text-danger">1</span></td><td>0</td><td>吴铭慧</td></tr>
-                                <tr><td>nexusclick</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                                <tr><td>NexusPOP</td><td>$0.00</td><td>1007</td><td>34</td><td>3.38%</td><td>0</td><td>0.00%</td><td>$0.00</td><td>$0.00</td><td>$0.09</td><td>0</td><td>0</td><td>-</td></tr>
-                                <tr><td>David</td><td>$0.00</td><td>0</td><td>4</td><td>-</td><td>0</td><td>0.00%</td><td>$0.00</td><td>$0.00</td><td>$12.32</td><td>0</td><td>0</td><td>Aileen</td></tr>
-                                <tr><td>nancytuo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                                <tr><td>Linda</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                                <tr><td>bana</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                                <tr><td>Otmil</td><td>$184.74</td><td>5333</td><td>489</td><td>9.17%</td><td>6</td><td>1.23%</td><td>$0.00</td><td>$20.00</td><td>$1044.33</td><td>0</td><td>0</td><td>-</td></tr>
-                                <tr><td>Ella</td><td>$0.00</td><td>719</td><td>142</td><td>19.75%</td><td>0</td><td>0.00%</td><td>$0.00</td><td>$0.00</td><td>$7.18</td><td>0</td><td>0</td><td>-</td></tr>
-                                <tr><td>Eric</td><td>$215.69</td><td>3591</td><td>180</td><td>5.01%</td><td>7</td><td>3.89%</td><td>$0.00</td><td>$0.00</td><td>$0.00</td><td><span class="text-danger">2</span></td><td>0</td><td>Bryce</td></tr>
-                                <tr><td>sam</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-                                <tr><td>Elong</td><td>$370.74</td><td>5859</td><td>389</td><td>6.64%</td><td>15</td><td>3.86%</td><td>$0.00</td><td>$20.04</td><td>$30.92</td><td><span class="text-danger">1</span></td><td>0</td><td>-</td></tr>
-                                <tr><td>Petery</td><td>$102.13</td><td>4121</td><td>296</td><td>7.18%</td><td>5</td><td>1.69%</td><td>$0.00</td><td>$0.00</td><td>$37.97</td><td><span class="text-danger">1</span></td><td>0</td><td>-</td></tr>
-                                <tr><td>NKtuo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>aauasga</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 以下为所有店铺独立详情页生成 -->
-            
-            <!-- 店铺: profile -->
-            <div class="page" id="page-profile">
-                <div class="detail-header"><h2>profile - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$2475.93</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">24285</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">1168</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">4.81%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">53</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">4.20%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$53.87</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$366.97</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告投产</span><span class="detail-val">3.28</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">21.45</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$439.71</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">5</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">3</span></div>
-                        <div class="detail-row"><span class="detail-label">邮寄方式错误</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">Yasso</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: Sara -->
-            <div class="page" id="page-Sara">
-                <div class="detail-header"><h2>Sara - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$3917.76</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">32996</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">1880</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">5.70%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">76</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">3.72%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$74.65</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$794.85</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告订单</span><span class="detail-val">8</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告投产</span><span class="detail-val">53.85</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">36.79</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$650.33</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">8</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val text-danger">2</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">4</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">14</span></div>
-                        <div class="detail-row"><span class="detail-label">邮寄方式错误</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">4</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">-</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: 8Li -->
-            <div class="page" id="page-8Li">
-                <div class="detail-header"><h2>8Li - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$1511.53</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">18229</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">980</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">5.38%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">30</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">2.96%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$55.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$445.00</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告订单</span><span class="detail-val">7</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告投产</span><span class="detail-val">29.67</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">19.92</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$288.92</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">3</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">2</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">邮寄方式错误</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">Angelia</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: Catherine -->
-            <div class="page" id="page-Catherine">
-                <div class="detail-header"><h2>Catherine - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$561.21</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">18919</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">911</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">4.82%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">25</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">2.74%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$65.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$455.00</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告订单</span><span class="detail-val">13</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告投产</span><span class="detail-val">31.97</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">22.91</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$128.55</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">2</span></div>
-                        <div class="detail-row"><span class="detail-label">邮寄方式错误</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">-</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: Imice -->
-            <div class="page" id="page-Imice">
-                <div class="detail-header"><h2>Imice - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$158.79</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">2728</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">229</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">8.39%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">4</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">1.75%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告投产</span><span class="detail-val">0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$0.01</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">1</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">邮寄方式错误</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">吴铭慧</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: NexusPOP -->
-            <div class="page" id="page-NexusPOP">
-                <div class="detail-header"><h2>NexusPOP - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">1007</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">34</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">3.38%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">0.00%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">昨天广告订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$0.09</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">邮寄方式错误</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">-</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: David -->
-            <div class="page" id="page-David">
-                <div class="detail-header"><h2>David - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">4</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">-</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">0.00%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$12.32</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">Aileen</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: Otmil -->
-            <div class="page" id="page-Otmil">
-                <div class="detail-header"><h2>Otmil - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$184.74</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">5333</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">489</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">9.17%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">6</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">1.23%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$20.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">10.46</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$1044.33</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">8</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">-</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: Eric -->
-            <div class="page" id="page-Eric">
-                <div class="detail-header"><h2>Eric - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$215.69</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">3591</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">180</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">5.01%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">7</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">3.89%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$0.00</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">2</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">过期订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">Bryce</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 店铺: Elong -->
-            <div class="page" id="page-Elong">
-                <div class="detail-header"><h2>Elong - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$370.74</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">5859</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">389</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">6.64%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">15</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">3.86%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$20.04</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告投产</span><span class="detail-val">12.18</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$30.92</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">1</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">-</span></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 店铺: Petery -->
-            <div class="page" id="page-Petery">
-                <div class="detail-header"><h2>Petery - 店铺运营详情</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div>
-                        <div class="detail-row"><span class="detail-label">支付金额</span><span class="detail-val">$102.13</span></div>
-                        <div class="detail-row"><span class="detail-label">曝光量</span><span class="detail-val">4121</span></div>
-                        <div class="detail-row"><span class="detail-label">访客数</span><span class="detail-val">296</span></div>
-                        <div class="detail-row"><span class="detail-label">点击率</span><span class="detail-val">7.18%</span></div>
-                        <div class="detail-row"><span class="detail-label">订单数</span><span class="detail-val">5</span></div>
-                        <div class="detail-row"><span class="detail-label">转化率</span><span class="detail-val">1.69%</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">📈 广告指标</div>
-                        <div class="detail-row"><span class="detail-label">昨天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">7天广告花费</span><span class="detail-val">$0.00</span></div>
-                        <div class="detail-row"><span class="detail-label">广告账户余额</span><span class="detail-val">$37.97</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">⚠️ 纠纷指标</div>
-                        <div class="detail-row"><span class="detail-label">等待处理纠纷数</span><span class="detail-val text-danger">1</span></div>
-                        <div class="detail-row"><span class="detail-label">纠纷剩余一天内到期数量</span><span class="detail-val">0</span></div>
-                    </div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">0</span></div>
-                        <div class="detail-row"><span class="detail-label">人工审核订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">-</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 其他无数据/极少数据店铺通用模板 (Ella, nexusclick, nancytuo, Linda, bana, sam, NKtuo) -->
-            <div class="page" id="page-Ella"><div class="detail-header"><h2>Ella - 店铺详情</h2></div><div class="card"><p>支付金额: $0.00 | 曝光: 719 | 余额: $7.18</p></div></div>
-            <div class="page" id="page-nexusclick"><div class="detail-header"><h2>nexusclick - 店铺详情(全托管)</h2></div><div class="card"><p>暂无数据</p></div></div>
-            <div class="page" id="page-nancytuo"><div class="detail-header"><h2>nancytuo - 店铺详情(全托管)</h2></div><div class="card"><p>暂无数据</p></div></div>
-            <div class="page" id="page-Linda"><div class="detail-header"><h2>Linda - 店铺详情(全托管)</h2></div><div class="card"><p>暂无数据</p></div></div>
-            <div class="page" id="page-bana"><div class="detail-header"><h2>bana - 店铺详情(全托管)</h2></div><div class="card"><p>暂无数据</p></div></div>
-            <div class="page" id="page-sam"><div class="detail-header"><h2>sam - 店铺详情(全托管)</h2></div><div class="card"><p>暂无数据</p></div></div>
-            <div class="page" id="page-NKtuo">
-                <div class="detail-header"><h2>NKtuo - 店铺详情(全托管)</h2></div>
-                <div class="detail-grid">
-                    <div class="card"><div class="card-header">🛒 订单与流量</div><p>暂无数据</p></div>
-                    <div class="card"><div class="card-header">❌ 错单及其他</div>
-                        <div class="detail-row"><span class="detail-label">商品错误订单</span><span class="detail-val">1</span></div>
-                        <div class="detail-row"><span class="detail-label">负责人</span><span class="detail-val">aauasga</span></div>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+<aside class="s">
+  <div class="t">📊 运营看板</div>
+  <nav class="n">
+    <a class="on" href="#overview">总览</a>
+    <div class="sg">POP 店铺</div>
+    <a href="#p-profile">🏪 profile</a>
+    <a href="#p-Sara">🏪 Sara</a>
+    <a href="#p-8Li">🏪 8Li</a>
+    <a href="#p-Catherine">🏪 Catherine</a>
+    <a href="#p-Imice">🏪 Imice</a>
+    <a href="#p-nexusclick">🏪 nexusclick</a>
+    <a href="#p-NexusPOP">🏪 NexusPOP</a>
+    <a href="#p-David">🏪 David</a>
+    <a href="#p-nancytuo">🏪 nancytuo</a>
+    <a href="#p-Linda">🏪 Linda</a>
+    <a href="#p-bana">🏪 bana</a>
+    <a href="#p-Otmil">🏪 Otmil</a>
+    <a href="#p-Ella">🏪 Ella</a>
+    <a href="#p-Eric">🏪 Eric</a>
+    <a href="#p-sam">🏪 sam</a>
+    <a href="#p-Elong">🏪 Elong</a>
+    <a href="#p-Petery">🏪 Petery</a>
+    <a href="#p-NKtuo">🏪 NKtuo</a>
+    <div class="sg">全托管店铺</div>
+    <a href="#f-profile">🏪 profile</a>
+    <a href="#f-Sara">🏪 Sara</a>
+    <a href="#f-8Li">🏪 8Li</a>
+    <a href="#f-Catherine">🏪 Catherine</a>
+    <a href="#f-Imice">🏪 Imice</a>
+    <a href="#f-nexusclick">🏪 nexusclick</a>
+    <a href="#f-NexusPOP">🏪 NexusPOP</a>
+    <a href="#f-David">🏪 David</a>
+    <a href="#f-nancytuo">🏪 nancytuo</a>
+    <a href="#f-Linda">🏪 Linda</a>
+    <a href="#f-bana">🏪 bana</a>
+    <a href="#f-Otmil">🏪 Otmil</a>
+    <a href="#f-Ella">🏪 Ella</a>
+    <a href="#f-Eric">🏪 Eric</a>
+    <a href="#f-sam">🏪 sam</a>
+    <a href="#f-Elong">🏪 Elong</a>
+    <a href="#f-Petery">🏪 Petery</a>
+    <a href="#f-NKtuo">🏪 NKtuo</a>
+  </nav>
+</aside>
+<main class="m">
+  <!--总览-->
+  <section class="sec" id="overview">
+    <div class="c">
+      <h2 class="h">POP 汇总卡片</h2>
+      <div class="g">
+        <div class="k"><b>POP 总支付金额</b><span>8814.46</span></div>
+        <div class="k"><b>POP 总订单数</b><span>197</span></div>
+        <div class="k"><b>POP 总待处理纠纷</b><span>20</span></div>
+        <div class="k"><b>POP 昨天广告总花费</b><span>251.07</span></div>
+      </div>
     </div>
-</body>
-</html>
-```
+    <div class="c">
+      <h2 class="h">全托管汇总卡片</h2>
+      <div class="g">
+        <div class="k"><b>全托管总浏览量</b><span>9747</span></div>
+        <div class="k"><b>全托管总访客数</b><span>4943</span></div>
+        <div class="k"><b>全托昨日销量合计</b><span>135</span></div>
+        <div class="k"><b>全托待处理纠纷合计</b><span>24</span></div>
+      </div>
+    </div>
+    <div class="c">
+      <h2 class="h">POP 支付金额 TOP</h2>
+      <div class="bars">
+        <div class="b"><em>3916.90</em><i><s style="height:100%"></s></i><small>Sara</small></div>
+        <div class="b"><em>1690.63</em><i><s style="height:43.2%"></s></i><small>profile</small></div>
+        <div class="b"><em>1416.14</em><i><s style="height:36.2%"></s></i><small>Catherine</small></div>
+        <div class="b"><em>823.29</em><i><s style="height:21%"></s></i><small>8Li</small></div>
+        <div class="b"><em>322.80</em><i><s style="height:8.2%"></s></i><small>Elong</small></div>
+        <div class="b"><em>315.84</em><i><s style="height:8.1%"></s></i><small>Otmil</small></div>
+      </div>
+    </div>
+    <div class="c">
+      <h2 class="h">POP 全量数据表</h2>
+      <div class="x">
+        <table>
+          <tr><th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th><th>点击率</th><th>订单数</th><th>转化率</th><th>昨天广告花费</th><th>7天广告花费</th><th>昨天广告订单</th><th>昨天广告投产</th><th>7天广告投产</th><th>广告账户余额</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>商品错误订单</th><th>人工审核订单</th><th>邮寄方式错误</th><th>过期订单</th><th>负责人</th></tr>
+          <tr><td>profile</td><td>1690.63</td><td>27185</td><td>1000</td><td>3.68%</td><td>38</td><td>3.50%</td><td>74.18</td><td>458.64</td><td>4</td><td>31.53</td><td>29.58</td><td>429.04</td><td class="r">7</td><td>0</td><td>0</td><td class="r">4</td><td>0</td><td class="r">2</td><td>Yasso</td></tr>
+          <tr><td>Sara</td><td>3916.90</td><td>33650</td><td>1942</td><td>5.77%</td><td>71</td><td>3.50%</td><td>71.89</td><td>550.51</td><td>7</td><td>27.9</td><td>42.8</td><td>596.06</td><td class="r">6</td><td class="r">1</td><td class="r">3</td><td class="r">5</td><td>0</td><td class="r">4</td><td>-</td></tr>
+          <tr><td>8Li</td><td>823.29</td><td>16656</td><td>771</td><td>4.63%</td><td>21</td><td>2.59%</td><td>55</td><td>365</td><td>6</td><td>28.77</td><td>17.73</td><td>453.07</td><td>0</td><td>0</td><td class="r">2</td><td>0</td><td>0</td><td>0</td><td>Angelia</td></tr>
+          <tr><td>Catherine</td><td>1416.14</td><td>19143</td><td>787</td><td>4.11%</td><td>31</td><td>3.81%</td><td>50</td><td>423</td><td>3</td><td>9.7</td><td>24.2</td><td>297.08</td><td class="r">3</td><td>0</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+          <tr><td>Imice</td><td>7.74</td><td>2605</td><td>172</td><td>6.60%</td><td>1</td><td>0.58%</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.01</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="r">1</td><td>吴铭慧</td></tr>
+          <tr><td>nexusclick</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="r">7</td><td class="r">1</td><td>0</td><td>0</td><td>-</td></tr>
+          <tr><td>NexusPOP</td><td>22.8</td><td>747</td><td>
