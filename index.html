@@ -1,102 +1,409 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>运营看板</title>
-<style>
-*{box-sizing:border-box}html,body{margin:0;background:#f8fafc;color:#0f172a;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}a{text-decoration:none;color:inherit}.s{position:fixed;inset:0 auto 0 0;width:220px;background:#fff;border-right:1px solid #e2e8f0;overflow:auto;padding:16px}.t{font-size:20px;font-weight:700;margin:0 0 12px}.sg{margin:12px 0 6px;color:#64748b;font-size:12px}.n a{display:block;padding:8px 10px;border-radius:10px;white-space:nowrap}.n a.on,.n a:hover{background:#e2e8f0}.m{margin-left:220px;padding:16px}.c{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(15,23,42,.08);padding:14px;margin:0 0 16px}.h{margin:0 0 12px;font-size:18px}.g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.k{padding:12px;border:1px solid #e2e8f0;border-radius:14px}.k b,.i b{display:block;color:#64748b;font-size:12px;margin:0 0 4px}.k span{font-size:22px;font-weight:700}.x{overflow:auto}.x table{width:100%;min-width:1100px;border-collapse:collapse}.x th,.x td{padding:10px 8px;border-bottom:1px solid #e2e8f0;text-align:left;white-space:nowrap}.x th{font-size:12px;color:#64748b;background:#f8fafc;position:sticky;top:0}.r{color:#dc2626;font-weight:700}.bars{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:end;height:220px}.b{display:flex;flex-direction:column;align-items:center;gap:6px}.b i{display:flex;align-items:flex-end;justify-content:center;width:100%;height:160px;font-style:normal}.b i s{display:block;width:100%;max-width:54px;background:#3b82f6;border-radius:10px 10px 0 0;text-decoration:none}.b em,.b small{font-style:normal;text-align:center;word-break:break-all}.d{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.i{padding:12px;border:1px solid #e2e8f0;border-radius:14px}.i span{font-weight:700}.sub{margin:0 0 10px;color:#64748b}.sec{scroll-margin-top:16px}
-@media (max-width:768px){
-.s{position:sticky;inset:0 0 auto 0;width:auto;padding:12px;z-index:9}.t{margin:0 0 8px}.n{display:flex;gap:8px;overflow:auto;padding-bottom:2px}.n a{display:inline-block;background:#f8fafc}.sg{display:inline-block;margin:8px 4px 0 0}.m{margin:0;padding:12px}.g,.d{grid-template-columns:1fr}.bars{grid-template-columns:repeat(6,minmax(88px,1fr));overflow:auto;padding-bottom:4px}
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>运营看板</title><style>
+:root{--bg:#f8fafc;--c:#0f172a;--m:#64748b;--b:#e2e8f0;--card:#fff;--s:0 1px 6px rgba(15,23,42,.08);--r:12px;--bad:#dc2626}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--c);font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+a{color:inherit;text-decoration:none}
+.wrap{display:flex;min-height:100%}
+nav{background:#fff;border-right:1px solid var(--b);width:240px;position:sticky;top:0;height:100vh;overflow:auto}
+.hd{padding:14px 14px 8px;font-weight:800}
+.grp{padding:6px 10px 10px}
+.gt{font-size:12px;color:var(--m);padding:6px 6px 4px}
+.it{display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:10px}
+.it.on{background:#eef2ff}
+main{flex:1;min-width:0;padding:14px;display:flex;flex-direction:column;gap:12px}
+.sec{background:var(--card);border:1px solid var(--b);border-radius:var(--r);box-shadow:var(--s);padding:12px}
+.t{font-weight:800;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.k{border:1px solid var(--b);border-radius:12px;padding:10px;background:#fff}
+.k b{display:block;font-size:18px;margin-top:4px}
+.k small{color:var(--m)}
+.ch{display:flex;gap:10px;align-items:flex-end;height:180px;padding:6px 4px 0;overflow:auto hidden}
+.bar{min-width:90px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;align-items:stretch}
+.bar i{display:block;background:#2563eb;border-radius:10px 10px 6px 6px;min-height:2px}
+.bar em{font-style:normal;text-align:center;color:var(--m);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar span{text-align:center;font-size:12px;color:var(--c);white-space:nowrap}
+.tbl{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:980px}
+th,td{border-bottom:1px solid var(--b);padding:8px 8px;text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:#fff;z-index:1}
+.bad{color:var(--bad);font-weight:700}
+.pages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.kv{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--b);padding:6px 0}
+.kv:last-child{border:0}
+.kv span{color:var(--m)}
+/* mobile */
+.mnav{display:none;background:#fff;border-bottom:1px solid var(--b);position:sticky;top:0;z-index:5}
+.mnav .row{display:flex;gap:6px;overflow:auto;white-space:nowrap;padding:8px}
+.pill{padding:8px 10px;border:1px solid var(--b);border-radius:999px;background:#fff}
+.pill.on{background:#eef2ff;border-color:#c7d2fe}
+@media (max-width:900px){
+.wrap{display:block}
+nav{display:none}
+.mnav{display:block}
+main{padding:10px}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pages{grid-template-columns:1fr}
+table{min-width:860px}
 }
-</style>
-</head>
-<body>
-<aside class="s">
-  <div class="t">📊 运营看板</div>
-  <nav class="n">
-    <a class="on" href="#overview">总览</a>
-    <div class="sg">POP 店铺</div>
-    <a href="#p-profile">🏪 profile</a>
-    <a href="#p-Sara">🏪 Sara</a>
-    <a href="#p-8Li">🏪 8Li</a>
-    <a href="#p-Catherine">🏪 Catherine</a>
-    <a href="#p-Imice">🏪 Imice</a>
-    <a href="#p-nexusclick">🏪 nexusclick</a>
-    <a href="#p-NexusPOP">🏪 NexusPOP</a>
-    <a href="#p-David">🏪 David</a>
-    <a href="#p-nancytuo">🏪 nancytuo</a>
-    <a href="#p-Linda">🏪 Linda</a>
-    <a href="#p-bana">🏪 bana</a>
-    <a href="#p-Otmil">🏪 Otmil</a>
-    <a href="#p-Ella">🏪 Ella</a>
-    <a href="#p-Eric">🏪 Eric</a>
-    <a href="#p-sam">🏪 sam</a>
-    <a href="#p-Elong">🏪 Elong</a>
-    <a href="#p-Petery">🏪 Petery</a>
-    <a href="#p-NKtuo">🏪 NKtuo</a>
-    <div class="sg">全托管店铺</div>
-    <a href="#f-profile">🏪 profile</a>
-    <a href="#f-Sara">🏪 Sara</a>
-    <a href="#f-8Li">🏪 8Li</a>
-    <a href="#f-Catherine">🏪 Catherine</a>
-    <a href="#f-Imice">🏪 Imice</a>
-    <a href="#f-nexusclick">🏪 nexusclick</a>
-    <a href="#f-NexusPOP">🏪 NexusPOP</a>
-    <a href="#f-David">🏪 David</a>
-    <a href="#f-nancytuo">🏪 nancytuo</a>
-    <a href="#f-Linda">🏪 Linda</a>
-    <a href="#f-bana">🏪 bana</a>
-    <a href="#f-Otmil">🏪 Otmil</a>
-    <a href="#f-Ella">🏪 Ella</a>
-    <a href="#f-Eric">🏪 Eric</a>
-    <a href="#f-sam">🏪 sam</a>
-    <a href="#f-Elong">🏪 Elong</a>
-    <a href="#f-Petery">🏪 Petery</a>
-    <a href="#f-NKtuo">🏪 NKtuo</a>
-  </nav>
-</aside>
-<main class="m">
-  <!--总览-->
-  <section class="sec" id="overview">
-    <div class="c">
-      <h2 class="h">POP 汇总卡片</h2>
-      <div class="g">
-        <div class="k"><b>POP 总支付金额</b><span>8814.46</span></div>
-        <div class="k"><b>POP 总订单数</b><span>197</span></div>
-        <div class="k"><b>POP 总待处理纠纷</b><span>20</span></div>
-        <div class="k"><b>POP 昨天广告总花费</b><span>251.07</span></div>
-      </div>
-    </div>
-    <div class="c">
-      <h2 class="h">全托管汇总卡片</h2>
-      <div class="g">
-        <div class="k"><b>全托管总浏览量</b><span>9747</span></div>
-        <div class="k"><b>全托管总访客数</b><span>4943</span></div>
-        <div class="k"><b>全托昨日销量合计</b><span>135</span></div>
-        <div class="k"><b>全托待处理纠纷合计</b><span>24</span></div>
-      </div>
-    </div>
-    <div class="c">
-      <h2 class="h">POP 支付金额 TOP</h2>
-      <div class="bars">
-        <div class="b"><em>3916.90</em><i><s style="height:100%"></s></i><small>Sara</small></div>
-        <div class="b"><em>1690.63</em><i><s style="height:43.2%"></s></i><small>profile</small></div>
-        <div class="b"><em>1416.14</em><i><s style="height:36.2%"></s></i><small>Catherine</small></div>
-        <div class="b"><em>823.29</em><i><s style="height:21%"></s></i><small>8Li</small></div>
-        <div class="b"><em>322.80</em><i><s style="height:8.2%"></s></i><small>Elong</small></div>
-        <div class="b"><em>315.84</em><i><s style="height:8.1%"></s></i><small>Otmil</small></div>
-      </div>
-    </div>
-    <div class="c">
-      <h2 class="h">POP 全量数据表</h2>
-      <div class="x">
-        <table>
-          <tr><th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th><th>点击率</th><th>订单数</th><th>转化率</th><th>昨天广告花费</th><th>7天广告花费</th><th>昨天广告订单</th><th>昨天广告投产</th><th>7天广告投产</th><th>广告账户余额</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>商品错误订单</th><th>人工审核订单</th><th>邮寄方式错误</th><th>过期订单</th><th>负责人</th></tr>
-          <tr><td>profile</td><td>1690.63</td><td>27185</td><td>1000</td><td>3.68%</td><td>38</td><td>3.50%</td><td>74.18</td><td>458.64</td><td>4</td><td>31.53</td><td>29.58</td><td>429.04</td><td class="r">7</td><td>0</td><td>0</td><td class="r">4</td><td>0</td><td class="r">2</td><td>Yasso</td></tr>
-          <tr><td>Sara</td><td>3916.90</td><td>33650</td><td>1942</td><td>5.77%</td><td>71</td><td>3.50%</td><td>71.89</td><td>550.51</td><td>7</td><td>27.9</td><td>42.8</td><td>596.06</td><td class="r">6</td><td class="r">1</td><td class="r">3</td><td class="r">5</td><td>0</td><td class="r">4</td><td>-</td></tr>
-          <tr><td>8Li</td><td>823.29</td><td>16656</td><td>771</td><td>4.63%</td><td>21</td><td>2.59%</td><td>55</td><td>365</td><td>6</td><td>28.77</td><td>17.73</td><td>453.07</td><td>0</td><td>0</td><td class="r">2</td><td>0</td><td>0</td><td>0</td><td>Angelia</td></tr>
-          <tr><td>Catherine</td><td>1416.14</td><td>19143</td><td>787</td><td>4.11%</td><td>31</td><td>3.81%</td><td>50</td><td>423</td><td>3</td><td>9.7</td><td>24.2</td><td>297.08</td><td class="r">3</td><td>0</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-          <tr><td>Imice</td><td>7.74</td><td>2605</td><td>172</td><td>6.60%</td><td>1</td><td>0.58%</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.01</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="r">1</td><td>吴铭慧</td></tr>
-          <tr><td>nexusclick</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="r">7</td><td class="r">1</td><td>0</td><td>0</td><td>-</td></tr>
-          <tr><td>NexusPOP</td><td>22.8</td><td>747</td><td>
+@media (max-width:420px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<div class="mnav"><div class="row">
+<a class="pill on" href="#overview">📊 运营看板·总览</a>
+<a class="pill" href="#pop-profile">🏪 profile(POP)</a><a class="pill" href="#pop-sara">🏪 Sara(POP)</a><a class="pill" href="#pop-8li">🏪 8Li(POP)</a><a class="pill" href="#pop-catherine">🏪 Catherine(POP)</a><a class="pill" href="#pop-imice">🏪 Imice(POP)</a><a class="pill" href="#pop-nexusclick">🏪 nexusclick(POP)</a><a class="pill" href="#pop-nexuspop">🏪 NexusPOP(POP)</a><a class="pill" href="#pop-david">🏪 David(POP)</a><a class="pill" href="#pop-nancytuo">🏪 nancytuo(POP)</a><a class="pill" href="#pop-linda">🏪 Linda(POP)</a><a class="pill" href="#pop-bana">🏪 bana(POP)</a><a class="pill" href="#pop-otmil">🏪 Otmil(POP)</a><a class="pill" href="#pop-ella">🏪 Ella(POP)</a><a class="pill" href="#pop-eric">🏪 Eric(POP)</a><a class="pill" href="#pop-sam">🏪 sam(POP)</a><a class="pill" href="#pop-elong">🏪 Elong(POP)</a><a class="pill" href="#pop-petery">🏪 Petery(POP)</a><a class="pill" href="#pop-nktuo">🏪 NKtuo(POP)</a>
+<a class="pill" href="#ft-profile">🏪 profile(全托)</a><a class="pill" href="#ft-sara">🏪 Sara(全托)</a><a class="pill" href="#ft-8li">🏪 8Li(全托)</a><a class="pill" href="#ft-catherine">🏪 Catherine(全托)</a><a class="pill" href="#ft-imice">🏪 Imice(全托)</a><a class="pill" href="#ft-nexusclick">🏪 nexusclick(全托)</a><a class="pill" href="#ft-nexuspop">🏪 NexusPOP(全托)</a><a class="pill" href="#ft-david">🏪 David(全托)</a><a class="pill" href="#ft-nancytuo">🏪 nancytuo(全托)</a><a class="pill" href="#ft-linda">🏪 Linda(全托)</a><a class="pill" href="#ft-bana">🏪 bana(全托)</a><a class="pill" href="#ft-otmil">🏪 Otmil(全托)</a><a class="pill" href="#ft-ella">🏪 Ella(全托)</a><a class="pill" href="#ft-eric">🏪 Eric(全托)</a><a class="pill" href="#ft-sam">🏪 sam(全托)</a><a class="pill" href="#ft-elong">🏪 Elong(全托)</a><a class="pill" href="#ft-petery">🏪 Petery(全托)</a><a class="pill" href="#ft-nktuo">🏪 NKtuo(全托)</a>
+</div></div>
+
+<div class="wrap">
+<nav>
+<div class="hd">📊 运营看板</div>
+<div class="grp">
+<a class="it on" href="#overview">总览</a>
+<div class="gt">POP 店铺</div>
+<a class="it" href="#pop-profile">🏪 profile</a><a class="it" href="#pop-sara">🏪 Sara</a><a class="it" href="#pop-8li">🏪 8Li</a><a class="it" href="#pop-catherine">🏪 Catherine</a><a class="it" href="#pop-imice">🏪 Imice</a><a class="it" href="#pop-nexusclick">🏪 nexusclick</a><a class="it" href="#pop-nexuspop">🏪 NexusPOP</a><a class="it" href="#pop-david">🏪 David</a><a class="it" href="#pop-nancytuo">🏪 nancytuo</a><a class="it" href="#pop-linda">🏪 Linda</a><a class="it" href="#pop-bana">🏪 bana</a><a class="it" href="#pop-otmil">🏪 Otmil</a><a class="it" href="#pop-ella">🏪 Ella</a><a class="it" href="#pop-eric">🏪 Eric</a><a class="it" href="#pop-sam">🏪 sam</a><a class="it" href="#pop-elong">🏪 Elong</a><a class="it" href="#pop-petery">🏪 Petery</a><a class="it" href="#pop-nktuo">🏪 NKtuo</a>
+<div class="gt">全托管店铺</div>
+<a class="it" href="#ft-profile">🏪 profile</a><a class="it" href="#ft-sara">🏪 Sara</a><a class="it" href="#ft-8li">🏪 8Li</a><a class="it" href="#ft-catherine">🏪 Catherine</a><a class="it" href="#ft-imice">🏪 Imice</a><a class="it" href="#ft-nexusclick">🏪 nexusclick</a><a class="it" href="#ft-nexuspop">🏪 NexusPOP</a><a class="it" href="#ft-david">🏪 David</a><a class="it" href="#ft-nancytuo">🏪 nancytuo</a><a class="it" href="#ft-linda">🏪 Linda</a><a class="it" href="#ft-bana">🏪 bana</a><a class="it" href="#ft-otmil">🏪 Otmil</a><a class="it" href="#ft-ella">🏪 Ella</a><a class="it" href="#ft-eric">🏪 Eric</a><a class="it" href="#ft-sam">🏪 sam</a><a class="it" href="#ft-elong">🏪 Elong</a><a class="it" href="#ft-petery">🏪 Petery</a><a class="it" href="#ft-nktuo">🏪 NKtuo</a>
+</div>
+</nav>
+
+<main>
+<!-- 总览 -->
+<section id="overview" class="sec">
+<h2 class="t">总览</h2>
+
+<div class="grid">
+<div class="k"><small>POP 总支付金额</small><b>7814.46</b></div>
+<div class="k"><small>POP 总订单数</small><b>197</b></div>
+<div class="k"><small>POP 总待处理纠纷</small><b>20</b></div>
+<div class="k"><small>POP 昨天广告总花费</small><b>251.07</b></div>
+</div>
+
+<div style="height:10px"></div>
+
+<div class="grid">
+<div class="k"><small>全托管总浏览量</small><b>9747</b></div>
+<div class="k"><small>全托管总访客数</small><b>4943</b></div>
+<div class="k"><small>全托昨日销量合计</small><b>135</b></div>
+<div class="k"><small>全托待处理纠纷合计</small><b>25</b></div>
+</div>
+</section>
+
+<section class="sec">
+<h3 class="t">POP 支付金额 TOP</h3>
+<div class="ch" aria-label="POP 支付金额 TOP 静态柱状图">
+<div class="bar"><span>3916.9</span><i style="height:160px"></i><em>Sara</em></div>
+<div class="bar"><span>1690.63</span><i style="height:69.1px"></i><em>profile</em></div>
+<div class="bar"><span>1416.14</span><i style="height:57.8px"></i><em>Catherine</em></div>
+<div class="bar"><span>823.29</span><i style="height:33.6px"></i><em>8Li</em></div>
+<div class="bar"><span>322.8</span><i style="height:13.2px"></i><em>Elong</em></div>
+<div class="bar"><span>315.84</span><i style="height:12.9px"></i><em>Otmil</em></div>
+<div class="bar"><span>155.9</span><i style="height:6.4px"></i><em>Eric</em></div>
+<div class="bar"><span>142.42</span><i style="height:5.8px"></i><em>Petery</em></div>
+</div>
+</section>
+
+<section class="sec">
+<h3 class="t">POP 全量数据表</h3>
+<div class="tbl"><table>
+<thead><tr>
+<th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th><th>点击率</th><th>订单数</th><th>转化率</th><th>昨天广告花费</th><th>7天广告花费</th><th>昨天广告订单</th><th>昨天广告投产</th><th>7天广告投产</th><th>广告账户余额</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>商品错误订单</th><th>人工审核订单</th><th>邮寄方式错误</th><th>过期订单</th><th>负责人</th>
+</tr></thead>
+<tbody>
+<tr><td>profile</td><td>1690.63</td><td>27185</td><td>1000</td><td>0.03678499172337686</td><td>38</td><td>0.035</td><td>74.18</td><td>458.64</td><td>4</td><td>31.53</td><td>29.58</td><td>429.04</td><td class="bad">7</td><td>0</td><td>0</td><td class="bad">4</td><td>0</td><td class="bad">2</td><td>Yasso</td></tr>
+<tr><td>Sara</td><td>3916.9</td><td>33650</td><td>1942</td><td>0.057711738484398215</td><td>71</td><td>0.035</td><td>71.89</td><td>550.51</td><td>7</td><td>27.9</td><td>42.8</td><td>596.06</td><td class="bad">6</td><td class="bad">1</td><td class="bad">3</td><td class="bad">5</td><td>0</td><td class="bad">4</td><td>-</td></tr>
+<tr><td>8Li</td><td>823.29</td><td>16656</td><td>771</td><td>0.04628962536023055</td><td>21</td><td>0.0259</td><td>55</td><td>365</td><td>6</td><td>28.77</td><td>17.73</td><td>453.07</td><td>0</td><td>0</td><td class="bad">2</td><td>0</td><td>0</td><td>0</td><td>Angelia</td></tr>
+<tr><td>Catherine</td><td>1416.14</td><td>19143</td><td>787</td><td>0.04111163349527242</td><td>31</td><td>0.0381</td><td>50</td><td>423</td><td>3</td><td>9.7</td><td>24.2</td><td>297.08</td><td class="bad">3</td><td>0</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Imice</td><td>7.74</td><td>2605</td><td>172</td><td>0.06602687140115163</td><td>1</td><td>0.0058</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.01</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="bad">1</td><td>吴铭慧</td></tr>
+<tr><td>nexusclick</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="bad">7</td><td class="bad">1</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>NexusPOP</td><td>22.8</td><td>747</td><td>30</td><td>0.040160642570281124</td><td>2</td><td>0.0333</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.09</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>David</td><td>0</td><td>0</td><td>1</td><td>-2146826281</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>12.32</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Aileen</td></tr>
+<tr><td>nancytuo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="bad">4</td><td class="bad">1</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Linda</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="bad">3</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>bana</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="bad">3</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Otmil</td><td>315.84</td><td>7981</td><td>677</td><td>0.08482646284926701</td><td>9</td><td>0.0133</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>860.3</td><td class="bad">1</td><td>0</td><td class="bad">2</td><td class="bad">1</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Ella</td><td>0</td><td>775</td><td>318</td><td>0.4103225806451613</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7.18</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Eric</td><td>155.9</td><td>3209</td><td>147</td><td>0.045808663134933</td><td>7</td><td>0.0476</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Bryce</td></tr>
+<tr><td>sam</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Elong</td><td>322.8</td><td>4042</td><td>325</td><td>0.08040573973280554</td><td>10</td><td>0.0308</td><td>0</td><td>36.72</td><td>0</td><td>0</td><td>36.56</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="bad">2</td><td>0</td><td class="bad">2</td><td>-</td></tr>
+<tr><td>Petery</td><td>142.42</td><td>3620</td><td>260</td><td>0.0718232044198895</td><td>7</td><td>0.0269</td><td>0</td><td>37.31</td><td>0</td><td>0</td><td>10.11</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="bad">1</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>NKtuo</td><td>-</td><td>-</td><td>-</td><td>-2146826281</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>aauasga</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="sec">
+<h3 class="t">全托管全量数据表</h3>
+<div class="tbl"><table style="min-width:860px">
+<thead><tr>
+<th>店铺</th><th>浏览量</th><th>访客数</th><th>转化率</th><th>全托昨日销量</th><th>全托七日销量</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>负责人</th>
+</tr></thead>
+<tbody>
+<tr><td>profile</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>yasso</td></tr>
+<tr><td>Sara</td><td>597</td><td>336</td><td>0.0655</td><td>27</td><td>127</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>8Li</td><td>169</td><td>112</td><td>0.0268</td><td>3</td><td>44</td><td class="bad">1</td><td>0</td><td>angelia</td></tr>
+<tr><td>Catherine</td><td>309</td><td>179</td><td>-</td><td>5</td><td>56</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Imice</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>吴铭慧</td></tr>
+<tr><td>nexusclick</td><td>2665</td><td>1416</td><td>0.0191</td><td>29</td><td>242</td><td class="bad">1</td><td class="bad">1</td><td>-</td></tr>
+<tr><td>NexusPOP</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>David</td><td>262</td><td>122</td><td>-</td><td>2</td><td>28</td><td class="bad">1</td><td class="bad">1</td><td>aileen</td></tr>
+<tr><td>nancytuo</td><td>1483</td><td>732</td><td>0.0178</td><td>17</td><td>171</td><td class="bad">6</td><td class="bad">3</td><td>-</td></tr>
+<tr><td>Linda</td><td>677</td><td>337</td><td>0.0148</td><td>8</td><td>57</td><td class="bad">5</td><td class="bad">4</td><td>-</td></tr>
+<tr><td>bana</td><td>447</td><td>206</td><td>0.0194</td><td>5</td><td>61</td><td class="bad">2</td><td>0</td><td>-</td></tr>
+<tr><td>Otmil</td><td>1492</td><td>648</td><td>0.0108</td><td>10</td><td>112</td><td class="bad">4</td><td>0</td><td>-</td></tr>
+<tr><td>Ella</td><td>471</td><td>234</td><td>0.0043</td><td>1</td><td>15</td><td class="bad">1</td><td class="bad">1</td><td>-</td></tr>
+<tr><td>Eric</td><td>130</td><td>76</td><td>-</td><td>2</td><td>24</td><td>0</td><td>0</td><td>bryce</td></tr>
+<tr><td>sam</td><td>85</td><td>44</td><td>0.0682</td><td>4</td><td>28</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>Elong</td><td>218</td><td>92</td><td>0.0435</td><td>5</td><td>31</td><td class="bad">2</td><td class="bad">2</td><td>-</td></tr>
+<tr><td>Petery</td><td>5</td><td>4</td><td>-</td><td>2</td><td>9</td><td>0</td><td>0</td><td>-</td></tr>
+<tr><td>NKtuo</td><td>737</td><td>405</td><td>0.0296</td><td>15</td><td>69</td><td class="bad">1</td><td>0</td><td>aauasga</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="sec">
+<h3 class="t">风险店铺汇总表</h3>
+<div class="tbl"><table style="min-width:860px">
+<thead><tr><th>来源</th><th>店铺</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>商品错误订单</th><th>人工审核订单</th><th>邮寄方式错误</th><th>过期订单</th></tr></thead>
+<tbody>
+<tr><td>POP</td><td>profile</td><td class="bad">7</td><td>0</td><td>0</td><td class="bad">4</td><td>0</td><td class="bad">2</td></tr>
+<tr><td>POP</td><td>Sara</td><td class="bad">6</td><td class="bad">1</td><td class="bad">3</td><td class="bad">5</td><td>0</td><td class="bad">4</td></tr>
+<tr><td>POP</td><td>8Li</td><td>0</td><td>0</td><td class="bad">2</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Catherine</td><td class="bad">3</td><td>0</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Imice</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="bad">1</td></tr>
+<tr><td>POP</td><td>nexusclick</td><td>-</td><td>-</td><td class="bad">7</td><td class="bad">1</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>nancytuo</td><td>-</td><td>-</td><td class="bad">4</td><td class="bad">1</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Linda</td><td>-</td><td>-</td><td class="bad">3</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>bana</td><td>-</td><td>-</td><td class="bad">3</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Otmil</td><td class="bad">1</td><td>0</td><td class="bad">2</td><td class="bad">1</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Ella</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Eric</td><td class="bad">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>POP</td><td>Elong</td><td>0</td><td>0</td><td>0</td><td class="bad">2</td><td>0</td><td class="bad">2</td></tr>
+<tr><td>POP</td><td>Petery</td><td>0</td><td>0</td><td>0</td><td class="bad">1</td><td>0</td><td>0</td></tr>
+<tr><td>全托管</td><td>8Li</td><td class="bad">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>nexusclick</td><td class="bad">1</td><td class="bad">1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>David</td><td class="bad">1</td><td class="bad">1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>nancytuo</td><td class="bad">6</td><td class="bad">3</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>Linda</td><td class="bad">5</td><td class="bad">4</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>bana</td><td class="bad">2</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>Otmil</td><td class="bad">4</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>Ella</td><td class="bad">1</td><td class="bad">1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>Elong</td><td class="bad">2</td><td class="bad">2</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr><td>全托管</td><td>NKtuo</td><td class="bad">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- POP详情 -->
+<section class="sec" id="pop-profile"><h3 class="t">🏪 profile（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>1690.63</b></div><div class="kv"><span>曝光量</span><b>27185</b></div><div class="kv"><span>访客数</span><b>1000</b></div><div class="kv"><span>点击率</span><b>0.03678499172337686</b></div><div class="kv"><span>订单数</span><b>38</b></div><div class="kv"><span>转化率</span><b>0.035</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>74.18</b></div><div class="kv"><span>7天广告花费</span><b>458.64</b></div><div class="kv"><span>昨天广告订单</span><b>4</b></div><div class="kv"><span>昨天广告投产</span><b>31.53</b></div><div class="kv"><span>7天广告投产</span><b>29.58</b></div><div class="kv"><span>广告账户余额</span><b>429.04</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">7</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b class="bad">4</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b class="bad">2</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-sara"><h3 class="t">🏪 Sara（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>3916.9</b></div><div class="kv"><span>曝光量</span><b>33650</b></div><div class="kv"><span>访客数</span><b>1942</b></div><div class="kv"><span>点击率</span><b>0.057711738484398215</b></div><div class="kv"><span>订单数</span><b>71</b></div><div class="kv"><span>转化率</span><b>0.035</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>71.89</b></div><div class="kv"><span>7天广告花费</span><b>550.51</b></div><div class="kv"><span>昨天广告订单</span><b>7</b></div><div class="kv"><span>昨天广告投产</span><b>27.9</b></div><div class="kv"><span>7天广告投产</span><b>42.8</b></div><div class="kv"><span>广告账户余额</span><b>596.06</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">6</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">1</b></div><div class="kv"><span>商品错误订单</span><b class="bad">3</b></div><div class="kv"><span>人工审核订单</span><b class="bad">5</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b class="bad">4</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-8li"><h3 class="t">🏪 8Li（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>823.29</b></div><div class="kv"><span>曝光量</span><b>16656</b></div><div class="kv"><span>访客数</span><b>771</b></div><div class="kv"><span>点击率</span><b>0.04628962536023055</b></div><div class="kv"><span>订单数</span><b>21</b></div><div class="kv"><span>转化率</span><b>0.0259</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>55</b></div><div class="kv"><span>7天广告花费</span><b>365</b></div><div class="kv"><span>昨天广告订单</span><b>6</b></div><div class="kv"><span>昨天广告投产</span><b>28.77</b></div><div class="kv"><span>7天广告投产</span><b>17.73</b></div><div class="kv"><span>广告账户余额</span><b>453.07</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b class="bad">2</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-catherine"><h3 class="t">🏪 Catherine（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>1416.14</b></div><div class="kv"><span>曝光量</span><b>19143</b></div><div class="kv"><span>访客数</span><b>787</b></div><div class="kv"><span>点击率</span><b>0.04111163349527242</b></div><div class="kv"><span>订单数</span><b>31</b></div><div class="kv"><span>转化率</span><b>0.0381</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>50</b></div><div class="kv"><span>7天广告花费</span><b>423</b></div><div class="kv"><span>昨天广告订单</span><b>3</b></div><div class="kv"><span>昨天广告投产</span><b>9.7</b></div><div class="kv"><span>7天广告投产</span><b>24.2</b></div><div class="kv"><span>广告账户余额</span><b>297.08</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">3</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b class="bad">1</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-imice"><h3 class="t">🏪 Imice（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>7.74</b></div><div class="kv"><span>曝光量</span><b>2605</b></div><div class="kv"><span>访客数</span><b>172</b></div><div class="kv"><span>点击率</span><b>0.06602687140115163</b></div><div class="kv"><span>订单数</span><b>1</b></div><div class="kv"><span>转化率</span><b>0.0058</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>0</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>0</b></div><div class="kv"><span>广告账户余额</span><b>0.01</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b class="bad">1</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-nexusclick"><h3 class="t">🏪 nexusclick（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>-</b></div><div class="kv"><span>曝光量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>点击率</span><b>-</b></div><div class="kv"><span>订单数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>-</b></div><div class="kv"><span>7天广告花费</span><b>-</b></div><div class="kv"><span>昨天广告订单</span><b>-</b></div><div class="kv"><span>昨天广告投产</span><b>-</b></div><div class="kv"><span>7天广告投产</span><b>-</b></div><div class="kv"><span>广告账户余额</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div><div class="kv"><span>商品错误订单</span><b class="bad">7</b></div><div class="kv"><span>人工审核订单</span><b class="bad">1</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-nexuspop"><h3 class="t">🏪 NexusPOP（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>22.8</b></div><div class="kv"><span>曝光量</span><b>747</b></div><div class="kv"><span>访客数</span><b>30</b></div><div class="kv"><span>点击率</span><b>0.040160642570281124</b></div><div class="kv"><span>订单数</span><b>2</b></div><div class="kv"><span>转化率</span><b>0.0333</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>0</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>0</b></div><div class="kv"><span>广告账户余额</span><b>0.09</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-david"><h3 class="t">🏪 David（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>0</b></div><div class="kv"><span>曝光量</span><b>0</b></div><div class="kv"><span>访客数</span><b>1</b></div><div class="kv"><span>点击率</span><b>-2146826281</b></div><div class="kv"><span>订单数</span><b>0</b></div><div class="kv"><span>转化率</span><b>0</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>0</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>0</b></div><div class="kv"><span>广告账户余额</span><b>12.32</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-nancytuo"><h3 class="t">🏪 nancytuo（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>-</b></div><div class="kv"><span>曝光量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>点击率</span><b>-</b></div><div class="kv"><span>订单数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>-</b></div><div class="kv"><span>7天广告花费</span><b>-</b></div><div class="kv"><span>昨天广告订单</span><b>-</b></div><div class="kv"><span>昨天广告投产</span><b>-</b></div><div class="kv"><span>7天广告投产</span><b>-</b></div><div class="kv"><span>广告账户余额</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div><div class="kv"><span>商品错误订单</span><b class="bad">4</b></div><div class="kv"><span>人工审核订单</span><b class="bad">1</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-linda"><h3 class="t">🏪 Linda（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>-</b></div><div class="kv"><span>曝光量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>点击率</span><b>-</b></div><div class="kv"><span>订单数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>-</b></div><div class="kv"><span>7天广告花费</span><b>-</b></div><div class="kv"><span>昨天广告订单</span><b>-</b></div><div class="kv"><span>昨天广告投产</span><b>-</b></div><div class="kv"><span>7天广告投产</span><b>-</b></div><div class="kv"><span>广告账户余额</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div><div class="kv"><span>商品错误订单</span><b class="bad">3</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-bana"><h3 class="t">🏪 bana（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>-</b></div><div class="kv"><span>曝光量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>点击率</span><b>-</b></div><div class="kv"><span>订单数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>-</b></div><div class="kv"><span>7天广告花费</span><b>-</b></div><div class="kv"><span>昨天广告订单</span><b>-</b></div><div class="kv"><span>昨天广告投产</span><b>-</b></div><div class="kv"><span>7天广告投产</span><b>-</b></div><div class="kv"><span>广告账户余额</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div><div class="kv"><span>商品错误订单</span><b class="bad">3</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-otmil"><h3 class="t">🏪 Otmil（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>315.84</b></div><div class="kv"><span>曝光量</span><b>7981</b></div><div class="kv"><span>访客数</span><b>677</b></div><div class="kv"><span>点击率</span><b>0.08482646284926701</b></div><div class="kv"><span>订单数</span><b>9</b></div><div class="kv"><span>转化率</span><b>0.0133</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>0</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>0</b></div><div class="kv"><span>广告账户余额</span><b>860.3</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b class="bad">2</b></div><div class="kv"><span>人工审核订单</span><b class="bad">1</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-ella"><h3 class="t">🏪 Ella（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>0</b></div><div class="kv"><span>曝光量</span><b>775</b></div><div class="kv"><span>访客数</span><b>318</b></div><div class="kv"><span>点击率</span><b>0.4103225806451613</b></div><div class="kv"><span>订单数</span><b>0</b></div><div class="kv"><span>转化率</span><b>0</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>0</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>0</b></div><div class="kv"><span>广告账户余额</span><b>7.18</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-eric"><h3 class="t">🏪 Eric（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>155.9</b></div><div class="kv"><span>曝光量</span><b>3209</b></div><div class="kv"><span>访客数</span><b>147</b></div><div class="kv"><span>点击率</span><b>0.045808663134933</b></div><div class="kv"><span>订单数</span><b>7</b></div><div class="kv"><span>转化率</span><b>0.0476</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>0</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>0</b></div><div class="kv"><span>广告账户余额</span><b>0</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-sam"><h3 class="t">🏪 sam（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>-</b></div><div class="kv"><span>曝光量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>点击率</span><b>-</b></div><div class="kv"><span>订单数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>-</b></div><div class="kv"><span>7天广告花费</span><b>-</b></div><div class="kv"><span>昨天广告订单</span><b>-</b></div><div class="kv"><span>昨天广告投产</span><b>-</b></div><div class="kv"><span>7天广告投产</span><b>-</b></div><div class="kv"><span>广告账户余额</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-elong"><h3 class="t">🏪 Elong（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>322.8</b></div><div class="kv"><span>曝光量</span><b>4042</b></div><div class="kv"><span>访客数</span><b>325</b></div><div class="kv"><span>点击率</span><b>0.08040573973280554</b></div><div class="kv"><span>订单数</span><b>10</b></div><div class="kv"><span>转化率</span><b>0.0308</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>36.72</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>36.56</b></div><div class="kv"><span>广告账户余额</span><b>0</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b class="bad">2</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b class="bad">2</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-petery"><h3 class="t">🏪 Petery（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>142.42</b></div><div class="kv"><span>曝光量</span><b>3620</b></div><div class="kv"><span>访客数</span><b>260</b></div><div class="kv"><span>点击率</span><b>0.0718232044198895</b></div><div class="kv"><span>订单数</span><b>7</b></div><div class="kv"><span>转化率</span><b>0.0269</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>0</b></div><div class="kv"><span>7天广告花费</span><b>37.31</b></div><div class="kv"><span>昨天广告订单</span><b>0</b></div><div class="kv"><span>昨天广告投产</span><b>0</b></div><div class="kv"><span>7天广告投产</span><b>10.11</b></div><div class="kv"><span>广告账户余额</span><b>0</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b class="bad">1</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="pop-nktuo"><h3 class="t">🏪 NKtuo（POP）</h3><div class="pages">
+<div class="k"><div class="kv"><span>支付金额</span><b>-</b></div><div class="kv"><span>曝光量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>点击率</span><b>-2146826281</b></div><div class="kv"><span>订单数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>昨天广告花费</span><b>-</b></div><div class="kv"><span>7天广告花费</span><b>-</b></div><div class="kv"><span>昨天广告订单</span><b>-</b></div><div class="kv"><span>昨天广告投产</span><b>-</b></div><div class="kv"><span>7天广告投产</span><b>-</b></div><div class="kv"><span>广告账户余额</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div><div class="kv"><span>商品错误订单</span><b>0</b></div><div class="kv"><span>人工审核订单</span><b>0</b></div><div class="kv"><span>邮寄方式错误</span><b>0</b></div><div class="kv"><span>过期订单</span><b>0</b></div></div>
+</div></section>
+
+<!-- 全托详情 -->
+<section class="sec" id="ft-profile"><h3 class="t">🏪 profile（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>-</b></div><div class="kv"><span>全托七日销量</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-sara"><h3 class="t">🏪 Sara（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>597</b></div><div class="kv"><span>访客数</span><b>336</b></div><div class="kv"><span>转化率</span><b>0.0655</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>27</b></div><div class="kv"><span>全托七日销量</span><b>127</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-8li"><h3 class="t">🏪 8Li（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>169</b></div><div class="kv"><span>访客数</span><b>112</b></div><div class="kv"><span>转化率</span><b>0.0268</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>3</b></div><div class="kv"><span>全托七日销量</span><b>44</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-catherine"><h3 class="t">🏪 Catherine（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>309</b></div><div class="kv"><span>访客数</span><b>179</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>5</b></div><div class="kv"><span>全托七日销量</span><b>56</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-imice"><h3 class="t">🏪 Imice（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>-</b></div><div class="kv"><span>全托七日销量</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-nexusclick"><h3 class="t">🏪 nexusclick（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>2665</b></div><div class="kv"><span>访客数</span><b>1416</b></div><div class="kv"><span>转化率</span><b>0.0191</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>29</b></div><div class="kv"><span>全托七日销量</span><b>242</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">1</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-nexuspop"><h3 class="t">🏪 NexusPOP（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>-</b></div><div class="kv"><span>访客数</span><b>-</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>-</b></div><div class="kv"><span>全托七日销量</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>-</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>-</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-david"><h3 class="t">🏪 David（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>262</b></div><div class="kv"><span>访客数</span><b>122</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>2</b></div><div class="kv"><span>全托七日销量</span><b>28</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">1</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-nancytuo"><h3 class="t">🏪 nancytuo（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>1483</b></div><div class="kv"><span>访客数</span><b>732</b></div><div class="kv"><span>转化率</span><b>0.0178</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>17</b></div><div class="kv"><span>全托七日销量</span><b>171</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">6</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">3</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-linda"><h3 class="t">🏪 Linda（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>677</b></div><div class="kv"><span>访客数</span><b>337</b></div><div class="kv"><span>转化率</span><b>0.0148</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>8</b></div><div class="kv"><span>全托七日销量</span><b>57</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">5</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">4</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-bana"><h3 class="t">🏪 bana（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>447</b></div><div class="kv"><span>访客数</span><b>206</b></div><div class="kv"><span>转化率</span><b>0.0194</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>5</b></div><div class="kv"><span>全托七日销量</span><b>61</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">2</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-otmil"><h3 class="t">🏪 Otmil（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>1492</b></div><div class="kv"><span>访客数</span><b>648</b></div><div class="kv"><span>转化率</span><b>0.0108</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>10</b></div><div class="kv"><span>全托七日销量</span><b>112</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">4</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-ella"><h3 class="t">🏪 Ella（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>471</b></div><div class="kv"><span>访客数</span><b>234</b></div><div class="kv"><span>转化率</span><b>0.0043</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>1</b></div><div class="kv"><span>全托七日销量</span><b>15</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">1</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-eric"><h3 class="t">🏪 Eric（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>130</b></div><div class="kv"><span>访客数</span><b>76</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>2</b></div><div class="kv"><span>全托七日销量</span><b>24</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-sam"><h3 class="t">🏪 sam（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>85</b></div><div class="kv"><span>访客数</span><b>44</b></div><div class="kv"><span>转化率</span><b>0.0682</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>4</b></div><div class="kv"><span>全托七日销量</span><b>28</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-elong"><h3 class="t">🏪 Elong（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>218</b></div><div class="kv"><span>访客数</span><b>92</b></div><div class="kv"><span>转化率</span><b>0.0435</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>5</b></div><div class="kv"><span>全托七日销量</span><b>31</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">2</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b class="bad">2</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-petery"><h3 class="t">🏪 Petery（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>5</b></div><div class="kv"><span>访客数</span><b>4</b></div><div class="kv"><span>转化率</span><b>-</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>2</b></div><div class="kv"><span>全托七日销量</span><b>9</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b>0</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+<section class="sec" id="ft-nktuo"><h3 class="t">🏪 NKtuo（全托管）</h3><div class="pages">
+<div class="k"><div class="kv"><span>浏览量</span><b>737</b></div><div class="kv"><span>访客数</span><b>405</b></div><div class="kv"><span>转化率</span><b>0.0296</b></div></div>
+<div class="k"><div class="kv"><span>全托昨日销量</span><b>15</b></div><div class="kv"><span>全托七日销量</span><b>69</b></div></div>
+<div class="k"><div class="kv"><span>等待处理纠纷数</span><b class="bad">1</b></div><div class="kv"><span>纠纷剩余一天内到期数量</span><b>0</b></div></div>
+</div></section>
+
+</main></div></body></html>
