@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{font-size:14px}
+html{font-size:14px;scroll-behavior:smooth}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:#333;overflow-x:hidden}
 .sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);color:#fff;z-index:1000;transform:translateX(-100%);transition:transform .3s;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .sidebar.open{transform:translateX(0)}
@@ -150,7 +150,19 @@ tr:hover{background:#f9f9fb}
 <div class="footer">店铺指标看板 · 2026-08-04 · GitHub Pages Ready</div>
 </div>
 <script>
-function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});if(window.innerWidth<=768)closeSidebar();}
+function scrollToSection(id){
+  var el=document.getElementById(id);
+  if(!el){return;}
+  if(window.innerWidth<=768){closeSidebar();}
+  // 兼容 iOS Safari 和 Android Chrome
+  var top=el.getBoundingClientRect().top+window.pageYOffset-60;
+  try{
+    window.scrollTo({top:top,behavior:'smooth'});
+  }catch(e){
+    // 旧浏览器降级
+    window.scrollTo(0,top);
+  }
+}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
 function showOverview(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');document.getElementById('overview').style.display='';document.querySelectorAll('.store-detail').forEach(d=>d.style.display='none');if(window.innerWidth<=768)closeSidebar()}
