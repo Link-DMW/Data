@@ -177,4 +177,9 @@ new Chart(document.getElementById('revenueChart'),{type:'bar',data:{labels:popLa
 new Chart(document.getElementById('trafficChart'),{type:'bar',data:{labels:popLabels,datasets:[{label:'曝光量',data:popExposure,backgroundColor:'rgba(33,150,243,.7)',borderRadius:4},{label:'访客数',data:popVisitors,backgroundColor:'rgba(255,152,0,.7)',borderRadius:4}]},options:{...baseOpts,plugins:{legend:{position:'top',display:true}}}});
 new Chart(document.getElementById('adChart'),{type:'bar',data:{labels:popLabels,datasets:[{data:popAdRoi,backgroundColor:popAdRoi.map(v=>v>=10?'rgba(76,175,80,.7)':v>=1?'rgba(255,193,7,.7)':'rgba(244,67,54,.7)'),borderRadius:4}]},options:baseOpts});
 new Chart(document.getElementById('qtChart'),{type:'bar',data:{labels:qtLabels,datasets:[{data:qtYest,backgroundColor:'rgba(156,39,176,.7)',borderRadius:6}]},options:baseOpts});
+window.addEventListener('beforeunload',function(e){
+  e.preventDefault();
+  e.returnValue='我还在工作，确定要离开吗？';
+  return '我还在工作，确定要离开吗？';
+});
 </script></body></html>
