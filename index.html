@@ -31,7 +31,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .topbar .date{font-size:11px;opacity:.7}
 .content{padding:12px;max-width:1200px;margin:0 auto}
 .kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
-.kpi-card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.kpi-card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;transition:all .2s}.kpi-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 .kpi-label{font-size:11px;color:#888;margin-bottom:2px}
 .kpi-value{font-size:20px;font-weight:700;color:#1a1a2e}
 .section{background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
@@ -88,12 +88,12 @@ tr:hover{background:#f9f9fb}
 <div class="content">
 <div id="overview">
 <div class="kpi-grid">
-<div class="kpi-card"><div class="kpi-label">POP支付总额</div><div class="kpi-value">¥11,020</div></div>
-<div class="kpi-card"><div class="kpi-label">总订单数</div><div class="kpi-value">275</div></div>
-<div class="kpi-card"><div class="kpi-label">昨日广告花费</div><div class="kpi-value">¥471.61</div></div>
-<div class="kpi-card"><div class="kpi-label">广告账号总余额</div><div class="kpi-value">¥3,199.38</div></div>
-<div class="kpi-card"><div class="kpi-label">全托昨日销量</div><div class="kpi-value">330</div></div>
-<div class="kpi-card"><div class="kpi-label">全托7日销量</div><div class="kpi-value">1916</div></div>
+<div class="kpi-card" onclick="scrollToSection('pop-chart')"><div class="kpi-label">POP支付总额</div><div class="kpi-value">¥11,020</div></div>
+<div class="kpi-card" onclick="scrollToSection('pop-table')"><div class="kpi-label">总订单数</div><div class="kpi-value">275</div></div>
+<div class="kpi-card" onclick="scrollToSection('ad')"><div class="kpi-label">昨日广告花费</div><div class="kpi-value">¥471.61</div></div>
+<div class="kpi-card" onclick="scrollToSection('pop-table')"><div class="kpi-label">广告账号总余额</div><div class="kpi-value">¥3,199.38</div></div>
+<div class="kpi-card" onclick="scrollToSection('qt-table')"><div class="kpi-label">全托昨日销量</div><div class="kpi-value">330</div></div>
+<div class="kpi-card" onclick="scrollToSection('qt-table')"><div class="kpi-label">全托7日销量</div><div class="kpi-value">1916</div></div>
 </div>
 <div class="section"><div class="section-title">POP支付金额排名</div><div class="chart-container"><canvas id="revenueChart"></canvas></div><div class="chart-hint">💡 点击柱状图可跳转到该店铺详情</div></div>
 <div class="section"><div class="section-title">曝光量 vs 访客数</div><div class="chart-container"><canvas id="trafficChart"></canvas></div><div class="chart-hint">💡 点击柱状图可跳转到该店铺详情</div></div>
@@ -150,6 +150,7 @@ tr:hover{background:#f9f9fb}
 <div class="footer">店铺指标看板 · 2026-08-04 · GitHub Pages Ready</div>
 </div>
 <script>
+function scrollToSection(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});if(window.innerWidth<=768)closeSidebar();}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show')}
 function showOverview(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');document.getElementById('overview').style.display='';document.querySelectorAll('.store-detail').forEach(d=>d.style.display='none');if(window.innerWidth<=768)closeSidebar()}
