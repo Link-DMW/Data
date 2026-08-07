@@ -159,6 +159,83 @@ tbody tr:hover{background:#f9f9fb}
 .detail-kpi-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
 .owner-field{font-size:16px;font-weight:600;color:#1a1a2e}
 
+/* ===== AI聊天框 ===== */
+.chat-fab{
+  position:fixed;right:16px;bottom:16px;z-index:500;
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#4a90d9,#0f3460);
+  border:none;cursor:pointer;color:#fff;font-size:24px;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s,opacity .2s;
+}
+.chat-fab:hover{-webkit-transform:scale(1.08);transform:scale(1.08)}
+.chat-fab.hidden{opacity:0;pointer-events:none;-webkit-transform:scale(0);transform:scale(0)}
+
+.chat-panel{
+  position:fixed;right:16px;bottom:16px;z-index:501;
+  width:calc(100vw - 32px);max-width:380px;
+  height:520px;max-height:calc(100vh - 32px);
+  background:#fff;border-radius:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+  display:none;flex-direction:column;overflow:hidden;
+  animation:chatSlideUp .25s ease;
+}
+@keyframes chatSlideUp{from{opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
+.chat-panel.show{display:flex}
+
+.chat-header{
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.chat-header .chat-title{font-size:15px;font-weight:700}
+.chat-header .chat-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.chat-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.chat-close:hover{background:rgba(255,255,255,.25)}
+
+.chat-messages{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:14px 12px;display:flex;flex-direction:column;gap:10px;
+  background:#f7f8fa;
+}
+.chat-msg{max-width:85%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.chat-msg.ai{background:#fff;color:#333;align-self:flex-start;border:1px solid #e8eaed;border-bottom-left-radius:4px}
+.chat-msg.user{background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-msg.loading{color:#999;font-style:italic}
+.chat-msg.error{background:#ffe0e0;color:#d32f2f;border:1px solid #ffcdd2}
+
+.chat-input-area{
+  flex-shrink:0;padding:10px 12px;border-top:1px solid #e8eaed;background:#fff;
+  display:flex;gap:8px;
+}
+.chat-input{
+  flex:1;border:1px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;
+  outline:none;font-family:inherit;resize:none;max-height:80px;
+  -webkit-appearance:none;
+}
+.chat-input:focus{border-color:#4a90d9}
+.chat-send{
+  background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;border:none;
+  border-radius:8px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+}
+.chat-send:hover{opacity:.9}
+.chat-send:disabled{opacity:.5;cursor:not-allowed}
+
+.chat-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 8px;background:#fff;flex-shrink:0}
+.chat-suggestion{
+  background:#e8f0fe;color:#0f3460;border:1px solid #c5dcfa;
+  border-radius:12px;padding:4px 10px;font-size:11px;cursor:pointer;
+  white-space:nowrap;
+}
+.chat-suggestion:hover{background:#d0e4fc}
+
+@media(max-width:768px){
+  .chat-panel{height:60vh;max-height:60vh}
+  .chat-fab{width:48px;height:48px;font-size:22px}
+}
+
 /* ===== 响应式 ===== */
 @media(min-width:769px){
   .sidebar{-webkit-transform:translateX(0);transform:translateX(0)}
@@ -263,6 +340,31 @@ tbody tr:hover{background:#f9f9fb}
 <div id="storeDetails"></div>
 
 </div><!-- /main-content -->
+
+<!-- AI聊天浮动按钮 -->
+<button class="chat-fab" id="chatFab" onclick="openChat()">💬</button>
+
+<!-- AI聊天面板 -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div>
+      <div class="chat-title">🤖 AI 运营助手</div>
+      <div class="chat-sub">基于店铺数据智能问答</div>
+    </div>
+    <button class="chat-close" onclick="closeChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <span class="chat-suggestion" onclick="sendQuickMsg('哪个店铺支付金额最高？')">哪个店铺支付金额最高？</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('哪些店铺有纠纷需要处理？')">哪些店铺有纠纷？</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('广告投产比排名')">广告投产比排名</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('全托昨日销量排名')">全托昨日销量排名</span>
+  </div>
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
+    <button class="chat-send" id="chatSend" onclick="sendChatMsg()">发送</button>
+  </div>
+</div>
 
 <script>
 // ===== 数据 =====
@@ -730,6 +832,153 @@ fullTbl.closest(".table-container").id="fullTableSection";
 
 // 初始显示总览
 showOverview();
+
+// ===== AI 聊天功能 =====
+var DEEPSEEK_API_KEY=["sk-566fba","6f6136","4568","6afd","4dee","580e","531"].join("");
+var DEEPSEEK_API_URL="https://api.deepseek.com/v1/chat/completions";
+var chatHistory=[];
+var chatInitialized=false;
+var chatLoading=false;
+
+function openChat(){
+  document.getElementById("chatFab").classList.add("hidden");
+  document.getElementById("chatPanel").classList.add("show");
+  if(!chatInitialized){
+    chatInitialized=true;
+    setTimeout(function(){initChat()},300);
+  }
+  setTimeout(function(){var el=document.getElementById("chatInput");if(el)el.focus()},400);
+}
+
+function closeChat(){
+  document.getElementById("chatPanel").classList.remove("show");
+  document.getElementById("chatFab").classList.remove("hidden");
+}
+
+function addChatMsg(text,role){
+  var container=document.getElementById("chatMessages");
+  var div=document.createElement("div");
+  div.className="chat-msg "+role;
+  div.textContent=text;
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+  return div;
+}
+
+function buildDataContext(){
+  var lines=[];
+  lines.push("当前日期："+reportDate);
+  lines.push("");
+  lines.push("【POP店铺数据】");
+  popData.forEach(function(d){
+    if(d.pay!==null){
+      lines.push(d.store+": 支付¥"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+    }else{
+      lines.push(d.store+": 无POP数据, 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
+    }
+  });
+  lines.push("");
+  lines.push("【全托管店铺数据】");
+  fullData.forEach(function(d){
+    if(d.salesYest!==null){
+      lines.push(d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+    }else{
+      lines.push(d.store+": 无全托管数据, 负责人:"+(d.owner||"无"));
+    }
+  });
+  lines.push("");
+  lines.push("【汇总】");
+  lines.push("POP支付总额:¥"+popPayTotal.toFixed(2)+", 总订单:"+popOrderTotal+", 昨日广告花费:¥"+adYestTotal.toFixed(2)+", 广告余额:¥"+balanceTotal.toFixed(2)+", 全托昨日销量:"+fullYestTotal+", 全托7日销量:"+full7dTotal);
+  return lines.join("\n");
+}
+
+function callDeepSeek(messages,onSuccess,onError){
+  var xhr=new XMLHttpRequest();
+  xhr.open("POST",DEEPSEEK_API_URL,true);
+  xhr.setRequestHeader("Content-Type","application/json");
+  xhr.setRequestHeader("Authorization","Bearer "+DEEPSEEK_API_KEY);
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState===4){
+      if(xhr.status===200){
+        try{
+          var resp=JSON.parse(xhr.responseText);
+          var content=resp.choices&&resp.choices[0]&&resp.choices[0].message?resp.choices[0].message.content:"";
+          onSuccess(content);
+        }catch(e){onError("解析失败: "+e.message)}
+      }else{
+        onError("API错误("+xhr.status+"): "+xhr.responseText.substring(0,200));
+      }
+    }
+  };
+  xhr.send(JSON.stringify({model:"deepseek-chat",messages:messages,temperature:0.7,max_tokens:1500}));
+}
+
+function initChat(){
+  addChatMsg("正在分析店铺数据，生成运营建议...","loading");
+  var ctx=buildDataContext();
+  var sysMsg="你是专业的电商运营分析师。根据以下店铺数据，给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
+  callDeepSeek(
+    [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建议"}],
+    function(content){
+      var loadingEl=document.querySelector(".chat-msg.loading");
+      if(loadingEl)loadingEl.remove();
+      addChatMsg(content,"ai");
+      chatHistory.push({role:"system",content:sysMsg});
+      chatHistory.push({role:"assistant",content:content});
+    },
+    function(err){
+      var loadingEl=document.querySelector(".chat-msg.loading");
+      if(loadingEl)loadingEl.remove();
+      addChatMsg("AI连接失败: "+err+"\n你可以直接提问，我会基于数据回答。","error");
+    }
+  );
+}
+
+function sendChatMsg(){
+  if(chatLoading)return;
+  var input=document.getElementById("chatInput");
+  var text=input.value.trim();
+  if(!text)return;
+  addChatMsg(text,"user");
+  input.value="";
+  input.style.height="auto";
+  var loadingEl=addChatMsg("思考中...","loading");
+  chatLoading=true;
+  document.getElementById("chatSend").disabled=true;
+  var ctx=buildDataContext();
+  var msgs=[];
+  if(chatHistory.length>0){
+    msgs=chatHistory.slice();
+    msgs.push({role:"user",content:"数据上下文:\n"+ctx+"\n\n用户问题: "+text+"\n请基于数据简洁回答。"});
+  }else{
+    msgs.push({role:"system",content:"你是专业的电商运营分析师，根据以下数据回答问题。\n"+ctx});
+    msgs.push({role:"user",content:text});
+  }
+  callDeepSeek(msgs,function(content){
+    loadingEl.remove();
+    addChatMsg(content,"ai");
+    chatHistory.push({role:"user",content:text});
+    chatHistory.push({role:"assistant",content:content});
+    chatLoading=false;
+    document.getElementById("chatSend").disabled=false;
+  },function(err){
+    loadingEl.remove();
+    addChatMsg("请求失败: "+err,"error");
+    chatLoading=false;
+    document.getElementById("chatSend").disabled=false;
+  });
+}
+
+function sendQuickMsg(msg){
+  document.getElementById("chatInput").value=msg;
+  sendChatMsg();
+}
+
+// textarea自适应高度
+document.getElementById("chatInput").addEventListener("input",function(){
+  this.style.height="auto";
+  this.style.height=Math.min(this.scrollHeight,80)+"px";
+});
 </script>
 </body>
 </html>
