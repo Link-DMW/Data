@@ -869,26 +869,47 @@ function buildDataContext(){
   var lines=[];
   lines.push("当前日期："+reportDate);
   lines.push("");
-  lines.push("【POP店铺数据】");
-  popData.forEach(function(d){
-    if(d.pay!==null){
-      lines.push(d.store+": 支付¥"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
-    }else{
-      lines.push(d.store+": 无POP数据, 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
-    }
+  // 预计算POP排名
+  var popRanked=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
+  lines.push("【POP店铺数据（按支付金额降序）】");
+  popRanked.forEach(function(d,i){
+    lines.push("#"+(i+1)+" "+d.store+": 支付¥"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+  });
+  // 无POP数据的店铺
+  var popNoData=popData.filter(function(d){return d.pay===null});
+  if(popNoData.length>0){
+    lines.push("");
+    lines.push("【仅纠纷数据的POP店铺（无POP业务）】");
+    popNoData.forEach(function(d){
+      lines.push(d.store+": 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
+    });
+  }
+  lines.push("");
+  // 预计算全托管排名
+  var fullRanked=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  lines.push("【全托管店铺数据（按昨日销量降序）】");
+  fullRanked.forEach(function(d,i){
+    lines.push("#"+(i+1)+" "+d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
   });
   lines.push("");
-  lines.push("【全托管店铺数据】");
-  fullData.forEach(function(d){
-    if(d.salesYest!==null){
-      lines.push(d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
-    }else{
-      lines.push(d.store+": 无全托管数据, 负责人:"+(d.owner||"无"));
-    }
-  });
-  lines.push("");
-  lines.push("【汇总】");
-  lines.push("POP支付总额:¥"+popPayTotal.toFixed(2)+", 总订单:"+popOrderTotal+", 昨日广告花费:¥"+adYestTotal.toFixed(2)+", 广告余额:¥"+balanceTotal.toFixed(2)+", 全托昨日销量:"+fullYestTotal+", 全托7日销量:"+full7dTotal);
+  // 预计算汇总
+  lines.push("【汇总数据（已精确计算，请直接引用）】");
+  lines.push("POP支付总额: ¥"+popPayTotal.toFixed(2));
+  lines.push("POP总订单数: "+popOrderTotal);
+  lines.push("昨日广告总花费: ¥"+adYestTotal.toFixed(2));
+  lines.push("广告账号总余额: ¥"+balanceTotal.toFixed(2));
+  lines.push("全托昨日总销量: "+fullYestTotal);
+  lines.push("全托7日总销量: "+full7dTotal);
+  lines.push("支付金额TOP3: "+popRanked[0].store+"(¥"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"(¥"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"(¥"+num(popRanked[2].pay).toFixed(2)+")");
+  lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")、"+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")、"+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
+  // 纠纷预警
+  var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
+  var fullDispute=fullData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
+  lines.push("有纠纷的POP店铺: "+(disputeStores.length>0?disputeStores.join("、"):"无"));
+  lines.push("有纠纷的全托店铺: "+(fullDispute.length>0?fullDispute.join("、"):"无"));
+  // 广告投产预警
+  var lowRoi=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0&&num(d.adRoi7d)<1}).map(function(d){return d.store+"(投产"+num(d.adRoi7d).toFixed(2)+")"});
+  lines.push("7天广告投产<1的店铺: "+(lowRoi.length>0?lowRoi.join("、"):"无"));
   return lines.join("\n");
 }
 
@@ -916,7 +937,7 @@ function callDeepSeek(messages,onSuccess,onError){
 function initChat(){
   addChatMsg("正在分析店铺数据，生成运营建议...","loading");
   var ctx=buildDataContext();
-  var sysMsg="你是专业的电商运营分析师。根据以下店铺数据，给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
+  var sysMsg="你是专业的电商运营分析师。以下数据已按排名排序并预计算了汇总值，请直接引用这些数据，不要自行计算。给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
   callDeepSeek(
     [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建议"}],
     function(content){
