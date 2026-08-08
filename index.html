@@ -460,27 +460,32 @@ function singleHandleBtn(store,source){
     }
   }
   if(!hasAbnormal)return "";
+  var prefix=source==="full"?"full":"pop";
   var key=store+"|all|"+reportDate;
-  return '<span class="handle-btn" id="btn-'+key+'" onclick="toggleAllHandle(\''+store+'\')">标记已处理</span>';
+  var btnId="btn-"+prefix+"-"+key;
+  return '<span class="handle-btn" id="'+btnId+'" onclick="toggleAllHandle(\''+store+'\',\''+prefix+'\')">标记已处理</span>';
 }
 
 function renderSingleBtnStatus(){
   Object.keys(handledStatus).forEach(function(key){
     var info=handledStatus[key];
     if(key.indexOf("|all|")===-1)return;
-    var btn=document.getElementById("btn-"+key);
-    if(btn&&info.handled){
-      btn.textContent="✓已处理";
-      btn.classList.add("done");
-      btn.setAttribute("title","处理人:"+info.handler+" 时间:"+info.time);
-    }
+    var popBtn=document.getElementById("btn-pop-"+key);
+    var fullBtn=document.getElementById("btn-full-"+key);
+    [popBtn,fullBtn].forEach(function(btn){
+      if(btn&&info.handled){
+        btn.textContent="✓已处理";
+        btn.classList.add("done");
+        btn.setAttribute("title","处理人:"+info.handler+" 时间:"+info.time);
+      }
+    });
   });
 }
 
-function toggleAllHandle(store){
+function toggleAllHandle(store,prefix){
   var key=store+"|all|"+reportDate;
   var isHandled=handledStatus[key]&&handledStatus[key].handled;
-  var btn=document.getElementById("btn-"+key);
+  var btn=document.getElementById("btn-"+prefix+"-"+key);
   if(btn){btn.textContent="...";btn.style.opacity=0.5;}
   fetch(API_URL,{
     method:"POST",
