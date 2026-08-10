@@ -393,48 +393,48 @@ tbody tr:hover{background:#f9f9fb}
 <script>
 // ===== 数据 =====
 var popData = [
-  {store:"profile",pay:1703.07,exposure:28244,visitors:1383,ctr:0.0489661521031015,orders:48,cvr:0.034,adYest:107.39,ad7d:790.8,adOrdYest:10,adRoiYest:23.57,adRoi7d:23.68,balance:868.59,dispute:3,disputeExpire:1,errOrder:1,manualOrder:10,mailErr:0,expired:3,owner:"Yasso"},
-  {store:"Sara",pay:3549.05,exposure:35652,visitors:1939,ctr:0.0543868506675642,orders:73,cvr:0.0366,adYest:157.32,ad7d:964.43,adOrdYest:16,adRoiYest:35.69,adRoi7d:51.81,balance:413.01,dispute:5,disputeExpire:1,errOrder:5,manualOrder:9,mailErr:0,expired:2,owner:""},
-  {store:"8Li",pay:1288.7,exposure:19592,visitors:963,ctr:0.0491527153940384,orders:28,cvr:0.028,adYest:60,ad7d:421.72,adOrdYest:4,adRoiYest:14.37,adRoi7d:14.69,balance:342.78,dispute:1,disputeExpire:0,errOrder:0,manualOrder:2,mailErr:0,expired:0,owner:"Angelia"},
-  {store:"Catherine",pay:572.16,exposure:20464,visitors:1077,ctr:0.0526290070367475,orders:21,cvr:0.0195,adYest:58.58,ad7d:380.47,adOrdYest:8,adRoiYest:23.96,adRoi7d:16.99,balance:345.87,dispute:1,disputeExpire:0,errOrder:0,manualOrder:7,mailErr:0,expired:7,owner:""},
-  {store:"Imice",pay:70.39,exposure:1985,visitors:148,ctr:0.0745591939546599,orders:3,cvr:0.0203,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0.01,balance:0,dispute:1,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧"},
-  {store:"nexusclick",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:6,manualOrder:0,mailErr:0,expired:0,owner:""},
-  {store:"NexusPOP",pay:0,exposure:1079,visitors:51,ctr:0.0472659870250232,orders:0,cvr:0,adYest:0,ad7d:10.39,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:1,mailErr:0,expired:0,owner:""},
-  {store:"David",pay:0,exposure:0,visitors:3,ctr:"#DIV/0!",orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:12.32,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen"},
-  {store:"nancytuo",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:3,mailErr:0,expired:0,owner:""},
-  {store:"Linda",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:0,owner:""},
-  {store:"bana",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:""},
-  {store:"Otmil",pay:543.13,exposure:8513,visitors:960,ctr:0.112768706683895,orders:20,cvr:0.0198,adYest:30,ad7d:239.64,adOrdYest:0,adRoiYest:0,adRoi7d:3.52,balance:0,dispute:1,disputeExpire:0,errOrder:3,manualOrder:2,mailErr:0,expired:0,owner:""},
-  {store:"Ella",pay:99.79,exposure:1368,visitors:534,ctr:0.390350877192982,orders:2,cvr:0.0037,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:3,manualOrder:0,mailErr:0,expired:0,owner:""},
-  {store:"Eric",pay:63.17,exposure:2496,visitors:121,ctr:0.0484775641025641,orders:2,cvr:0.0165,adYest:0,ad7d:0.21,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Bryce"},
-  {store:"sam",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:""},
-  {store:"Elong",pay:251,exposure:3743,visitors:231,ctr:0.0617152017098584,orders:11,cvr:0.0303,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:3,manualOrder:1,mailErr:0,expired:1,owner:""},
-  {store:"Petery",pay:78.47,exposure:5592,visitors:393,ctr:0.0702789699570815,orders:3,cvr:0.0076,adYest:19.15,ad7d:128.46,adOrdYest:0,adRoiYest:0,adRoi7d:4.41,balance:394.27,dispute:1,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"profile",pay:1487.91,exposure:28585,visitors:1332,ctr:0.0465978660136435,orders:29,cvr:0.0203,adYest:104.37,ad7d:802.09,adOrdYest:6,adRoiYest:18.26,adRoi7d:26.06,balance:540.68,dispute:2,disputeExpire:0,errOrder:1,manualOrder:6,mailErr:0,expired:2,owner:"Yasso"},
+  {store:"Sara",pay:2901.44,exposure:33207,visitors:1694,ctr:0.0510133405607252,orders:68,cvr:0.039,adYest:101.65,ad7d:1049.5,adOrdYest:12,adRoiYest:66.16,adRoi7d:45.93,balance:109.6,dispute:5,disputeExpire:0,errOrder:1,manualOrder:19,mailErr:1,expired:3,owner:""},
+  {store:"8Li",pay:937.26,exposure:19476,visitors:922,ctr:0.0473403162867118,orders:19,cvr:0.0206,adYest:59.76,ad7d:436.76,adOrdYest:7,adRoiYest:61.71,adRoi7d:24.76,balance:222.65,dispute:0,disputeExpire:0,errOrder:0,manualOrder:3,mailErr:0,expired:0,owner:"Angelia"},
+  {store:"Catherine",pay:599.48,exposure:20669,visitors:995,ctr:0.0481397261599497,orders:23,cvr:0.0211,adYest:57.42,ad7d:416.26,adOrdYest:3,adRoiYest:10.89,adRoi7d:17.34,balance:201.01,dispute:1,disputeExpire:0,errOrder:3,manualOrder:13,mailErr:0,expired:8,owner:""},
+  {store:"Imice",pay:10.5,exposure:2061,visitors:105,ctr:0.0509461426491994,orders:1,cvr:0.0095,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0.01,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧"},
+  {store:"nexusclick",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:2,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"NexusPOP",pay:0,exposure:1049,visitors:44,ctr:0.0419447092469018,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"David",pay:0,exposure:0,visitors:1,ctr:"#DIV/0!",orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:12.32,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Aileen"},
+  {store:"nancytuo",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"Linda",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"bana",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:2,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"Otmil",pay:543.13,exposure:8513,visitors:960,ctr:0.112768706683895,orders:20,cvr:0.0198,adYest:30,ad7d:239.64,adOrdYest:0,adRoiYest:0,adRoi7d:3.52,balance:0,dispute:1,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:0,owner:""},
+  {store:"Ella",pay:7.1,exposure:1484,visitors:437,ctr:0.294474393530997,orders:1,cvr:0.0023,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:4,manualOrder:2,mailErr:0,expired:0,owner:""},
+  {store:"Eric",pay:28.79,exposure:2492,visitors:124,ctr:0.0497592295345104,orders:1,cvr:0.0081,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:0,owner:"Bryce"},
+  {store:"sam",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:""},
+  {store:"Elong",pay:252.87,exposure:3716,visitors:249,ctr:0.0670075349838536,orders:9,cvr:0.0361,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:4,manualOrder:1,mailErr:0,expired:1,owner:""},
+  {store:"Petery",pay:244.03,exposure:5440,visitors:386,ctr:0.0709558823529412,orders:8,cvr:0.0181,adYest:14.97,ad7d:138.06,adOrdYest:1,adRoiYest:8,adRoi7d:4.97,balance:356.91,dispute:1,disputeExpire:0,errOrder:0,manualOrder:1,mailErr:0,expired:0,owner:""},
   {store:"NKtuo",pay:null,exposure:null,visitors:null,ctr:"#DIV/0!",orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:2,manualOrder:0,mailErr:0,expired:0,owner:"aauasga"}
 ];
 
 var fullData = [
   {store:"profile",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"yasso"},
-  {store:"Sara",views:625,visitors:328,cvr:0.0366,salesYest:15,sales7d:150,dispute:1,disputeExpire:0,owner:""},
-  {store:"8Li",views:225,visitors:120,cvr:0.0333,salesYest:9,sales7d:54,dispute:0,disputeExpire:0,owner:"angelia"},
-  {store:"Catherine",views:217,visitors:138,cvr:0.0507,salesYest:15,sales7d:96,dispute:0,disputeExpire:0,owner:""},
+  {store:"Sara",views:537,visitors:276,cvr:0.0181,salesYest:6,sales7d:125,dispute:0,disputeExpire:0,owner:""},
+  {store:"8Li",views:215,visitors:126,cvr:0.0397,salesYest:8,sales7d:54,dispute:0,disputeExpire:0,owner:"angelia"},
+  {store:"Catherine",views:234,visitors:145,cvr:0.0069,salesYest:8,sales7d:86,dispute:0,disputeExpire:0,owner:""},
   {store:"Imice",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭慧"},
-  {store:"nexusclick",views:3909,visitors:2015,cvr:0.0273,salesYest:73,sales7d:511,dispute:1,disputeExpire:0,owner:""},
+  {store:"nexusclick",views:3909,visitors:2015,cvr:0.0273,salesYest:58,sales7d:444,dispute:1,disputeExpire:0,owner:""},
   {store:"NexusPOP",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:""},
-  {store:"David",views:169,visitors:86,cvr:0.0233,salesYest:6,sales7d:39,dispute:2,disputeExpire:0,owner:"aileen"},
-  {store:"nancytuo",views:1387,visitors:582,cvr:0.0189,salesYest:33,sales7d:177,dispute:4,disputeExpire:1,owner:""},
-  {store:"Linda",views:633,visitors:283,cvr:0.0212,salesYest:7,sales7d:78,dispute:6,disputeExpire:1,owner:""},
-  {store:"bana",views:575,visitors:267,cvr:0.015,salesYest:8,sales7d:70,dispute:2,disputeExpire:0,owner:""},
-  {store:"Otmil",views:1463,visitors:647,cvr:0.0124,salesYest:21,sales7d:130,dispute:3,disputeExpire:0,owner:""},
-  {store:"Ella",views:705,visitors:343,cvr:0.0117,salesYest:4,sales7d:42,dispute:1,disputeExpire:0,owner:""},
-  {store:"Eric",views:81,visitors:53,cvr:0.0189,salesYest:5,sales7d:45,dispute:0,disputeExpire:0,owner:"bryce"},
-  {store:"sam",views:67,visitors:35,cvr:0.0571,salesYest:3,sales7d:30,dispute:0,disputeExpire:0,owner:""},
-  {store:"Elong",views:296,visitors:154,cvr:0.0325,salesYest:5,sales7d:32,dispute:0,disputeExpire:0,owner:""},
-  {store:"Petery",views:27,visitors:23,cvr:0.087,salesYest:6,sales7d:24,dispute:0,disputeExpire:0,owner:""},
-  {store:"NKtuo",views:2776,visitors:1270,cvr:0.0764,salesYest:93,sales7d:690,dispute:0,disputeExpire:0,owner:"aauasga"}
+  {store:"David",views:179,visitors:89,cvr:0.0225,salesYest:5,sales7d:35,dispute:2,disputeExpire:0,owner:"aileen"},
+  {store:"nancytuo",views:1387,visitors:582,cvr:0.0189,salesYest:21,sales7d:183,dispute:4,disputeExpire:1,owner:""},
+  {store:"Linda",views:587,visitors:260,cvr:0.0346,salesYest:12,sales7d:78,dispute:5,disputeExpire:0,owner:""},
+  {store:"bana",views:519,visitors:241,cvr:0.0041,salesYest:7,sales7d:63,dispute:2,disputeExpire:0,owner:""},
+  {store:"Otmil",views:1463,visitors:647,cvr:0.0124,salesYest:8,sales7d:117,dispute:3,disputeExpire:0,owner:""},
+  {store:"Ella",views:664,visitors:295,cvr:0.0203,salesYest:6,sales7d:44,dispute:0,disputeExpire:0,owner:""},
+  {store:"Eric",views:112,visitors:63,cvr:0.0159,salesYest:2,sales7d:31,dispute:0,disputeExpire:0,owner:"bryce"},
+  {store:"sam",views:56,visitors:39,cvr:0.0256,salesYest:1,sales7d:23,dispute:0,disputeExpire:0,owner:""},
+  {store:"Elong",views:250,visitors:128,cvr:0.0078,salesYest:4,sales7d:31,dispute:0,disputeExpire:0,owner:""},
+  {store:"Petery",views:24,visitors:16,cvr:0,salesYest:2,sales7d:19,dispute:0,disputeExpire:0,owner:""},
+  {store:"NKtuo",views:2776,visitors:1270,cvr:0.0764,salesYest:78,sales7d:612,dispute:0,disputeExpire:0,owner:"aauasga"}
 ];
 
-var reportDate = "2026-08-07";
+var reportDate = "2026-08-09";
 
 // ===== 后端API配置 =====
 var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
