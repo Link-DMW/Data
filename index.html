@@ -174,11 +174,14 @@ tbody tr:hover{background:#f9f9fb}
   position:fixed;right:16px;bottom:16px;z-index:500;
   width:52px;height:52px;border-radius:50%;
   background:linear-gradient(135deg,#4a90d9,#0f3460);
-  border:none;cursor:pointer;color:#fff;font-size:24px;
+  border:none;cursor:grab;color:#fff;font-size:24px;
   box-shadow:0 4px 16px rgba(0,0,0,.25);
   display:flex;align-items:center;justify-content:center;
   transition:transform .2s,opacity .2s;
+  touch-action:none;user-select:none;-webkit-user-select:none;
 }
+.chat-fab:active{cursor:grabbing}
+.chat-fab.dragging{transition:none}
 .chat-fab:hover{-webkit-transform:scale(1.08);transform:scale(1.08)}
 .chat-fab.hidden{opacity:0;pointer-events:none;-webkit-transform:scale(0);transform:scale(0)}
 
@@ -191,6 +194,8 @@ tbody tr:hover{background:#f9f9fb}
   display:none;flex-direction:column;overflow:hidden;
   animation:chatSlideUp .25s ease;
 }
+.chat-header{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.chat-header:active{cursor:grabbing}
 @keyframes chatSlideUp{from{opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
 .chat-panel.show{display:flex}
 
@@ -1088,6 +1093,7 @@ var chatInitialized=false;
 var chatLoading=false;
 
 function openChat(){
+  if(fabDragInfo&&fabDragInfo.hasMoved())return;
   document.getElementById("chatFab").classList.add("hidden");
   document.getElementById("chatPanel").classList.add("show");
   if(!chatInitialized){
@@ -1098,6 +1104,7 @@ function openChat(){
 }
 
 function closeChat(){
+  if(panelDragInfo&&panelDragInfo.hasMoved())return;
   document.getElementById("chatPanel").classList.remove("show");
   document.getElementById("chatFab").classList.remove("hidden");
 }
@@ -1261,6 +1268,52 @@ document.getElementById("chatInput").addEventListener("input",function(){
   this.style.height="auto";
   this.style.height=Math.min(this.scrollHeight,80)+"px";
 });
+
+// ===== 拖动功能 =====
+function makeDraggable(el,handle){
+  var isDragging=false,startX=0,startY=0,origX=0,origY=0,hasMoved=false;
+  function onStart(e){
+    var touch=e.touches?e.touches[0]:e;
+    isDragging=true;hasMoved=false;
+    startX=touch.clientX;startY=touch.clientY;
+    var rect=el.getBoundingClientRect();
+    origX=rect.left;origY=rect.top;
+    el.classList.add("dragging");
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!isDragging)return;
+    var touch=e.touches?e.touches[0]:e;
+    var dx=touch.clientX-startX;
+    var dy=touch.clientY-startY;
+    if(Math.abs(dx)>3||Math.abs(dy)>3)hasMoved=true;
+    var newX=origX+dx;
+    var newY=origY+dy;
+    var maxX=window.innerWidth-el.offsetWidth;
+    var maxY=window.innerHeight-el.offsetHeight;
+    newX=Math.max(0,Math.min(newX,maxX));
+    newY=Math.max(0,Math.min(newY,maxY));
+    el.style.left=newX+"px";
+    el.style.top=newY+"px";
+    el.style.right="auto";
+    el.style.bottom="auto";
+    e.preventDefault();
+  }
+  function onEnd(){
+    isDragging=false;
+    el.classList.remove("dragging");
+  }
+  handle.addEventListener("mousedown",onStart);
+  handle.addEventListener("touchstart",onStart,{passive:false});
+  document.addEventListener("mousemove",onMove);
+  document.addEventListener("touchmove",onMove,{passive:false});
+  document.addEventListener("mouseup",onEnd);
+  document.addEventListener("touchend",onEnd);
+  return{hasMoved:function(){return hasMoved}};
+}
+
+var fabDragInfo=makeDraggable(document.getElementById("chatFab"),document.getElementById("chatFab"));
+var panelDragInfo=makeDraggable(document.getElementById("chatPanel"),document.querySelector(".chat-header"));
 </script>
 </body>
 </html>
