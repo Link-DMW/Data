@@ -14,7 +14,7 @@
 html{font-size:14px;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;background:#f0f2f5;overflow-x:hidden;color:#333;line-height:1.5}
 
-/* ===== 侧边�?===== */
+/* ===== 侧边栏 ===== */
 .sidebar{
   position:fixed;top:0;left:0;width:220px;height:100vh;
   background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
@@ -59,7 +59,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
 }
 .overlay.show{display:block}
 
-/* ===== 顶部�?===== */
+/* ===== 顶部栏 ===== */
 .topbar{
   position:-webkit-sticky;position:sticky;top:0;z-index:100;
   background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
@@ -106,7 +106,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica N
   width:3px;height:16px;background:#4a90d9;border-radius:2px;
 }
 
-/* ===== 图表�?===== */
+/* ===== 图表区 ===== */
 .chart-container{
   background:#fff;border-radius:10px;padding:14px 12px;
   box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:16px;
@@ -155,7 +155,7 @@ tbody tr:hover{background:#f9f9fb}
 .tag-green{background:#e0f5e0;color:#2e7d32}
 .tag-orange{background:#fff3e0;color:#ef6c00}
 
-/* ===== 店铺详情�?===== */
+/* ===== 店铺详情页 ===== */
 .store-detail{display:none;animation:fadeIn .3s ease}
 .store-detail.active{display:block}
 @keyframes fadeIn{from{opacity:0;-webkit-transform:translateY(8px);transform:translateY(8px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
@@ -169,7 +169,7 @@ tbody tr:hover{background:#f9f9fb}
 .detail-kpi-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
 .owner-field{font-size:16px;font-weight:600;color:#1a1a2e}
 
-/* ===== AI聊天�?===== */
+/* ===== AI聊天框 ===== */
 .chat-fab{
   position:fixed;right:16px;bottom:16px;z-index:500;
   width:52px;height:52px;border-radius:50%;
@@ -251,7 +251,7 @@ tbody tr:hover{background:#f9f9fb}
   .chat-fab{width:48px;height:48px;font-size:22px}
 }
 
-/* ===== 已处理按�?===== */
+/* ===== 已处理按钮 ===== */
 .handle-btn{
   display:inline-block;padding:2px 8px;border-radius:4px;
   font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;
@@ -265,7 +265,7 @@ tbody tr:hover{background:#f9f9fb}
 .handle-btn.done:hover{background:#d0ecd0}
 .handle-info{font-size:10px;color:#888;margin-top:2px}
 
-/* ===== 响应�?===== */
+/* ===== 响应式 ===== */
 @media(min-width:769px){
   .sidebar{-webkit-transform:translateX(0);transform:translateX(0)}
   .hamburger{display:none}
@@ -293,7 +293,7 @@ tbody tr:hover{background:#f9f9fb}
 </head>
 <body>
 
-<!-- 侧边�?-->
+<!-- 侧边栏 -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <h2>📊 店铺看板</h2>
@@ -310,19 +310,34 @@ tbody tr:hover{background:#f9f9fb}
 <!-- 遮罩 -->
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- 顶部�?-->
+<!-- 顶部栏 -->
 <header class="topbar">
   <button class="hamburger" onclick="toggleSidebar()" aria-label="菜单"><span></span></button>
   <h1>店铺指标看板</h1>
   <span class="topbar-date" id="topbarDate"></span>
 </header>
 
-<!-- 主内�?-->
+<!-- 主内容 -->
 <div class="main-content">
 
-<!-- ===== 总览�?===== -->
+<!-- ===== 总览页 ===== -->
 <div id="overviewPage">
   <div class="kpi-grid" id="kpiGrid"></div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+    <div class="chart-container" style="flex:1;min-width:280px">
+      <h3>POP支付金额占比（环形图）</h3>
+      <div class="chart-wrapper" style="height:200px"><canvas id="chartDoughnut"></canvas></div>
+    </div>
+    <div class="chart-container" style="flex:1;min-width:280px">
+      <h3>全托昨日销量占比（饼图）</h3>
+      <div class="chart-wrapper" style="height:200px"><canvas id="chartPie"></canvas></div>
+    </div>
+    <div class="chart-container" style="flex:1;min-width:280px">
+      <h3>全托昨日销量分布（极坐标图）</h3>
+      <div class="chart-wrapper" style="height:200px"><canvas id="chartPolar"></canvas></div>
+    </div>
+  </div>
 
   <div class="section-title">📊 图表分析</div>
 
@@ -333,7 +348,7 @@ tbody tr:hover{background:#f9f9fb}
   </div>
 
   <div class="chart-container">
-    <h3>曝光�?vs 访客�?/h3>
+    <h3>曝光量 vs 访客数</h3>
     <div class="chart-wrapper"><canvas id="chartExposureVisitors"></canvas></div>
     <div class="chart-tip">💡 点击柱状图可跳转到该店铺详情</div>
   </div>
@@ -345,7 +360,7 @@ tbody tr:hover{background:#f9f9fb}
   </div>
 
   <div class="chart-container">
-    <h3>全托昨日销量排�?/h3>
+    <h3>全托昨日销量排名</h3>
     <div class="chart-wrapper"><canvas id="chartFullSales"></canvas></div>
     <div class="chart-tip">💡 点击柱状图可跳转到该店铺详情</div>
   </div>
@@ -357,7 +372,7 @@ tbody tr:hover{background:#f9f9fb}
     </div>
   </div>
 
-  <div class="section-title">📋 全托管店铺明�?/div>
+  <div class="section-title">📋 全托管店铺明细</div>
   <div class="table-container">
     <div class="table-scroll">
       <table id="fullTable"></table>
@@ -365,7 +380,7 @@ tbody tr:hover{background:#f9f9fb}
   </div>
 </div>
 
-<!-- 店铺详情页容�?-->
+<!-- 店铺详情页容器 -->
 <div id="storeDetails"></div>
 
 </div><!-- /main-content -->
@@ -380,64 +395,64 @@ tbody tr:hover{background:#f9f9fb}
       <div class="chat-title">🤖 AI 运营助手</div>
       <div class="chat-sub">基于店铺数据智能问答</div>
     </div>
-    <button class="chat-close" onclick="closeChat()">�?/button>
+    <button class="chat-close" onclick="closeChat()">✕</button>
   </div>
   <div class="chat-messages" id="chatMessages"></div>
   <div class="chat-suggestions" id="chatSuggestions">
     <span class="chat-suggestion" onclick="sendQuickMsg('哪个店铺支付金额最高？')">哪个店铺支付金额最高？</span>
     <span class="chat-suggestion" onclick="sendQuickMsg('哪些店铺有纠纷需要处理？')">哪些店铺有纠纷？</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('广告投产比排�?)">广告投产比排�?/span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('全托昨日销量排�?)">全托昨日销量排�?/span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('广告投产比排名')">广告投产比排名</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('全托昨日销量排名')">全托昨日销量排名</span>
   </div>
   <div class="chat-input-area">
     <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
-    <button class="chat-send" id="chatSend" onclick="sendChatMsg()">发�?/button>
+    <button class="chat-send" id="chatSend" onclick="sendChatMsg()">发送</button>
   </div>
 </div>
 
 <script>
 // ===== 数据 =====
 var popData = [
-  {store:"profile",pay:1602.12,exposure:31276,visitors:1414,ctr:0.0452103849597135,orders:41,cvr:0.0276,adYest:116.28,ad7d:777.13,adOrdYest:4,adRoiYest:16.86,adRoi7d:20.22,balance:1353.9,dispute:2,disputeExpire:0,errOrder:0,manualOrder:6,mailErr:0,expired:1,owner:"Yasso",totalStock:791,inStock:237,inTransit:554},
-  {store:"Sara",pay:3990.79,exposure:37305,visitors:1859,ctr:0.0498324621364428,orders:68,cvr:0.0344,adYest:111.12,ad7d:954.75,adOrdYest:17,adRoiYest:47.37,adRoi7d:41.79,balance:1227.37,dispute:9,disputeExpire:1,errOrder:0,manualOrder:10,mailErr:0,expired:4,owner:"Yasso",totalStock:1127,inStock:367,inTransit:760},
-  {store:"8Li",pay:585.69,exposure:21501,visitors:934,ctr:0.0434398400074415,orders:11,cvr:0.0118,adYest:60,ad7d:423.76,adOrdYest:4,adRoiYest:15.09,adRoi7d:23.05,balance:114.41,dispute:0,disputeExpire:0,errOrder:1,manualOrder:2,mailErr:0,expired:1,owner:"Angelia",totalStock:803,inStock:426,inTransit:377},
-  {store:"Catherine",pay:682.93,exposure:19821,visitors:903,ctr:0.0455577417890117,orders:19,cvr:0.021,adYest:65,ad7d:425.38,adOrdYest:8,adRoiYest:29.22,adRoi7d:19.24,balance:83.28,dispute:2,disputeExpire:0,errOrder:2,manualOrder:4,mailErr:0,expired:5,owner:"Angelia",totalStock:678,inStock:429,inTransit:249},
-  {store:"Imice",pay:13.29,exposure:2155,visitors:153,ctr:0.0709976798143852,orders:1,cvr:0.0065,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0.01,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭�?,totalStock:31,inStock:14,inTransit:17},
-  {store:"nexusclick",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:2,manualOrder:0,mailErr:0,expired:0,owner:"吴铭�?,totalStock:null,inStock:null,inTransit:null},
-  {store:"NexusPOP",pay:0,exposure:1334,visitors:39,ctr:0.0292353823088456,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭�?,totalStock:3,inStock:0,inTransit:3},
-  {store:"nancytuo",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",totalStock:null,inStock:null,inTransit:null},
-  {store:"Linda",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",totalStock:null,inStock:null,inTransit:null},
-  {store:"bana",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",totalStock:null,inStock:null,inTransit:null},
-  {store:"Otmil",pay:543.13,exposure:8513,visitors:960,ctr:0.112768706683895,orders:20,cvr:0.0198,adYest:30,ad7d:239.64,adOrdYest:0,adRoiYest:0,adRoi7d:3.52,balance:0,dispute:1,disputeExpire:0,errOrder:2,manualOrder:0,mailErr:0,expired:0,owner:"Denny",totalStock:null,inStock:null,inTransit:null},
-  {store:"Ella",pay:33.97,exposure:1427,visitors:355,ctr:0.248773651016118,orders:1,cvr:0.0028,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:3,manualOrder:1,mailErr:0,expired:0,owner:"Aileen",totalStock:23,inStock:0,inTransit:23},
-  {store:"Eric",pay:108.74,exposure:2740,visitors:119,ctr:0.0434306569343066,orders:3,cvr:0.0252,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Yasso",totalStock:159,inStock:52,inTransit:107},
-  {store:"sam",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Angelia",totalStock:null,inStock:null,inTransit:null},
-  {store:"Elong",pay:415.56,exposure:3449,visitors:258,ctr:0.0748042910988692,orders:18,cvr:0.0271,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:1,mailErr:0,expired:1,owner:"Angelia",totalStock:421,inStock:190,inTransit:231},
-  {store:"Petery",pay:102.77,exposure:5871,visitors:359,ctr:0.0611480156702436,orders:2,cvr:0.0056,adYest:23.53,ad7d:124.9,adOrdYest:1,adRoiYest:10.03,adRoi7d:4.87,balance:314.59,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Noah",totalStock:136,inStock:97,inTransit:39},
-  {store:"NKtuo",pay:null,exposure:null,visitors:null,ctr:"#DIV/0!",orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:3,manualOrder:1,mailErr:0,expired:0,owner:"aauasga",totalStock:null,inStock:null,inTransit:null}
+  {store:"profile",pay:3183.54,exposure:26384,visitors:1268,ctr:0.04805942995755,orders:63,cvr:0.0434,adYest:106.63,ad7d:741,adOrdYest:3,adRoiYest:7.98,adRoi7d:16.33,balance:877.06,dispute:6,disputeExpire:0,errOrder:0,manualOrder:8,mailErr:0,expired:0,owner:"Yasso",deadStock:2},
+  {store:"Sara",pay:4589.79,exposure:31817,visitors:1715,ctr:0.0539020020743628,orders:75,cvr:0.0414,adYest:111.46,ad7d:900.24,adOrdYest:7,adRoiYest:41.3,adRoi7d:39.53,balance:949.99,dispute:8,disputeExpire:0,errOrder:3,manualOrder:6,mailErr:0,expired:5,owner:"Yasso",deadStock:5},
+  {store:"8Li",pay:792.11,exposure:18867,visitors:832,ctr:0.0440981608098797,orders:18,cvr:0.0204,adYest:49.77,ad7d:409.53,adOrdYest:4,adRoiYest:22.53,adRoi7d:24.67,balance:309.99,dispute:0,disputeExpire:0,errOrder:1,manualOrder:3,mailErr:0,expired:1,owner:"Angelia",deadStock:8},
+  {store:"Catherine",pay:783.7,exposure:17333,visitors:826,ctr:0.0476547625915883,orders:19,cvr:0.0218,adYest:58,ad7d:424.42,adOrdYest:1,adRoiYest:3.07,adRoi7d:14.88,balance:275.38,dispute:1,disputeExpire:0,errOrder:2,manualOrder:4,mailErr:0,expired:5,owner:"Angelia",deadStock:9},
+  {store:"Imice",pay:0,exposure:2460,visitors:213,ctr:0.0865853658536585,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧",deadStock:null},
+  {store:"nexusclick",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:3,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧",deadStock:null},
+  {store:"NexusPOP",pay:0,exposure:1088,visitors:35,ctr:0.0321691176470588,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧",deadStock:0},
+  {store:"nancytuo",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:null},
+  {store:"Linda",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:3,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:null},
+  {store:"bana",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:null},
+  {store:"Otmil",pay:543.13,exposure:8513,visitors:960,ctr:0.112768706683895,orders:20,cvr:0.0198,adYest:30,ad7d:239.64,adOrdYest:0,adRoiYest:0,adRoi7d:3.52,balance:0,dispute:1,disputeExpire:0,errOrder:6,manualOrder:0,mailErr:0,expired:0,owner:"Denny",deadStock:6},
+  {store:"Ella",pay:0,exposure:1789,visitors:450,ctr:0.251537171604248,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:1,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:0},
+  {store:"Eric",pay:340.06,exposure:2424,visitors:133,ctr:0.0548679867986799,orders:10,cvr:0.0526,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:0,owner:"Yasso",deadStock:4},
+  {store:"sam",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Angelia",deadStock:null},
+  {store:"Elong",pay:102.49,exposure:3260,visitors:247,ctr:0.0757668711656442,orders:6,cvr:0.0243,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:1,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:1,owner:"Angelia",deadStock:1},
+  {store:"Petery",pay:294.02,exposure:6391,visitors:377,ctr:0.0589892035675168,orders:8,cvr:0.0212,adYest:21.4,ad7d:130.84,adOrdYest:1,adRoiYest:7.51,adRoi7d:3.95,balance:260.28,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Noah",deadStock:1},
+  {store:"NKtuo",pay:null,exposure:null,visitors:null,ctr:"#DIV/0!",orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"aauasga",deadStock:null}
 ];
 
 var fullData = [
-  {store:"profile",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"Yasso",totalStock:null,inStock:null,inTransit:null},
-  {store:"Sara",views:603,visitors:309,cvr:0.0712,salesYest:25,sales7d:126,dispute:1,disputeExpire:0,owner:"Yasso",totalStock:690,inStock:208,inTransit:482},
-  {store:"8Li",views:271,visitors:144,cvr:0.0417,salesYest:10,sales7d:58,dispute:1,disputeExpire:0,owner:"Angelia",totalStock:206,inStock:77,inTransit:129},
-  {store:"Catherine",views:275,visitors:149,cvr:0,salesYest:5,sales7d:65,dispute:0,disputeExpire:0,owner:"Angelia",totalStock:270,inStock:164,inTransit:106},
-  {store:"Imice",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭�?,totalStock:null,inStock:null,inTransit:null},
-  {store:"nexusclick",views:3909,visitors:2015,cvr:0.0273,salesYest:59,sales7d:413,dispute:1,disputeExpire:0,owner:"吴铭�?,totalStock:1847,inStock:836,inTransit:1011},
-  {store:"NexusPOP",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭�?,totalStock:null,inStock:null,inTransit:null},
-  {store:"nancytuo",views:1387,visitors:582,cvr:0.0189,salesYest:24,sales7d:168,dispute:4,disputeExpire:1,owner:"Aileen",totalStock:null,inStock:null,inTransit:null},
-  {store:"Linda",views:818,visitors:334,cvr:0.0299,salesYest:13,sales7d:75,dispute:3,disputeExpire:2,owner:"Aileen",totalStock:232,inStock:102,inTransit:130},
-  {store:"bana",views:560,visitors:269,cvr:0.0112,salesYest:7,sales7d:56,dispute:3,disputeExpire:1,owner:"Aileen",totalStock:218,inStock:72,inTransit:146},
-  {store:"Otmil",views:1463,visitors:647,cvr:0.0124,salesYest:20,sales7d:107,dispute:3,disputeExpire:0,owner:"Denny",totalStock:null,inStock:null,inTransit:null},
-  {store:"Ella",views:597,visitors:271,cvr:0.0148,salesYest:5,sales7d:39,dispute:0,disputeExpire:0,owner:"Aileen",totalStock:96,inStock:34,inTransit:62},
-  {store:"Eric",views:107,visitors:57,cvr:0.0175,salesYest:1,sales7d:25,dispute:0,disputeExpire:0,owner:"Yasso",totalStock:128,inStock:57,inTransit:71},
-  {store:"sam",views:58,visitors:31,cvr:0,salesYest:2,sales7d:19,dispute:0,disputeExpire:0,owner:"Angelia",totalStock:85,inStock:66,inTransit:19},
-  {store:"Elong",views:380,visitors:188,cvr:0.0213,salesYest:7,sales7d:40,dispute:0,disputeExpire:0,owner:"Angelia",totalStock:1366,inStock:13,inTransit:1353},
-  {store:"Petery",views:25,visitors:18,cvr:0,salesYest:0,sales7d:13,dispute:0,disputeExpire:0,owner:"Noah",totalStock:0,inStock:0,inTransit:0},
-  {store:"NKtuo",views:2776,visitors:1270,cvr:0.0764,salesYest:102,sales7d:657,dispute:0,disputeExpire:0,owner:"aauasga",totalStock:2731,inStock:1733,inTransit:998}
+  {store:"profile",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"Yasso",deadStock:null},
+  {store:"Sara",views:512,visitors:297,cvr:0.0337,salesYest:11,sales7d:116,dispute:1,disputeExpire:0,owner:"Yasso",deadStock:5},
+  {store:"8Li",views:242,visitors:128,cvr:0.0313,salesYest:7,sales7d:56,dispute:1,disputeExpire:0,owner:"Angelia",deadStock:3},
+  {store:"Catherine",views:404,visitors:302,cvr:0.0099,salesYest:11,sales7d:61,dispute:0,disputeExpire:0,owner:"Angelia",deadStock:2},
+  {store:"Imice",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭慧",deadStock:null},
+  {store:"nexusclick",views:3909,visitors:2015,cvr:0.0273,salesYest:50,sales7d:365,dispute:1,disputeExpire:0,owner:"吴铭慧",deadStock:5},
+  {store:"NexusPOP",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭慧",deadStock:null},
+  {store:"nancytuo",views:1387,visitors:582,cvr:0.0189,salesYest:0,sales7d:152,dispute:4,disputeExpire:1,owner:"Aileen",deadStock:2},
+  {store:"Linda",views:669,visitors:304,cvr:0.0099,salesYest:9,sales7d:83,dispute:5,disputeExpire:1,owner:"Aileen",deadStock:4},
+  {store:"bana",views:535,visitors:258,cvr:0.0388,salesYest:21,sales7d:67,dispute:3,disputeExpire:0,owner:"Aileen",deadStock:3},
+  {store:"Otmil",views:1463,visitors:647,cvr:0.0124,salesYest:17,sales7d:100,dispute:3,disputeExpire:0,owner:"Denny",deadStock:4},
+  {store:"Ella",views:820,visitors:347,cvr:0.0115,salesYest:4,sales7d:37,dispute:1,disputeExpire:0,owner:"Aileen",deadStock:0},
+  {store:"Eric",views:94,visitors:54,cvr:0.0556,salesYest:5,sales7d:19,dispute:1,disputeExpire:0,owner:"Yasso",deadStock:1},
+  {store:"sam",views:86,visitors:45,cvr:0.0222,salesYest:2,sales7d:14,dispute:0,disputeExpire:0,owner:"Angelia",deadStock:0},
+  {store:"Elong",views:345,visitors:166,cvr:0.006,salesYest:0,sales7d:35,dispute:1,disputeExpire:0,owner:"Angelia",deadStock:1},
+  {store:"Petery",views:15,visitors:10,cvr:0,salesYest:2,sales7d:11,dispute:0,disputeExpire:0,owner:"Noah",deadStock:0},
+  {store:"NKtuo",views:2776,visitors:1270,cvr:0.0764,salesYest:80,sales7d:627,dispute:0,disputeExpire:0,owner:"aauasga",deadStock:7}
 ];
 
-var reportDate = "2026-08-11";
+var reportDate = "2026-08-13";
 
 // ===== 后端API配置 =====
 var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
@@ -452,7 +467,7 @@ function loadHandledStatus(){
 function handleBtnHtml(store,type,val){
   if(val<=0)return "";
   var key=store+"|"+type+"|"+reportDate;
-  return ' <span class="handle-btn" id="btn-'+key+'" onclick="toggleHandle(\''+store+'\',\''+type+'\')">已处�?/span>';
+  return ' <span class="handle-btn" id="btn-'+key+'" onclick="toggleHandle(\''+store+'\',\''+type+'\')">已处理</span>';
 }
 
 function singleHandleBtn(store,source,context){
@@ -476,7 +491,7 @@ function singleHandleBtn(store,source,context){
   var ctx=context==="detail"?"detail-":"";
   var key=store+"|all|"+reportDate;
   var btnId="btn-"+ctx+prefix+"-"+key;
-  return ' <span class="handle-btn" id="'+btnId+'" onclick="event.preventDefault();event.stopPropagation();toggleAllHandle(\''+store+'\',\''+prefix+'\',\''+ctx+'\')" style="display:inline-block;padding:3px 10px;font-size:12px;border:1px solid #4a90d9;border-radius:6px;background:#4a90d9;color:#fff;font-weight:600;cursor:pointer;margin-left:6px;white-space:nowrap">🖱�?标记已处�?/span>';
+  return ' <span class="handle-btn" id="'+btnId+'" onclick="event.preventDefault();event.stopPropagation();toggleAllHandle(\''+store+'\',\''+prefix+'\',\''+ctx+'\')" style="display:inline-block;padding:3px 10px;font-size:12px;border:1px solid #4a90d9;border-radius:6px;background:#4a90d9;color:#fff;font-weight:600;cursor:pointer;margin-left:6px;white-space:nowrap">🖱️ 标记已处理</span>';
 }
 
 function renderSingleBtnStatus(){
@@ -487,7 +502,7 @@ function renderSingleBtnStatus(){
     btnIds.forEach(function(id){
       var btn=document.getElementById(id);
       if(btn&&info.handled){
-        btn.textContent="�?已处�?;
+        btn.textContent="✓ 已处理";
         btn.style.background="#2e7d32";
         btn.style.borderColor="#2e7d32";
       }
@@ -504,7 +519,7 @@ function toggleAllHandle(store,prefix,ctx){
   fetch(API_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({key:key,handled:!isHandled,handler:navigator.userAgent.includes("Mobile")?"移动�?:"PC�?})
+    body:JSON.stringify({key:key,handled:!isHandled,handler:navigator.userAgent.includes("Mobile")?"移动端":"PC端"})
   }).then(function(r){return r.json()}).then(function(r){
     if(r.success){
       handledStatus=r.data||{};
@@ -512,7 +527,7 @@ function toggleAllHandle(store,prefix,ctx){
       if(btn){btn.style.opacity=1;}
     }
   }).catch(function(e){
-    if(btn){btn.textContent="标记已处�?;btn.style.opacity=1;}
+    if(btn){btn.textContent="标记已处理";btn.style.opacity=1;}
     console.log("toggle failed",e);
   });
 }
@@ -524,7 +539,7 @@ function renderHandledStatus(){
     if(btn&&info.handled){
       btn.textContent="✓已处理";
       btn.classList.add("done");
-      btn.setAttribute("title","处理�?"+info.handler+" 时间:"+info.time);
+      btn.setAttribute("title","处理人:"+info.handler+" 时间:"+info.time);
     }
   });
   renderSingleBtnStatus();
@@ -538,7 +553,7 @@ function toggleHandle(store,type){
   fetch(API_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({key:key,handled:!isHandled,handler:navigator.userAgent.includes("Mobile")?"移动�?:"PC�?})
+    body:JSON.stringify({key:key,handled:!isHandled,handler:navigator.userAgent.includes("Mobile")?"移动端":"PC端"})
   }).then(function(r){return r.json()}).then(function(r){
     if(r.success){
       handledStatus=r.data||{};
@@ -546,7 +561,7 @@ function toggleHandle(store,type){
       if(btn){btn.style.opacity=1;}
     }
   }).catch(function(e){
-    if(btn){btn.textContent="已处�?;btn.style.opacity=1;}
+    if(btn){btn.textContent="已处理";btn.style.opacity=1;}
     console.log("toggle failed",e);
   });
 }
@@ -629,10 +644,10 @@ function rankBadge(rank){
 document.getElementById("sidebarDate").textContent=reportDate;
 document.getElementById("topbarDate").textContent=reportDate;
 
-// ===== 合并店铺列表（保持POP顺序�?=====
+// ===== 合并店铺列表（保持POP顺序） =====
 var allStores=popData.map(function(d){return d.store});
 
-// ===== 侧边栏店铺导�?=====
+// ===== 侧边栏店铺导航 =====
 (function(){
   var nav=document.getElementById("storeNav");
   var html="";
@@ -648,23 +663,19 @@ var allStores=popData.map(function(d){return d.store});
   nav.innerHTML=html;
 })();
 
-// ===== KPI汇�?=====
-var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0,popStockTotal=0,fullStockTotal=0,popInStockTotal=0,popInTransitTotal=0,fullInStockTotal=0,fullInTransitTotal=0;
+// ===== KPI汇总 =====
+var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0,popDeadStockTotal=0,fullDeadStockTotal=0;
 popData.forEach(function(d){
   if(d.pay!==null)popPayTotal+=num(d.pay);
   if(d.orders!==null)popOrderTotal+=num(d.orders);
   if(d.adYest!==null)adYestTotal+=num(d.adYest);
   if(d.balance!==null)balanceTotal+=num(d.balance);
-  if(d.totalStock!==null)popStockTotal+=num(d.totalStock);
-  if(d.inStock!==null)popInStockTotal+=num(d.inStock);
-  if(d.inTransit!==null)popInTransitTotal+=num(d.inTransit);
+  if(d.deadStock!==null)popDeadStockTotal+=num(d.deadStock);
 });
 fullData.forEach(function(d){
   if(d.salesYest!==null)fullYestTotal+=num(d.salesYest);
   if(d.sales7d!==null)full7dTotal+=num(d.sales7d);
-  if(d.totalStock!==null)fullStockTotal+=num(d.totalStock);
-  if(d.inStock!==null)fullInStockTotal+=num(d.inStock);
-  if(d.inTransit!==null)fullInTransitTotal+=num(d.inTransit);
+  if(d.deadStock!==null)fullDeadStockTotal+=num(d.deadStock);
 });
 
 (function(){
@@ -683,40 +694,24 @@ fullData.forEach(function(d){
     '<div class="kpi-value">'+fmtMoney(adYestTotal)+'</div>'+
   '</div>'+
   '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
-    '<div class="kpi-label">广告账号总余�?/div>'+
+    '<div class="kpi-label">广告账号总余额</div>'+
     '<div class="kpi-value">'+fmtMoney(balanceTotal)+'</div>'+
   '</div>'+
   '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托昨日销�?/div>'+
+    '<div class="kpi-label">全托昨日销量</div>'+
     '<div class="kpi-value">'+fmtInt(fullYestTotal)+'</div>'+
   '</div>'+
   '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托7日销�?/div>'+
+    '<div class="kpi-label">全托7日销量</div>'+
     '<div class="kpi-value">'+fmtInt(full7dTotal)+'</div>'+
   '</div>'+
   '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
-    '<div class="kpi-label">POP总库�?/div>'+
-    '<div class="kpi-value">'+fmtInt(popStockTotal)+'</div>'+
+    '<div class="kpi-label">POP仓发不动销品</div>'+
+    '<div class="kpi-value">'+fmtInt(popDeadStockTotal)+'</div>'+
   '</div>'+
   '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托总库�?/div>'+
-    '<div class="kpi-value">'+fmtInt(fullStockTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
-    '<div class="kpi-label">POP在仓库存</div>'+
-    '<div class="kpi-value">'+fmtInt(popInStockTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
-    '<div class="kpi-label">POP在途库�?/div>'+
-    '<div class="kpi-value">'+fmtInt(popInTransitTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托在仓库存</div>'+
-    '<div class="kpi-value">'+fmtInt(fullInStockTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托在途库�?/div>'+
-    '<div class="kpi-value">'+fmtInt(fullInTransitTotal)+'</div>'+
+    '<div class="kpi-label">全托仓发不动销品</div>'+
+    '<div class="kpi-value">'+fmtInt(fullDeadStockTotal)+'</div>'+
   '</div>';
 })();
 
@@ -726,9 +721,9 @@ fullData.forEach(function(d){
   var noPay=[];
   var rows=sorted.concat(noPay);
   var html="<thead><tr>"+
-    "<th>排名</th><th>店铺</th><th>支付金额</th><th>曝光�?/th><th>访客�?/th>"+
-    "<th>点击�?/th><th>订单</th><th>转化�?/th><th>7天广�?/th><th>投产</th>"+
-    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>总库�?/th><th>在仓库存</th><th>在途库�?/th><th>负责�?/th><th>异常是否处理</th>"+
+    "<th>排名</th><th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th>"+
+    "<th>点击率</th><th>订单</th><th>转化率</th><th>7天广告</th><th>投产</th>"+
+    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>仓发不动销</th><th>负责人</th><th>异常是否处理</th>"+
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
@@ -760,9 +755,7 @@ fullData.forEach(function(d){
       "<td>"+disputeTag(d.manualOrder)+"</td>"+
       "<td>"+disputeTag(d.mailErr)+"</td>"+
       "<td>"+disputeTag(d.expired)+"</td>"+
-      "<td>"+(d.totalStock!==null?fmtInt(d.totalStock):"")+"</td>"+
-      "<td>"+(d.inStock!==null?fmtInt(d.inStock):"")+"</td>"+
-      "<td>"+(d.inTransit!==null?fmtInt(d.inTransit):"")+"</td>"+
+      "<td>"+(d.deadStock!==null?disputeTag(d.deadStock):"")+"</td>"+
       "<td>"+owner+"</td>"+
       "<td>"+singleHandleBtn(d.store)+"</td>"+
     "</tr>";
@@ -771,14 +764,14 @@ fullData.forEach(function(d){
   document.getElementById("popTable").innerHTML=html;
 })();
 
-// ===== 全托管明细表�?=====
+// ===== 全托管明细表格 =====
 (function(){
   var sorted=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
   var noSales=[];
   var rows=sorted.concat(noSales);
   var html="<thead><tr>"+
-    "<th>排名</th><th>店铺</th><th>浏览�?/th><th>访客�?/th><th>转化�?/th>"+
-    "<th>昨日销�?/th><th>7日销�?/th><th>纠纷</th><th>到期</th><th>总库�?/th><th>在仓库存</th><th>在途库�?/th><th>负责�?/th><th>异常是否处理</th>"+
+    "<th>排名</th><th>店铺</th><th>浏览量</th><th>访客数</th><th>转化率</th>"+
+    "<th>昨日销量</th><th>7日销量</th><th>纠纷</th><th>到期</th><th>仓发不动销</th><th>负责人</th><th>异常是否处理</th>"+
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
@@ -798,9 +791,7 @@ fullData.forEach(function(d){
       "<td>"+s7+"</td>"+
       "<td>"+disputeTagTri(d.dispute)+"</td>"+
       "<td>"+disputeTagTri(d.disputeExpire)+"</td>"+
-      "<td>"+(d.totalStock!==null?fmtInt(d.totalStock):"")+"</td>"+
-      "<td>"+(d.inStock!==null?fmtInt(d.inStock):"")+"</td>"+
-      "<td>"+(d.inTransit!==null?fmtInt(d.inTransit):"")+"</td>"+
+      "<td>"+(d.deadStock!==null?disputeTag(d.deadStock):"")+"</td>"+
       "<td>"+owner+"</td>"+
       "<td>"+singleHandleBtn(d.store,"full")+"</td>"+
     "</tr>";
@@ -809,7 +800,7 @@ fullData.forEach(function(d){
   document.getElementById("fullTable").innerHTML=html;
 })();
 
-// ===== 店铺详情�?=====
+// ===== 店铺详情页 =====
 (function(){
   var container=document.getElementById("storeDetails");
   var html="";
@@ -820,14 +811,28 @@ fullData.forEach(function(d){
     var hasFull=f&&f.salesYest!==null;
     html+='<div class="store-detail" id="store-'+s+'">';
     html+='<h2>📊 '+s+' 店铺详情</h2>';
+    // 雷达图放在顶部
+    var radarData=null;
+    if(hasPop){
+      radarData={labels:["支付金额","订单数","曝光量","访客数","转化率"],vals:[num(p.pay),num(p.orders),num(p.exposure),num(p.visitors),num(p.cvr)]};
+    }else if(hasFull){
+      radarData={labels:["浏览量","访客数","转化率","昨日销量","七日销量"],vals:[num(f.views),num(f.visitors),num(f.cvr),num(f.salesYest),num(f.sales7d)]};
+    }
+    if(radarData){
+      html+='<div class="chart-container" style="margin-bottom:16px">';
+      html+='<h3 style="font-size:14px;font-weight:600;margin-bottom:8px">📊 店铺多维度雷达图</h3>';
+      html+='<div class="chart-wrapper" style="height:260px"><canvas id="radar-'+s+'"></canvas></div>';
+      html+='</div>';
+    }
     if(hasPop){
       html+='<h3>💰 POP 数据</h3>';
       html+='<div class="detail-kpi-grid">';
-      var popLabels=["支付金额","曝光�?,"访客�?,"点击�?,"订单�?,"转化�?,"昨天广告花费","7天广告花�?,"昨天广告订单","昨天广告投产","7天广告投�?,"广告账户余额","等待处理纠纷�?,"纠纷剩余一天内到期","商品错误订单","人工审核订单","邮寄方式错误","过期订单"];
+      var popLabels=["支付金额","曝光量","访客数","点击率","订单数","转化率","昨天广告花费","7天广告花费","昨天广告订单","昨天广告投产","7天广告投产","广告账户余额","等待处理纠纷数","纠纷剩余一天内到期","商品错误订单","人工审核订单","邮寄方式错误","过期订单","仓发不动销品"];
       var popVals=[
         fmtMoney(p.pay),fmtInt(p.exposure),fmtInt(p.visitors),fmtPct(p.ctr),fmtInt(p.orders),fmtPct(p.cvr),
         fmtMoney(p.adYest),fmtMoney(p.ad7d),fmtInt(p.adOrdYest),fmtNum(p.adRoiYest,2),fmtNum(p.adRoi7d,2),fmtMoney(p.balance),
-        num(p.dispute),num(p.disputeExpire),num(p.errOrder),num(p.manualOrder),num(p.mailErr),num(p.expired)
+        num(p.dispute),num(p.disputeExpire),num(p.errOrder),num(p.manualOrder),num(p.mailErr),num(p.expired),
+        p.deadStock!==null?num(p.deadStock):""
       ];
       for(var i=0;i<popLabels.length;i++){
         var valColor="";
@@ -847,18 +852,18 @@ fullData.forEach(function(d){
     }
 
     if(hasFull){
-      html+='<h3>🏪 全托管数�?/h3>';
+      html+='<h3>🏪 全托管数据</h3>';
       html+='<div class="detail-kpi-grid">';
-      var fLabels=["浏览�?,"访客�?,"转化�?,"全托昨日销�?,"全托七日销�?,"等待处理纠纷�?,"纠纷剩余一天内到期","负责�?];
+      var fLabels=["浏览量","访客数","转化率","全托昨日销量","全托七日销量","等待处理纠纷数","纠纷剩余一天内到期","仓发不动销品","负责人"];
       var fVals=[
         fmtInt(f.views),fmtInt(f.visitors),fmtPct(f.cvr),fmtInt(f.salesYest),fmtInt(f.sales7d),
-        num(f.dispute),num(f.disputeExpire),f.owner||"�?
+        num(f.dispute),num(f.disputeExpire),f.deadStock!==null?num(f.deadStock):"",f.owner||""
       ];
       for(var j=0;j<fLabels.length;j++){
         var fc="";
         if(j===5){fc=num(f.dispute)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
         if(j===6){fc=num(f.disputeExpire)===1?'style="color:#ef6c00"':num(f.disputeExpire)>1?'style="color:#d32f2f"':'style="color:#2e7d32"';}
-        var isFOwner=j===7;
+        var isFOwner=j===8;
         html+='<div class="detail-kpi-card">'+
           '<div class="detail-kpi-label">'+fLabels[j]+'</div>'+
           (isFOwner?'<div class="detail-kpi-value owner-field" '+fc+'>'+fVals[j]+'</div>':
@@ -868,16 +873,17 @@ fullData.forEach(function(d){
       html+='</div>';
     }
 
-    // 负责�?异常处理卡片（始终显示，放在最底部�?    var ownerVal=(p&&p.owner)||(f&&f.owner)||"";
+    // 负责人+异常处理卡片（始终显示，放在最底部）
+    var ownerVal=(p&&p.owner)||(f&&f.owner)||"";
     html+='<div class="detail-kpi-grid" style="grid-template-columns:1fr">';
     html+='<div class="detail-kpi-card" style="border:2px solid #4a90d9">';
     html+='<div class="detail-kpi-label" style="display:flex;align-items:center;justify-content:space-between">';
-    html+='<span>负责�?/span>';
+    html+='<span>负责人</span>';
     var detailBtn=singleHandleBtn(s,hasPop?"pop":"full","detail");
     if(detailBtn){
-      html+='<span class="detail-kpi-label" style="font-weight:normal">⚠️ 该店铺存在纠纷或者订单异常，点击标记已处�?/span>';
+      html+='<span class="detail-kpi-label" style="font-weight:normal">⚠️ 该店铺存在纠纷或者订单异常，点击标记已处理</span>';
     }else{
-      html+='<span class="detail-kpi-label" style="font-weight:normal;color:#2e7d32">�?该店铺暂无异�?/span>';
+      html+='<span class="detail-kpi-label" style="font-weight:normal;color:#2e7d32">✓ 该店铺暂无异常</span>';
     }
     html+='</div>';
     html+='<div class="detail-kpi-value owner-field" style="display:flex;align-items:center;justify-content:space-between">';
@@ -885,16 +891,45 @@ fullData.forEach(function(d){
     if(detailBtn){
       html+=detailBtn;
     }else{
-      html+='<span style="color:#2e7d32;font-size:14px">�?无异�?/span>';
+      html+='<span style="color:#2e7d32;font-size:14px">✓ 无异常</span>';
     }
     html+='</div></div></div>';
 
     if(!hasPop&&!hasFull){
-      html+='<p style="color:#888;padding:20px 0">该店铺暂无详细数�?/p>';
+      html+='<p style="color:#888;padding:20px 0">该店铺暂无详细数据</p>';
     }
     html+='</div>';
   });
   container.innerHTML=html;
+
+  // 为每个有数据的店铺创建雷达图
+  allStores.forEach(function(s){
+    var p=popData.find(function(d){return d.store===s});
+    var f=fullData.find(function(d){return d.store===s});
+    var hasPop=p&&p.pay!==null;
+    var hasFull=f&&f.salesYest!==null;
+    var canvas=document.getElementById("radar-"+s);
+    if(!canvas)return;
+    var ctx=canvas.getContext("2d");
+    var labels,vals,maxVals;
+    if(hasPop){
+      var allPop=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0});
+      labels=["支付金额","订单数","曝光量","访客数","转化率"];
+      vals=[num(p.pay),num(p.orders),num(p.exposure),num(p.visitors),num(p.cvr)];
+      maxVals=[Math.max.apply(null,allPop.map(function(d){return num(d.pay)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.orders)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.exposure)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.visitors)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.cvr)}))||1];
+    }else if(hasFull){
+      var allFull=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0});
+      labels=["浏览量","访客数","转化率","昨日销量","七日销量"];
+      vals=[num(f.views),num(f.visitors),num(f.cvr),num(f.salesYest),num(f.sales7d)];
+      maxVals=[Math.max.apply(null,allFull.map(function(d){return num(d.views)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.visitors)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.cvr)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.salesYest)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.sales7d)}))||1];
+    }else{return;}
+    var data=vals.map(function(v,i){return Math.round(v/maxVals[i]*100)});
+    new Chart(ctx,{
+      type:"radar",
+      data:{labels:labels,datasets:[{label:s,data:data,borderColor:"#4a90d9",backgroundColor:"rgba(74,144,217,0.15)",borderWidth:2,pointRadius:3,pointBackgroundColor:"#4a90d9"}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:25,font:{size:9},backdropColor:"transparent"},pointLabels:{font:{size:11}}}}}
+    });
+  });
 })();
 
 // ===== 图表 =====
@@ -932,7 +967,8 @@ function roiColor(val){
   });
 })();
 
-// 图表2: 曝光�?vs 访客�?(function(){
+// 图表2: 曝光量 vs 访客数
+(function(){
   var sorted=popData.filter(function(d){return d.pay!==null}).sort(function(a,b){return num(b.pay)-num(a.pay)});
   var labels=sorted.map(function(d){return d.store});
   var exposure=sorted.map(function(d){return num(d.exposure)});
@@ -941,8 +977,8 @@ function roiColor(val){
   charts.expVis=new Chart(ctx,{
     type:"bar",
     data:{labels:labels,datasets:[
-      {label:"曝光�?,data:exposure,backgroundColor:"#4a90d9",borderRadius:4},
-      {label:"访客�?,data:visitors,backgroundColor:"#ff9800",borderRadius:4}
+      {label:"曝光量",data:exposure,backgroundColor:"#4a90d9",borderRadius:4},
+      {label:"访客数",data:visitors,backgroundColor:"#ff9800",borderRadius:4}
     ]},
     options:{
       responsive:true,maintainAspectRatio:false,
@@ -953,7 +989,7 @@ function roiColor(val){
   });
 })();
 
-// 图表3: 广告投产�?7�?
+// 图表3: 广告投产比(7天)
 (function(){
   var sorted=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0}).sort(function(a,b){return num(b.adRoi7d)-num(a.adRoi7d)});
   var labels=sorted.map(function(d){return d.store});
@@ -962,7 +998,7 @@ function roiColor(val){
   var ctx=document.getElementById("chartAdROI").getContext("2d");
   charts.adRoi=new Chart(ctx,{
     type:"bar",
-    data:{labels:labels,datasets:[{label:"7天广告投�?,data:data,backgroundColor:colors,borderRadius:4}]},
+    data:{labels:labels,datasets:[{label:"7天广告投产",data:data,backgroundColor:colors,borderRadius:4}]},
     options:{
       responsive:true,maintainAspectRatio:false,
       onClick:chartClickHandler,
@@ -972,14 +1008,15 @@ function roiColor(val){
   });
 })();
 
-// 图表4: 全托昨日销量排�?(function(){
+// 图表4: 全托昨日销量排名
+(function(){
   var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
   var labels=sorted.map(function(d){return d.store});
   var data=sorted.map(function(d){return num(d.salesYest)});
   var ctx=document.getElementById("chartFullSales").getContext("2d");
   charts.fullSales=new Chart(ctx,{
     type:"bar",
-    data:{labels:labels,datasets:[{label:"昨日销�?,data:data,backgroundColor:"#7b68ee",borderRadius:4}]},
+    data:{labels:labels,datasets:[{label:"昨日销量",data:data,backgroundColor:"#7b68ee",borderRadius:4}]},
     options:{
       responsive:true,maintainAspectRatio:false,
       onClick:chartClickHandler,
@@ -1061,6 +1098,32 @@ fullTbl.closest(".table-container").id="fullTableSection";
 // 初始显示总览
 showOverview();
 
+// 三图并列: 环形图、饼图、极坐标图
+(function(){
+  var sorted=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0}).sort(function(a,b){return num(b.pay)-num(a.pay)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.pay)});
+  var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043"];
+  var ctx=document.getElementById("chartDoughnut").getContext("2d");
+  charts.doughnut=new Chart(ctx,{type:"doughnut",data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(c){return c.label+": "+fmtMoney(c.raw)}}}},cutout:"50%"}});
+})();
+(function(){
+  var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.salesYest)});
+  var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043","#26a69a","#ab47bc"];
+  var ctx=document.getElementById("chartPie").getContext("2d");
+  charts.pie=new Chart(ctx,{type:"pie",data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:10},boxWidth:10}}}}});
+})();
+(function(){
+  var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.salesYest)});
+  var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043","#26a69a","#ab47bc"];
+  var ctx=document.getElementById("chartPolar").getContext("2d");
+  charts.polar=new Chart(ctx,{type:"polarArea",data:{labels:labels,datasets:[{data:data,backgroundColor:colors.map(function(c){return c+"99"}),borderColor:colors,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:9},boxWidth:8}}},scales:{r:{beginAtZero:true,ticks:{font:{size:8}}}}}});
+})();
+
 // URL hash 路由
 if(window.location.hash&&window.location.hash.indexOf("store-")!==-1){
   var hashStore=window.location.hash.replace("#store-","");
@@ -1079,7 +1142,8 @@ window.addEventListener("hashchange",function(){
   }
 });
 
-// 加载已处理状�?loadHandledStatus();
+// 加载已处理状态
+loadHandledStatus();
 
 // ===== AI 聊天功能 =====
 var DEEPSEEK_API_KEY=["sk-566fba","6f61364","6568","6afd","4dee","580e","531"].join("");
@@ -1117,60 +1181,63 @@ function addChatMsg(text,role){
 
 function buildDataContext(){
   var lines=[];
-  lines.push("当前日期�?+reportDate);
+  lines.push("当前日期："+reportDate);
   lines.push("");
   // 预计算POP排名
   var popRanked=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
-  lines.push("【POP店铺数据（按支付金额降序）�?);
+  lines.push("【POP店铺数据（按支付金额降序）】");
   popRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 支付¥"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击�?+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化�?+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告�?+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投�?+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责�?"+(d.owner||"�?));
+    lines.push("#"+(i+1)+" "+d.store+": 支付¥"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
   });
-  // 无POP数据的店�?  var popNoData=popData.filter(function(d){return d.pay===null});
+  // 无POP数据的店铺
+  var popNoData=popData.filter(function(d){return d.pay===null});
   if(popNoData.length>0){
     lines.push("");
-    lines.push("【仅纠纷数据的POP店铺（无POP业务）�?);
+    lines.push("【仅纠纷数据的POP店铺（无POP业务）】");
     popNoData.forEach(function(d){
-      lines.push(d.store+": 纠纷"+num(d.dispute)+", 负责�?"+(d.owner||"�?));
+      lines.push(d.store+": 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
     });
   }
   lines.push("");
   // 预计算全托管排名
   var fullRanked=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
-  lines.push("【全托管店铺数据（按昨日销量降序）�?);
+  lines.push("【全托管店铺数据（按昨日销量降序）】");
   fullRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化�?+fmtPct(d.cvr)+", 昨日销�?+num(d.salesYest)+", 7日销�?+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责�?"+(d.owner||"�?));
+    lines.push("#"+(i+1)+" "+d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
   });
   lines.push("");
-  // 预计算汇�?  lines.push("【汇总数据（已精确计算，请直接引用）�?);
+  // 预计算汇总
+  lines.push("【汇总数据（已精确计算，请直接引用）】");
   lines.push("POP支付总额: ¥"+popPayTotal.toFixed(2));
   lines.push("POP总订单数: "+popOrderTotal);
-  lines.push("昨日广告总花�? ¥"+adYestTotal.toFixed(2));
-  lines.push("广告账号总余�? ¥"+balanceTotal.toFixed(2));
-  lines.push("全托昨日总销�? "+fullYestTotal);
-  lines.push("全托7日总销�? "+full7dTotal);
-  lines.push("支付金额TOP3: "+popRanked[0].store+"(¥"+num(popRanked[0].pay).toFixed(2)+")�?+popRanked[1].store+"(¥"+num(popRanked[1].pay).toFixed(2)+")�?+popRanked[2].store+"(¥"+num(popRanked[2].pay).toFixed(2)+")");
-  lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")�?+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")�?+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
+  lines.push("昨日广告总花费: ¥"+adYestTotal.toFixed(2));
+  lines.push("广告账号总余额: ¥"+balanceTotal.toFixed(2));
+  lines.push("全托昨日总销量: "+fullYestTotal);
+  lines.push("全托7日总销量: "+full7dTotal);
+  lines.push("支付金额TOP3: "+popRanked[0].store+"(¥"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"(¥"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"(¥"+num(popRanked[2].pay).toFixed(2)+")");
+  lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")、"+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")、"+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
   // 纠纷预警
-  var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"�?"});
-  var fullDispute=fullData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"�?"});
-  lines.push("有纠纷的POP店铺: "+(disputeStores.length>0?disputeStores.join("�?):"�?));
-  lines.push("有纠纷的全托店铺: "+(fullDispute.length>0?fullDispute.join("�?):"�?));
+  var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
+  var fullDispute=fullData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
+  lines.push("有纠纷的POP店铺: "+(disputeStores.length>0?disputeStores.join("、"):"无"));
+  lines.push("有纠纷的全托店铺: "+(fullDispute.length>0?fullDispute.join("、"):"无"));
   // 到期纠纷预警
-  var expireStores=popData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"�?"});
-  var fullExpire=fullData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"�?"});
-  lines.push("纠纷即将到期的POP店铺: "+(expireStores.length>0?expireStores.join("�?):"�?));
-  lines.push("纠纷即将到期的全托店�? "+(fullExpire.length>0?fullExpire.join("�?):"�?));
-  // 异常订单预警（注意：异常订单与纠纷是不同概念�?  var errOrderStores=popData.filter(function(d){return d.pay!==null&&num(d.errOrder)>0}).map(function(d){return d.store+"("+num(d.errOrder)+"�?"});
-  var manualStores=popData.filter(function(d){return d.pay!==null&&num(d.manualOrder)>0}).map(function(d){return d.store+"("+num(d.manualOrder)+"�?"});
-  var mailErrStores=popData.filter(function(d){return d.pay!==null&&num(d.mailErr)>0}).map(function(d){return d.store+"("+num(d.mailErr)+"�?"});
-  var expiredStores=popData.filter(function(d){return d.pay!==null&&num(d.expired)>0}).map(function(d){return d.store+"("+num(d.expired)+"�?"});
-  lines.push("商品错误订单: "+(errOrderStores.length>0?errOrderStores.join("�?):"�?));
-  lines.push("人工审核订单: "+(manualStores.length>0?manualStores.join("�?):"�?));
-  lines.push("邮寄方式错误: "+(mailErrStores.length>0?mailErrStores.join("�?):"�?));
-  lines.push("过期订单: "+(expiredStores.length>0?expiredStores.join("�?):"�?));
+  var expireStores=popData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
+  var fullExpire=fullData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
+  lines.push("纠纷即将到期的POP店铺: "+(expireStores.length>0?expireStores.join("、"):"无"));
+  lines.push("纠纷即将到期的全托店铺: "+(fullExpire.length>0?fullExpire.join("、"):"无"));
+  // 异常订单预警（注意：异常订单与纠纷是不同概念）
+  var errOrderStores=popData.filter(function(d){return d.pay!==null&&num(d.errOrder)>0}).map(function(d){return d.store+"("+num(d.errOrder)+"个)"});
+  var manualStores=popData.filter(function(d){return d.pay!==null&&num(d.manualOrder)>0}).map(function(d){return d.store+"("+num(d.manualOrder)+"个)"});
+  var mailErrStores=popData.filter(function(d){return d.pay!==null&&num(d.mailErr)>0}).map(function(d){return d.store+"("+num(d.mailErr)+"个)"});
+  var expiredStores=popData.filter(function(d){return d.pay!==null&&num(d.expired)>0}).map(function(d){return d.store+"("+num(d.expired)+"个)"});
+  lines.push("商品错误订单: "+(errOrderStores.length>0?errOrderStores.join("、"):"无"));
+  lines.push("人工审核订单: "+(manualStores.length>0?manualStores.join("、"):"无"));
+  lines.push("邮寄方式错误: "+(mailErrStores.length>0?mailErrStores.join("、"):"无"));
+  lines.push("过期订单: "+(expiredStores.length>0?expiredStores.join("、"):"无"));
   // 广告投产预警
   var lowRoi=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0&&num(d.adRoi7d)<1}).map(function(d){return d.store+"(投产"+num(d.adRoi7d).toFixed(2)+")"});
-  lines.push("7天广告投�?1的店�? "+(lowRoi.length>0?lowRoi.join("�?):"�?));
+  lines.push("7天广告投产<1的店铺: "+(lowRoi.length>0?lowRoi.join("、"):"无"));
   return lines.join("\n");
 }
 
@@ -1196,11 +1263,11 @@ function callDeepSeek(messages,onSuccess,onError){
 }
 
 function initChat(){
-  addChatMsg("正在分析店铺数据，生成运营建�?..","loading");
+  addChatMsg("正在分析店铺数据，生成运营建议...","loading");
   var ctx=buildDataContext();
-  var sysMsg="你是专业的电商运营分析师。以下数据已按排名排序并预计算了汇总值，请直接引用这些数据，不要自行计算。注意：纠纷数和异常订单（商品错误、人工审核、邮寄错误、过期订单）是不同的概念，不要混淆。给出简洁有力的运营建议�?-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、到期纠纷、异常订单、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
+  var sysMsg="你是专业的电商运营分析师。以下数据已按排名排序并预计算了汇总值，请直接引用这些数据，不要自行计算。注意：纠纷数和异常订单（商品错误、人工审核、邮寄错误、过期订单）是不同的概念，不要混淆。给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、到期纠纷、异常订单、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
   callDeepSeek(
-    [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建�?}],
+    [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建议"}],
     function(content){
       var loadingEl=document.querySelector(".chat-msg.loading");
       if(loadingEl)loadingEl.remove();
@@ -1211,7 +1278,7 @@ function initChat(){
     function(err){
       var loadingEl=document.querySelector(".chat-msg.loading");
       if(loadingEl)loadingEl.remove();
-      addChatMsg("AI连接失败: "+err+"\n你可以直接提问，我会基于数据回答�?,"error");
+      addChatMsg("AI连接失败: "+err+"\n你可以直接提问，我会基于数据回答。","error");
     }
   );
 }
@@ -1231,7 +1298,7 @@ function sendChatMsg(){
   var msgs=[];
   if(chatHistory.length>0){
     msgs=chatHistory.slice();
-    msgs.push({role:"user",content:"数据上下�?\n"+ctx+"\n\n用户问题: "+text+"\n请基于数据简洁回答�?});
+    msgs.push({role:"user",content:"数据上下文:\n"+ctx+"\n\n用户问题: "+text+"\n请基于数据简洁回答。"});
   }else{
     msgs.push({role:"system",content:"你是专业的电商运营分析师，根据以下数据回答问题。\n"+ctx});
     msgs.push({role:"user",content:text});
@@ -1310,4 +1377,3 @@ var panelDragInfo=makeDraggable(document.getElementById("chatPanel"),document.qu
 </script>
 </body>
 </html>
-
