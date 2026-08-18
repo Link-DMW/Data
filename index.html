@@ -411,48 +411,49 @@ tbody tr:hover{background:#f9f9fb}
 </div>
 
 <script>
-// ===== 数据 =====
 var popData = [
-  {store:"profile",pay:3183.54,exposure:26384,visitors:1268,ctr:0.04805942995755,orders:63,cvr:0.0434,adYest:106.63,ad7d:741,adOrdYest:3,adRoiYest:7.98,adRoi7d:16.33,balance:877.06,dispute:6,disputeExpire:0,errOrder:0,manualOrder:8,mailErr:0,expired:0,owner:"Yasso",deadStock:2},
-  {store:"Sara",pay:4589.79,exposure:31817,visitors:1715,ctr:0.0539020020743628,orders:75,cvr:0.0414,adYest:111.46,ad7d:900.24,adOrdYest:7,adRoiYest:41.3,adRoi7d:39.53,balance:949.99,dispute:8,disputeExpire:0,errOrder:3,manualOrder:6,mailErr:0,expired:5,owner:"Yasso",deadStock:5},
-  {store:"8Li",pay:792.11,exposure:18867,visitors:832,ctr:0.0440981608098797,orders:18,cvr:0.0204,adYest:49.77,ad7d:409.53,adOrdYest:4,adRoiYest:22.53,adRoi7d:24.67,balance:309.99,dispute:0,disputeExpire:0,errOrder:1,manualOrder:3,mailErr:0,expired:1,owner:"Angelia",deadStock:8},
-  {store:"Catherine",pay:783.7,exposure:17333,visitors:826,ctr:0.0476547625915883,orders:19,cvr:0.0218,adYest:58,ad7d:424.42,adOrdYest:1,adRoiYest:3.07,adRoi7d:14.88,balance:275.38,dispute:1,disputeExpire:0,errOrder:2,manualOrder:4,mailErr:0,expired:5,owner:"Angelia",deadStock:9},
-  {store:"Imice",pay:0,exposure:2460,visitors:213,ctr:0.0865853658536585,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧",deadStock:null},
-  {store:"nexusclick",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:3,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧",deadStock:null},
-  {store:"NexusPOP",pay:0,exposure:1088,visitors:35,ctr:0.0321691176470588,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"吴铭慧",deadStock:0},
-  {store:"nancytuo",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:null},
-  {store:"Linda",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:3,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:null},
-  {store:"bana",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:null},
-  {store:"Otmil",pay:543.13,exposure:8513,visitors:960,ctr:0.112768706683895,orders:20,cvr:0.0198,adYest:30,ad7d:239.64,adOrdYest:0,adRoiYest:0,adRoi7d:3.52,balance:0,dispute:1,disputeExpire:0,errOrder:6,manualOrder:0,mailErr:0,expired:0,owner:"Denny",deadStock:6},
-  {store:"Ella",pay:0,exposure:1789,visitors:450,ctr:0.251537171604248,orders:0,cvr:0,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:1,disputeExpire:0,errOrder:1,manualOrder:0,mailErr:0,expired:0,owner:"Aileen",deadStock:0},
-  {store:"Eric",pay:340.06,exposure:2424,visitors:133,ctr:0.0548679867986799,orders:10,cvr:0.0526,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:0,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:0,owner:"Yasso",deadStock:4},
-  {store:"sam",pay:null,exposure:null,visitors:null,ctr:null,orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Angelia",deadStock:null},
-  {store:"Elong",pay:102.49,exposure:3260,visitors:247,ctr:0.0757668711656442,orders:6,cvr:0.0243,adYest:0,ad7d:0,adOrdYest:0,adRoiYest:0,adRoi7d:0,balance:0,dispute:1,disputeExpire:0,errOrder:1,manualOrder:1,mailErr:0,expired:1,owner:"Angelia",deadStock:1},
-  {store:"Petery",pay:294.02,exposure:6391,visitors:377,ctr:0.0589892035675168,orders:8,cvr:0.0212,adYest:21.4,ad7d:130.84,adOrdYest:1,adRoiYest:7.51,adRoi7d:3.95,balance:260.28,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"Noah",deadStock:1},
-  {store:"NKtuo",pay:null,exposure:null,visitors:null,ctr:"#DIV/0!",orders:null,cvr:null,adYest:null,ad7d:null,adOrdYest:null,adRoiYest:null,adRoi7d:null,balance:null,dispute:0,disputeExpire:0,errOrder:0,manualOrder:0,mailErr:0,expired:0,owner:"aauasga",deadStock:null}
+  {"store": "profile", "pay": 2776.28, "exposure": 28370.0, "visitors": 1357.0, "ctr": 0.0478322171307719, "orders": 52.0, "cvr": 0.0332, "adYest": 93.93, "ad7d": 736.95, "adOrdYest": 8.0, "adRoiYest": 45.36, "adRoi7d": 23.52, "balance": 434.23, "dispute": 6, "disputeExpire": 0, "errOrder": 5, "manualOrder": 10, "mailErr": 0, "expired": 3, "owner": "Yasso", "deadStock": 2.0},
+  {"store": "Sara", "pay": 2241.87, "exposure": 33304.0, "visitors": 1894.0, "ctr": 0.0568700456401634, "orders": 59.0, "cvr": 0.0301, "adYest": 88.53, "ad7d": 723.86, "adOrdYest": 2.0, "adRoiYest": 5.32, "adRoi7d": 48.87, "balance": 543.91, "dispute": 10, "disputeExpire": 0, "errOrder": 4, "manualOrder": 9, "mailErr": 0, "expired": 5, "owner": "", "deadStock": 6.0},
+  {"store": "8Li", "pay": 776.33, "exposure": 20702.0, "visitors": 966.0, "ctr": 0.0466621582455801, "orders": 17.0, "cvr": 0.0176, "adYest": 60.0, "ad7d": 399.77, "adOrdYest": 2.0, "adRoiYest": 4.93, "adRoi7d": 16.04, "balance": 113.26, "dispute": 1, "disputeExpire": 0, "errOrder": 1, "manualOrder": 3, "mailErr": 0, "expired": 0, "owner": "Angelia", "deadStock": 10.0},
+  {"store": "Catherine", "pay": 466.89, "exposure": 17118.0, "visitors": 913.0, "ctr": 0.053335670054913, "orders": 19.0, "cvr": 0.0197, "adYest": 50.0, "ad7d": 396.0, "adOrdYest": 4.0, "adRoiYest": 19.77, "adRoi7d": 13.81, "balance": 119.14, "dispute": 3, "disputeExpire": 0, "errOrder": 1, "manualOrder": 1, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 10.0},
+  {"store": "Imice", "pay": 23.31, "exposure": 3134.0, "visitors": 153.0, "ctr": 0.0488194001276324, "orders": 2.0, "cvr": 0.0131, "adYest": 10.0, "ad7d": 30.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "吴铭慧", "deadStock": 0.0},
+  {"store": "nexusclick", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 2, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "NexusPOP", "pay": 0.0, "exposure": 1088.0, "visitors": 42.0, "ctr": 0.0386029411764706, "orders": 0.0, "cvr": 0.0, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 2, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "David", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 2, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "nancytuo", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 2, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "Linda", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 5, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "bana", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 1, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "Otmil", "pay": 192.62, "exposure": 7513.0, "visitors": 821.0, "ctr": 0.109277252761879, "orders": 5.0, "cvr": 0.0061, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 1, "disputeExpire": 0, "errOrder": 2, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Denny", "deadStock": 6.0},
+  {"store": "Ella", "pay": 39.01, "exposure": 1323.0, "visitors": 347.0, "ctr": 0.262282690854119, "orders": 2.0, "cvr": 0.0058, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 4, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "Eric", "pay": 169.83, "exposure": 2456.0, "visitors": 111.0, "ctr": 0.0451954397394137, "orders": 3.0, "cvr": 0.018, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 1, "mailErr": 0, "expired": 1, "owner": "Yasso", "deadStock": 4.0},
+  {"store": "sam", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Angelia", "deadStock": 0.0},
+  {"store": "Elong", "pay": 191.72, "exposure": 3584.0, "visitors": 227.0, "ctr": 0.0633370535714286, "orders": 7.0, "cvr": 0.022, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 1, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 2.0},
+  {"store": "Petery", "pay": 136.03, "exposure": 5654.0, "visitors": 403.0, "ctr": 0.0712769720551822, "orders": 4.0, "cvr": 0.0099, "adYest": 30.52, "ad7d": 163.61, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 10.17, "balance": 164.98, "dispute": 0, "disputeExpire": 0, "errOrder": 1, "manualOrder": 1, "mailErr": 0, "expired": 0, "owner": "Noah", "deadStock": 1.0},
+  {"store": "NKtuo", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "aauasga", "deadStock": 0.0}
 ];
 
 var fullData = [
-  {store:"profile",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"Yasso",deadStock:null},
-  {store:"Sara",views:512,visitors:297,cvr:0.0337,salesYest:11,sales7d:116,dispute:1,disputeExpire:0,owner:"Yasso",deadStock:5},
-  {store:"8Li",views:242,visitors:128,cvr:0.0313,salesYest:7,sales7d:56,dispute:1,disputeExpire:0,owner:"Angelia",deadStock:3},
-  {store:"Catherine",views:404,visitors:302,cvr:0.0099,salesYest:11,sales7d:61,dispute:0,disputeExpire:0,owner:"Angelia",deadStock:2},
-  {store:"Imice",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭慧",deadStock:null},
-  {store:"nexusclick",views:3909,visitors:2015,cvr:0.0273,salesYest:50,sales7d:365,dispute:1,disputeExpire:0,owner:"吴铭慧",deadStock:5},
-  {store:"NexusPOP",views:null,visitors:null,cvr:null,salesYest:null,sales7d:null,dispute:null,disputeExpire:null,owner:"吴铭慧",deadStock:null},
-  {store:"nancytuo",views:1387,visitors:582,cvr:0.0189,salesYest:0,sales7d:152,dispute:4,disputeExpire:1,owner:"Aileen",deadStock:2},
-  {store:"Linda",views:669,visitors:304,cvr:0.0099,salesYest:9,sales7d:83,dispute:5,disputeExpire:1,owner:"Aileen",deadStock:4},
-  {store:"bana",views:535,visitors:258,cvr:0.0388,salesYest:21,sales7d:67,dispute:3,disputeExpire:0,owner:"Aileen",deadStock:3},
-  {store:"Otmil",views:1463,visitors:647,cvr:0.0124,salesYest:17,sales7d:100,dispute:3,disputeExpire:0,owner:"Denny",deadStock:4},
-  {store:"Ella",views:820,visitors:347,cvr:0.0115,salesYest:4,sales7d:37,dispute:1,disputeExpire:0,owner:"Aileen",deadStock:0},
-  {store:"Eric",views:94,visitors:54,cvr:0.0556,salesYest:5,sales7d:19,dispute:1,disputeExpire:0,owner:"Yasso",deadStock:1},
-  {store:"sam",views:86,visitors:45,cvr:0.0222,salesYest:2,sales7d:14,dispute:0,disputeExpire:0,owner:"Angelia",deadStock:0},
-  {store:"Elong",views:345,visitors:166,cvr:0.006,salesYest:0,sales7d:35,dispute:1,disputeExpire:0,owner:"Angelia",deadStock:1},
-  {store:"Petery",views:15,visitors:10,cvr:0,salesYest:2,sales7d:11,dispute:0,disputeExpire:0,owner:"Noah",deadStock:0},
-  {store:"NKtuo",views:2776,visitors:1270,cvr:0.0764,salesYest:80,sales7d:627,dispute:0,disputeExpire:0,owner:"aauasga",deadStock:7}
+  {"store": "profile", "views": null, "visitors": null, "cvr": null, "salesYest": null, "sales7d": null, "dispute": null, "disputeExpire": null, "owner": "Yasso", "deadStock": 0.0},
+  {"store": "Sara", "views": 517.0, "visitors": 320.0, "cvr": 0.0281, "salesYest": 10.0, "sales7d": 105.0, "dispute": 1, "disputeExpire": 1, "owner": "", "deadStock": 5.0},
+  {"store": "8Li", "views": 257.0, "visitors": 132.0, "cvr": 0.0455, "salesYest": 0.0, "sales7d": 50.0, "dispute": 1, "disputeExpire": 1, "owner": "Angelia", "deadStock": 3.0},
+  {"store": "Catherine", "views": 449.0, "visitors": 336.0, "cvr": 0.0149, "salesYest": 16.0, "sales7d": 71.0, "dispute": 0, "disputeExpire": 0, "owner": "", "deadStock": 2.0},
+  {"store": "Imice", "views": null, "visitors": null, "cvr": null, "salesYest": null, "sales7d": null, "dispute": null, "disputeExpire": null, "owner": "吴铭慧", "deadStock": 0.0},
+  {"store": "nexusclick", "views": 4268.0, "visitors": 2142.0, "cvr": 0.0261, "salesYest": 67.0, "sales7d": 341.0, "dispute": 3, "disputeExpire": 0, "owner": "", "deadStock": 6.0},
+  {"store": "NexusPOP", "views": null, "visitors": null, "cvr": null, "salesYest": null, "sales7d": null, "dispute": null, "disputeExpire": null, "owner": "", "deadStock": 0.0},
+  {"store": "David", "views": 256.0, "visitors": 115.0, "cvr": 0.0087, "salesYest": 4.0, "sales7d": 37.0, "dispute": 0, "disputeExpire": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "nancytuo", "views": 1407.0, "visitors": 644.0, "cvr": 0.0186, "salesYest": 0.0, "sales7d": 140.0, "dispute": 5, "disputeExpire": 2, "owner": "", "deadStock": 3.0},
+  {"store": "Linda", "views": 576.0, "visitors": 291.0, "cvr": 0.0069, "salesYest": 0.0, "sales7d": 69.0, "dispute": 4, "disputeExpire": 0, "owner": "", "deadStock": 4.0},
+  {"store": "bana", "views": 491.0, "visitors": 229.0, "cvr": 0.0218, "salesYest": 0.0, "sales7d": 68.0, "dispute": 5, "disputeExpire": 2, "owner": "", "deadStock": 4.0},
+  {"store": "Otmil", "views": 1254.0, "visitors": 616.0, "cvr": 0.0065, "salesYest": 9.0, "sales7d": 110.0, "dispute": 4, "disputeExpire": 1, "owner": "Denny", "deadStock": 4.0},
+  {"store": "Ella", "views": 768.0, "visitors": 359.0, "cvr": 0.0251, "salesYest": 9.0, "sales7d": 32.0, "dispute": 3, "disputeExpire": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "Eric", "views": 90.0, "visitors": 44.0, "cvr": 0.0455, "salesYest": 4.0, "sales7d": 16.0, "dispute": 1, "disputeExpire": 0, "owner": "Yasso", "deadStock": 1.0},
+  {"store": "sam", "views": 72.0, "visitors": 34.0, "cvr": 0.0, "salesYest": 0.0, "sales7d": 10.0, "dispute": 0, "disputeExpire": 0, "owner": "Angelia", "deadStock": 2.0},
+  {"store": "Elong", "views": 402.0, "visitors": 194.0, "cvr": 0.0103, "salesYest": 3.0, "sales7d": 35.0, "dispute": 1, "disputeExpire": 0, "owner": "", "deadStock": 1.0},
+  {"store": "Petery", "views": 22.0, "visitors": 15.0, "cvr": 0.0, "salesYest": 1.0, "sales7d": 10.0, "dispute": 0, "disputeExpire": 0, "owner": "Noah", "deadStock": 0.0},
+  {"store": "NKtuo", "views": 3747.0, "visitors": 1764.0, "cvr": 0.0289, "salesYest": 54.0, "sales7d": 586.0, "dispute": 4, "disputeExpire": 1, "owner": "aauasga", "deadStock": 6.0}
 ];
 
-var reportDate = "2026-08-13";
+var reportDate = "2026-08-16";
 
 // ===== 后端API配置 =====
 var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
@@ -576,6 +577,10 @@ function fmtMoney(v){
   var n=num(v);
   return "¥"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 }
+function fmtUSD(v){
+  var n=num(v);
+  return "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
 function fmtInt(v){
   var n=num(v);
   return n.toLocaleString("en-US");
@@ -659,7 +664,7 @@ var allStores=popData.map(function(d){return d.store});
   allStores.forEach(function(s){
     var p=popData.find(function(d){return d.store===s});
     var amt="";
-    if(p&&p.pay!==null&&p.pay>0)amt="¥"+fmtNum(p.pay,2);
+    if(p&&p.pay!==null&&p.pay>0)amt="$"+fmtNum(p.pay,2);
     html+='<div class="nav-item" id="nav-'+s+'" onclick="showStore(\''+s+'\')">'+
       '<span class="nav-name">'+s+'</span>'+
       '<span class="nav-amt">'+amt+'</span>'+
@@ -688,7 +693,7 @@ fullData.forEach(function(d){
   grid.innerHTML=
   '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
     '<div class="kpi-label">POP支付总额</div>'+
-    '<div class="kpi-value">'+fmtMoney(popPayTotal)+'</div>'+
+    '<div class="kpi-value">'+fmtUSD(popPayTotal)+'</div>'+
   '</div>'+
   '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
     '<div class="kpi-label">总订单数</div>'+
@@ -732,7 +737,7 @@ fullData.forEach(function(d){
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
-    var pay=d.pay!==null?fmtMoney(d.pay):"";
+    var pay=d.pay!==null?fmtUSD(d.pay):"";
     var exposure=d.exposure!==null?fmtInt(d.exposure):"";
     var visitors=d.visitors!==null?fmtInt(d.visitors):"";
     var ctr=d.ctr!==null?fmtPct(d.ctr):"";
@@ -834,7 +839,7 @@ fullData.forEach(function(d){
       html+='<div class="detail-kpi-grid">';
       var popLabels=["支付金额","曝光量","访客数","点击率","订单数","转化率","昨天广告花费","7天广告花费","昨天广告订单","昨天广告投产","7天广告投产","广告账户余额","等待处理纠纷数","纠纷剩余一天内到期","商品错误订单","人工审核订单","邮寄方式错误","过期订单","仓发不动销品"];
       var popVals=[
-        fmtMoney(p.pay),fmtInt(p.exposure),fmtInt(p.visitors),fmtPct(p.ctr),fmtInt(p.orders),fmtPct(p.cvr),
+        fmtUSD(p.pay),fmtInt(p.exposure),fmtInt(p.visitors),fmtPct(p.ctr),fmtInt(p.orders),fmtPct(p.cvr),
         fmtMoney(p.adYest),fmtMoney(p.ad7d),fmtInt(p.adOrdYest),fmtNum(p.adRoiYest,2),fmtNum(p.adRoi7d,2),fmtMoney(p.balance),
         num(p.dispute),num(p.disputeExpire),num(p.errOrder),num(p.manualOrder),num(p.mailErr),num(p.expired),
         p.deadStock!==null?num(p.deadStock):""
@@ -966,8 +971,8 @@ function roiColor(val){
     options:{
       responsive:true,maintainAspectRatio:false,
       onClick:chartClickHandler,
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmtMoney(c.raw)}}}},
-      scales:{y:{beginAtZero:true,ticks:{callback:function(v){return "¥"+v.toLocaleString()}}}}
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmtUSD(c.raw)}}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:function(v){return "$"+v.toLocaleString()}}}}
     }
   });
 })();
@@ -1110,7 +1115,7 @@ showOverview();
   var data=sorted.map(function(d){return num(d.pay)});
   var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043"];
   var ctx=document.getElementById("chartDoughnut").getContext("2d");
-  charts.doughnut=new Chart(ctx,{type:"doughnut",data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(c){return c.label+": "+fmtMoney(c.raw)}}}},cutout:"50%"}});
+  charts.doughnut=new Chart(ctx,{type:"doughnut",data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(c){return c.label+": "+fmtUSD(c.raw)}}}},cutout:"50%"}});
 })();
 (function(){
   var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
@@ -1192,7 +1197,7 @@ function buildDataContext(){
   var popRanked=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
   lines.push("【POP店铺数据（按支付金额降序）】");
   popRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 支付¥"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+    lines.push("#"+(i+1)+" "+d.store+": 支付$"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
   });
   // 无POP数据的店铺
   var popNoData=popData.filter(function(d){return d.pay===null});
@@ -1213,13 +1218,13 @@ function buildDataContext(){
   lines.push("");
   // 预计算汇总
   lines.push("【汇总数据（已精确计算，请直接引用）】");
-  lines.push("POP支付总额: ¥"+popPayTotal.toFixed(2));
+  lines.push("POP支付总额: $"+popPayTotal.toFixed(2));
   lines.push("POP总订单数: "+popOrderTotal);
   lines.push("昨日广告总花费: ¥"+adYestTotal.toFixed(2));
   lines.push("广告账号总余额: ¥"+balanceTotal.toFixed(2));
   lines.push("全托昨日总销量: "+fullYestTotal);
   lines.push("全托7日总销量: "+full7dTotal);
-  lines.push("支付金额TOP3: "+popRanked[0].store+"(¥"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"(¥"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"(¥"+num(popRanked[2].pay).toFixed(2)+")");
+  lines.push("支付金额TOP3: "+popRanked[0].store+"($"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"($"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"($"+num(popRanked[2].pay).toFixed(2)+")");
   lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")、"+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")、"+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
   // 纠纷预警
   var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
