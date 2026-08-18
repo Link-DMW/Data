@@ -1,769 +1,1389 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>📊 运营看板</title><style>
-:root{--bg:#f8fafc;--c:#0f172a;--m:#475569;--b:#e2e8f0;--r:#ef4444;--card:#fff;--sh:0 1px 8px rgba(15,23,42,.08)}
-*{box-sizing:border-box}html,body{margin:0}body{font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--c)}
-a{color:inherit;text-decoration:none}
-.wrap{display:flex;min-height:100vh}
-aside{width:240px;flex:0 0 240px;position:sticky;top:0;align-self:flex-start;height:100vh;overflow:auto;background:var(--bg);border-right:1px solid var(--b);padding:14px}
-main{flex:1;min-width:0;padding:16px}
-h1{font-size:16px;margin:0 0 10px}
-.nav h2{font-size:12px;color:var(--m);margin:14px 0 6px}
-.nav a,.nav div{display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:10px}
-.nav a.on{background:#eaf2ff;color:#1d4ed8;font-weight:600}
-.badge{margin-left:auto;font-size:12px;color:var(--m)}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-.card{background:var(--card);border:1px solid var(--b);border-radius:14px;box-shadow:var(--sh);padding:12px;min-width:0}
-.k{display:flex;flex-wrap:wrap;gap:10px}
-.k div{flex:1;min-width:160px}
-.k b{display:block;font-size:18px;margin-top:2px}
-.t{font-size:12px;color:var(--m)}
-.sec{margin:14px 0 10px;font-size:14px}
-.tbl{overflow:auto;border-radius:14px;border:1px solid var(--b);box-shadow:var(--sh);background:#fff}
-table{border-collapse:collapse;min-width:920px;width:100%}
-th,td{padding:8px 10px;border-bottom:1px solid var(--b);text-align:left;white-space:nowrap}
-th{font-size:12px;color:var(--m);background:#f1f5f9;position:sticky;top:0}
-tr:last-child td{border-bottom:0}
-.r{color:var(--r);font-weight:700}
-.bar{display:flex;gap:10px;align-items:flex-end;height:180px;padding:8px 6px 4px}
-.bx{flex:1;min-width:70px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px}
-.bn{font-size:12px;color:var(--m);text-align:center;overflow:hidden;text-overflow:ellipsis}
-.bv{font-size:12px;text-align:center}
-.bd{height:var(--h);background:#2563eb;border-radius:10px 10px 6px 6px}
-hr{border:0;border-top:1px solid var(--b);margin:18px 0}
-.p{display:none}
-@media (max-width:860px){
-.wrap{display:block}
-aside{position:sticky;height:auto;width:auto;flex:none;border-right:0;border-bottom:1px solid var(--b);padding:10px 10px 6px;overflow:hidden}
-main{padding:12px}
-.nav{display:flex;gap:8px;overflow:auto;white-space:nowrap;padding-bottom:6px}
-.nav h2{display:none}
-.nav a{flex:0 0 auto;border:1px solid var(--b);background:#fff}
-.nav a.on{border-color:#bfdbfe}
-.badge{display:none}
-.grid{grid-template-columns:1fr}
-.card{border-radius:12px}
-table{min-width:900px}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="店铺看板">
+<meta name="theme-color" content="#1a1a2e">
+<title>店铺指标看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html{font-size:14px;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;background:#f0f2f5;overflow-x:hidden;color:#333;line-height:1.5}
+
+/* ===== 侧边栏 ===== */
+.sidebar{
+  position:fixed;top:0;left:0;width:220px;height:100vh;
+  background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  z-index:1000;
+  -webkit-transform:translateX(-100%);transform:translateX(-100%);
+  transition:-webkit-transform .3s ease;transition:transform .3s ease;transition:transform .3s ease,-webkit-transform .3s ease;
 }
-</style></head><body>
-<div class="wrap">
-<aside>
-<h1>📊 运营看板</h1>
-<nav class="nav">
-<a class="on" href="#ov">总览 <span class="badge">2026-07-24</span></a>
-<div class="t" style="margin-top:8px">POP 店铺</div>
-<a href="#pop-profile">🏪 profile</a><a href="#pop-Sara">🏪 Sara</a><a href="#pop-8Li">🏪 8Li</a><a href="#pop-Catherine">🏪 Catherine</a><a href="#pop-Imice">🏪 Imice</a><a href="#pop-nexusclick">🏪 nexusclick</a><a href="#pop-NexusPOP">🏪 NexusPOP</a><a href="#pop-David">🏪 David</a><a href="#pop-nancytuo">🏪 nancytuo</a><a href="#pop-Linda">🏪 Linda</a><a href="#pop-bana">🏪 bana</a><a href="#pop-Otmil">🏪 Otmil</a><a href="#pop-Ella">🏪 Ella</a><a href="#pop-Eric">🏪 Eric</a><a href="#pop-sam">🏪 sam</a><a href="#pop-Elong">🏪 Elong</a><a href="#pop-Petery">🏪 Petery</a><a href="#pop-NKtuo">🏪 NKtuo</a>
-<div class="t" style="margin-top:8px">全托管店铺</div>
-<a href="#ft-profile">🏪 profile</a><a href="#ft-Sara">🏪 Sara</a><a href="#ft-8Li">🏪 8Li</a><a href="#ft-Catherine">🏪 Catherine</a><a href="#ft-Imice">🏪 Imice</a><a href="#ft-nexusclick">🏪 nexusclick</a><a href="#ft-NexusPOP">🏪 NexusPOP</a><a href="#ft-David">🏪 David</a><a href="#ft-nancytuo">🏪 nancytuo</a><a href="#ft-Linda">🏪 Linda</a><a href="#ft-bana">🏪 bana</a><a href="#ft-Otmil">🏪 Otmil</a><a href="#ft-Ella">🏪 Ella</a><a href="#ft-Eric">🏪 Eric</a><a href="#ft-sam">🏪 sam</a><a href="#ft-Elong">🏪 Elong</a><a href="#ft-Petery">🏪 Petery</a><a href="#ft-NKtuo">🏪 NKtuo</a>
-</nav>
+.sidebar.open{-webkit-transform:translateX(0);transform:translateX(0)}
+.sidebar-header{
+  position:-webkit-sticky;position:sticky;top:0;
+  background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);
+  padding:16px 14px 12px;border-bottom:1px solid rgba(255,255,255,.08);
+  z-index:10;
+}
+.sidebar-header h2{color:#fff;font-size:16px;font-weight:700;margin-bottom:4px}
+.sidebar-header .date{color:rgba(255,255,255,.5);font-size:11px}
+.sidebar-group-title{
+  color:rgba(255,255,255,.35);font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.5px;
+  padding:14px 16px 6px;
+}
+.nav-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 16px 9px 18px;color:rgba(255,255,255,.75);font-size:13px;
+  cursor:pointer;border-left:3px solid transparent;
+  transition:background .2s,color .2s;
+}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#fff}
+.nav-item.active{
+  background:rgba(255,255,255,.12);color:#fff;
+  border-left:3px solid #4a90d9;
+}
+.nav-item .nav-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.nav-item .nav-amt{font-size:11px;color:rgba(255,255,255,.45);white-space:nowrap;margin-left:6px;flex-shrink:0}
+.nav-item.active .nav-amt{color:rgba(255,255,255,.7)}
+
+/* ===== 遮罩 ===== */
+.overlay{
+  display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:rgba(0,0,0,.5);z-index:999;
+}
+.overlay.show{display:block}
+
+/* ===== 顶部栏 ===== */
+.topbar{
+  position:-webkit-sticky;position:sticky;top:0;z-index:100;
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  padding:12px 16px;display:flex;align-items:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.hamburger{
+  display:flex;align-items:center;justify-content:center;
+  width:36px;height:36px;background:rgba(255,255,255,.1);
+  border:none;border-radius:8px;cursor:pointer;margin-right:12px;
+  flex-shrink:0;
+}
+.hamburger span{display:block;width:18px;height:2px;background:#fff;border-radius:1px;position:relative}
+.hamburger span:before,.hamburger span:after{content:'';position:absolute;left:0;width:18px;height:2px;background:#fff;border-radius:1px}
+.hamburger span:before{top:-6px}
+.hamburger span:after{top:6px}
+.topbar h1{color:#fff;font-size:17px;font-weight:700;flex:1}
+.topbar .topbar-date{color:rgba(255,255,255,.6);font-size:12px;white-space:nowrap}
+
+/* ===== 主内容区 ===== */
+.main-content{padding:16px;min-height:calc(100vh - 60px)}
+
+/* ===== KPI卡片 ===== */
+.kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.kpi-card{
+  background:#fff;border-radius:10px;padding:14px 12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  cursor:pointer;transition:transform .2s,box-shadow .2s;
+  border:1px solid rgba(0,0,0,.03);
+}
+.kpi-card:hover{-webkit-transform:translateY(-2px);transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.kpi-label{font-size:11px;color:#888;margin-bottom:6px;font-weight:500}
+.kpi-value{font-size:20px;font-weight:700;color:#1a1a2e;word-break:break-all}
+.kpi-value .unit{font-size:13px;font-weight:500;color:#666;margin-left:2px}
+
+/* ===== Section标题 ===== */
+.section-title{
+  font-size:15px;font-weight:600;color:#1a1a2e;margin:20px 0 12px;
+  padding-left:10px;position:relative;
+}
+.section-title:before{
+  content:'';position:absolute;left:0;top:50%;
+  -webkit-transform:translateY(-50%);transform:translateY(-50%);
+  width:3px;height:16px;background:#4a90d9;border-radius:2px;
+}
+
+/* ===== 图表区 ===== */
+.chart-container{
+  background:#fff;border-radius:10px;padding:14px 12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:16px;
+}
+.chart-container h3{font-size:14px;font-weight:600;color:#333;margin-bottom:10px}
+.chart-wrapper{position:relative;height:240px}
+.chart-tip{font-size:11px;color:#999;margin-top:8px;text-align:center}
+
+/* ===== 表格 ===== */
+.table-container{
+  background:#fff;border-radius:10px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:20px;
+}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:600px;font-size:12px;table-layout:auto}
+th{padding:10px 8px;text-align:center;font-weight:600;color:#555;white-space:nowrap;border-bottom:2px solid #e8eaed;position:sticky;top:0;background:#f5f7fa;z-index:1}
+td{padding:8px;border-bottom:1px solid #f0f0f0;white-space:nowrap;text-align:center}
+td:nth-child(n+3){text-align:center}
+td:nth-child(2){text-align:center}
+tbody tr:hover{background:#f9f9fb}
+.store-link{color:#0f3460;font-weight:600;cursor:pointer;text-decoration:none}
+.store-link:hover{color:#1a73e8;text-decoration:underline}
+
+@media(max-width:768px){
+  table{min-width:auto;font-size:10px}
+  th{padding:6px 4px}
+  td{padding:5px 4px}
+  .handle-btn{padding:2px 6px;font-size:10px}
+  .rank-badge{width:16px;height:16px;font-size:9px}
+  .tag{padding:1px 6px;font-size:9px}
+}
+
+/* ===== 排名徽章 ===== */
+.rank-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;border-radius:50%;font-size:11px;font-weight:700;color:#fff;
+}
+.rank-1{background:#ffd700;color:#5a4500}
+.rank-2{background:#c0c0c0;color:#333}
+.rank-3{background:#cd7f32}
+.rank-other{background:#e0e0e0;color:#666}
+
+/* ===== 标签 ===== */
+.tag{display:inline-block;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:600}
+.tag-red{background:#ffe0e0;color:#d32f2f}
+.tag-green{background:#e0f5e0;color:#2e7d32}
+.tag-orange{background:#fff3e0;color:#ef6c00}
+
+/* ===== 店铺详情页 ===== */
+.store-detail{display:none;animation:fadeIn .3s ease}
+.store-detail.active{display:block}
+@keyframes fadeIn{from{opacity:0;-webkit-transform:translateY(8px);transform:translateY(8px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
+.store-detail h2{font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:16px}
+.store-detail h3{font-size:15px;font-weight:600;color:#1a1a2e;margin:16px 0 12px;padding-left:10px;position:relative}
+.store-detail h3:before{content:'';position:absolute;left:0;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);width:3px;height:16px;background:#4a90d9;border-radius:2px}
+.detail-kpi-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.detail-kpi-card{background:#fff;border-radius:10px;padding:12px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.03)}
+.detail-kpi-label{font-size:11px;color:#888;margin-bottom:4px}
+.detail-kpi-value{font-size:18px;font-weight:700;color:#1a1a2e;word-break:break-all}
+.detail-kpi-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
+.owner-field{font-size:16px;font-weight:600;color:#1a1a2e}
+
+/* ===== AI聊天框 ===== */
+.chat-fab{
+  position:fixed;right:16px;bottom:16px;z-index:500;
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,#4a90d9,#0f3460);
+  border:none;cursor:grab;color:#fff;font-size:24px;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .2s,opacity .2s;
+  touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.chat-fab:active{cursor:grabbing}
+.chat-fab.dragging{transition:none}
+.chat-fab:hover{-webkit-transform:scale(1.08);transform:scale(1.08)}
+.chat-fab.hidden{opacity:0;pointer-events:none;-webkit-transform:scale(0);transform:scale(0)}
+
+.chat-panel{
+  position:fixed;right:16px;bottom:16px;z-index:501;
+  width:calc(100vw - 32px);max-width:380px;
+  height:520px;max-height:calc(100vh - 32px);
+  background:#fff;border-radius:14px;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);
+  display:none;flex-direction:column;overflow:hidden;
+  animation:chatSlideUp .25s ease;
+}
+.chat-header{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.chat-header:active{cursor:grabbing}
+@keyframes chatSlideUp{from{opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
+.chat-panel.show{display:flex}
+
+.chat-header{
+  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.chat-header .chat-title{font-size:15px;font-weight:700}
+.chat-header .chat-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.chat-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.chat-close:hover{background:rgba(255,255,255,.25)}
+
+.chat-messages{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:14px 12px;display:flex;flex-direction:column;gap:10px;
+  background:#f7f8fa;
+}
+.chat-msg{max-width:85%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
+.chat-msg.ai{background:#fff;color:#333;align-self:flex-start;border:1px solid #e8eaed;border-bottom-left-radius:4px}
+.chat-msg.user{background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-msg.loading{color:#999;font-style:italic}
+.chat-msg.error{background:#ffe0e0;color:#d32f2f;border:1px solid #ffcdd2}
+
+.chat-input-area{
+  flex-shrink:0;padding:10px 12px;border-top:1px solid #e8eaed;background:#fff;
+  display:flex;gap:8px;
+}
+.chat-input{
+  flex:1;border:1px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;
+  outline:none;font-family:inherit;resize:none;max-height:80px;
+  -webkit-appearance:none;
+}
+.chat-input:focus{border-color:#4a90d9}
+.chat-send{
+  background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;border:none;
+  border-radius:8px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+}
+.chat-send:hover{opacity:.9}
+.chat-send:disabled{opacity:.5;cursor:not-allowed}
+
+.chat-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 8px;background:#fff;flex-shrink:0}
+.chat-suggestion{
+  background:#e8f0fe;color:#0f3460;border:1px solid #c5dcfa;
+  border-radius:12px;padding:4px 10px;font-size:11px;cursor:pointer;
+  white-space:nowrap;
+}
+.chat-suggestion:hover{background:#d0e4fc}
+
+@media(max-width:768px){
+  .chat-panel{height:60vh;max-height:60vh}
+  .chat-fab{width:48px;height:48px;font-size:22px}
+}
+
+/* ===== 已处理按钮 ===== */
+.handle-btn{
+  display:inline-block;padding:2px 8px;border-radius:4px;
+  font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;
+  border:1px solid #ddd;background:#fff;color:#666;
+  transition:all .2s;
+}
+.handle-btn:hover{background:#f5f5f5}
+.handle-btn.done{
+  background:#e0f5e0;color:#2e7d32;border-color:#a5d6a7;
+}
+.handle-btn.done:hover{background:#d0ecd0}
+.handle-info{font-size:10px;color:#888;margin-top:2px}
+
+/* ===== 响应式 ===== */
+@media(min-width:769px){
+  .sidebar{-webkit-transform:translateX(0);transform:translateX(0)}
+  .hamburger{display:none}
+  .overlay{display:none!important}
+  .main-content{margin-left:220px;padding:20px}
+  .kpi-grid{grid-template-columns:repeat(4,1fr);gap:12px}
+  .kpi-value{font-size:24px}
+  .chart-wrapper{height:300px}
+  .detail-kpi-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(min-width:1025px){
+  .kpi-grid{grid-template-columns:repeat(6,1fr)}
+  .main-content{max-width:1200px;margin-left:220px;margin-right:auto;padding:24px}
+  .kpi-card:hover{-webkit-transform:translateY(-3px);transform:translateY(-3px)}
+}
+@media(max-width:768px){
+  .main-content{padding:12px}
+  .kpi-grid{gap:8px}
+  .kpi-card{padding:12px 10px}
+  .kpi-value{font-size:20px}
+  .chart-wrapper{height:240px}
+  .topbar h1{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- 侧边栏 -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>📊 店铺看板</h2>
+    <div class="date" id="sidebarDate"></div>
+  </div>
+  <div class="sidebar-group-title">总览</div>
+  <div class="nav-item active" id="nav-overview" onclick="showOverview()">
+    <span class="nav-name">📈 全部店铺</span>
+  </div>
+  <div class="sidebar-group-title">店铺</div>
+  <div id="storeNav"></div>
 </aside>
 
-<main>
+<!-- 遮罩 -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- 总览 -->
-<section id="ov">
-<div class="grid">
-<div class="card" style="grid-column:span 6">
-<div class="sec">一、POP 汇总</div>
-<div class="k">
-<div><span class="t">POP 总支付金额</span><b>￥6607.02</b></div>
-<div><span class="t">POP 总订单数</span><b>164</b></div>
-<div><span class="t">POP 总待处理纠纷</span><b>23</b></div>
-<div><span class="t">POP 昨天广告总花费</span><b>￥355.23</b></div>
-</div>
-</div>
-<div class="card" style="grid-column:span 6">
-<div class="sec">二、全托管汇总</div>
-<div class="k">
-<div><span class="t">全托管总浏览量</span><b>8858</b></div>
-<div><span class="t">全托管总访客数</span><b>4822</b></div>
-<div><span class="t">全托昨日销量合计</span><b>144</b></div>
-<div><span class="t">全托待处理纠纷合计</span><b>22</b></div>
-</div>
-</div>
+<!-- 顶部栏 -->
+<header class="topbar">
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="菜单"><span></span></button>
+  <h1>店铺指标看板</h1>
+  <span class="topbar-date" id="topbarDate"></span>
+</header>
 
-<div class="card" style="grid-column:span 12">
-<div class="sec">三、POP 支付金额 TOP</div>
-<div class="bar" aria-label="POP 支付金额 TOP 静态柱状图">
-<div class="bx" style="--h:100%"><div class="bv">2746.31</div><div class="bd"></div><div class="bn">Sara</div></div>
-<div class="bx" style="--h:53.5%"><div class="bv">1469.84</div><div class="bd"></div><div class="bn">profile</div></div>
-<div class="bx" style="--h:31.5%"><div class="bv">864.40</div><div class="bd"></div><div class="bn">8Li</div></div>
-<div class="bx" style="--h:24.2%"><div class="bv">663.38</div><div class="bd"></div><div class="bn">Catherine</div></div>
-<div class="bx" style="--h:10.6%"><div class="bv">292.12</div><div class="bd"></div><div class="bn">Elong</div></div>
-<div class="bx" style="--h:7.9%"><div class="bv">216.64</div><div class="bd"></div><div class="bn">Otmil</div></div>
-<div class="bx" style="--h:5.6%"><div class="bv">152.58</div><div class="bd"></div><div class="bn">Petery</div></div>
-<div class="bx" style="--h:5.2%"><div class="bv">143.79</div><div class="bd"></div><div class="bn">Eric</div></div>
-</div>
-</div>
+<!-- 主内容 -->
+<div class="main-content">
 
-<div class="card" style="grid-column:span 12;padding:0">
-<div class="sec" style="padding:12px 12px 0">四、POP 全量数据表</div>
-<div class="tbl">
-<table>
-<thead><tr>
-<th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th><th>点击率</th><th>订单数</th><th>转化率</th><th>昨天广告花费</th><th>7天广告花费</th><th>昨天广告订单</th><th>昨天广告投产</th><th>7天广告投产</th><th>广告账户余额</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>商品错误订单</th><th>人工审核订单</th><th>邮寄方式错误</th><th>过期订单</th><th>负责人</th>
-</tr></thead>
-<tbody>
-<tr><td>profile</td><td>1469.84</td><td>21720</td><td>1024</td><td>0.04714548802946593</td><td>38</td><td>0.0342</td><td>77.09</td><td>476.46</td><td>5</td><td>14.66</td><td>21.28</td><td>1071.13</td><td class="r">6</td><td>0</td><td>0</td><td class="r">2</td><td>0</td><td>0</td><td>Yasso</td></tr>
-<tr><td>Sara</td><td>2746.31</td><td>31455</td><td>1639</td><td>0.05210618343665554</td><td>62</td><td>0.036</td><td>123.89</td><td>711.5</td><td>14</td><td>48.07</td><td>49.77</td><td>892.61</td><td class="r">9</td><td>0</td><td class="r">4</td><td class="r">4</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>8Li</td><td>864.4</td><td>18388</td><td>796</td><td>0.043289101587992165</td><td>19</td><td>0.0226</td><td>50</td><td>320</td><td>2</td><td>5.35</td><td>13.64</td><td>352.61</td><td class="r">1</td><td>0</td><td>0</td><td class="r">1</td><td>0</td><td>0</td><td>Angelia</td></tr>
-<tr><td>Catherine</td><td>663.38</td><td>16992</td><td>772</td><td>0.0454331450094162</td><td>21</td><td>0.0259</td><td>50</td><td>361.96</td><td>2</td><td>7.68</td><td>16.3</td><td>343.94</td><td class="r">4</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Imice</td><td>54.48</td><td>2169</td><td>139</td><td>0.06408483171968649</td><td>2</td><td>0.0144</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.01</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>吴铭慧</td></tr>
-<tr><td>nexusclick</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>NexusPOP</td><td>0</td><td>779</td><td>36</td><td>0.04621309370988447</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.09</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>David</td><td>0</td><td>0</td><td>1</td><td>-2146826281</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>12.32</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Aileen</td></tr>
-<tr><td>nancytuo</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Linda</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>bana</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Otmil</td><td>216.64</td><td>11520</td><td>827</td><td>0.07178819444444444</td><td>6</td><td>0.0073</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>678.2</td><td>0</td><td>0</td><td class="r">1</td><td class="r">1</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Ella</td><td>3.44</td><td>660</td><td>220</td><td>0.3333333333333333</td><td>1</td><td>0.0045</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-10.57</td><td>0</td><td>0</td><td class="r">2</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Eric</td><td>143.79</td><td>3165</td><td>140</td><td>0.044233807266982623</td><td>3</td><td>0.0214</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>Bryce</td></tr>
-<tr><td>sam</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Elong</td><td>292.12</td><td>4613</td><td>318</td><td>0.06893561673531325</td><td>8</td><td>0.0252</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Petery</td><td>152.58</td><td>5110</td><td>306</td><td>0.059882583170254404</td><td>4</td><td>0.0098</td><td>54.25</td><td>54.25</td><td>0</td><td>0</td><td>0</td><td>425.66</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="r">1</td><td>-</td></tr>
-<tr><td>NKtuo</td><td>-</td><td>-</td><td>-</td><td>-2146826281</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>0</td><td>0</td><td>0</td><td>0</td><td>aauasga</td></tr>
-</tbody>
-</table>
-</div>
-</div>
+<!-- ===== 总览页 ===== -->
+<div id="overviewPage">
+  <div class="kpi-grid" id="kpiGrid"></div>
 
-<div class="card" style="grid-column:span 12;padding:0">
-<div class="sec" style="padding:12px 12px 0">五、全托管全量数据表</div>
-<div class="tbl">
-<table>
-<thead><tr>
-<th>店铺</th><th>浏览量</th><th>访客数</th><th>转化率</th><th>全托昨日销量</th><th>全托七日销量</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>负责人</th>
-</tr></thead>
-<tbody>
-<tr><td>profile</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>yasso</td></tr>
-<tr><td>Sara</td><td>541</td><td>292</td><td>0.0445</td><td>14</td><td>109</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>8Li</td><td>203</td><td>107</td><td>0.0654</td><td>10</td><td>51</td><td class="r">1</td><td>0</td><td>angelia</td></tr>
-<tr><td>Catherine</td><td>225</td><td>141</td><td>0.0071</td><td>3</td><td>75</td><td class="r">1</td><td>0</td><td>-</td></tr>
-<tr><td>Imice</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>吴铭慧</td></tr>
-<tr><td>nexusclick</td><td>2859</td><td>1484</td><td>0.0222</td><td>35</td><td>234</td><td class="r">2</td><td>0</td><td>-</td></tr>
-<tr><td>NexusPOP</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>David</td><td>258</td><td>114</td><td>0.0263</td><td>4</td><td>24</td><td>0</td><td>0</td><td>aileen</td></tr>
-<tr><td>nancytuo</td><td>1531</td><td>718</td><td>0.0279</td><td>30</td><td>171</td><td class="r">6</td><td>0</td><td>-</td></tr>
-<tr><td>Linda</td><td>604</td><td>260</td><td>0.0154</td><td>7</td><td>56</td><td class="r">2</td><td class="r">1</td><td>-</td></tr>
-<tr><td>bana</td><td>426</td><td>205</td><td>0.0244</td><td>9</td><td>55</td><td class="r">2</td><td>0</td><td>-</td></tr>
-<tr><td>Otmil</td><td>1535</td><td>671</td><td>0.0089</td><td>8</td><td>95</td><td class="r">3</td><td class="r">1</td><td>-</td></tr>
-<tr><td>Ella</td><td>332</td><td>164</td><td>0.0244</td><td>5</td><td>22</td><td class="r">1</td><td>0</td><td>-</td></tr>
-<tr><td>Eric</td><td>116</td><td>61</td><td>0.0492</td><td>3</td><td>18</td><td class="r">1</td><td>0</td><td>bryce</td></tr>
-<tr><td>sam</td><td>71</td><td>40</td><td>0.05</td><td>2</td><td>13</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>Elong</td><td>154</td><td>90</td><td>0.0333</td><td>6</td><td>31</td><td class="r">1</td><td>0</td><td>-</td></tr>
-<tr><td>Petery</td><td>8</td><td>7</td><td>-</td><td>1</td><td>8</td><td>0</td><td>0</td><td>-</td></tr>
-<tr><td>NKtuo</td><td>854</td><td>468</td><td>0.0107</td><td>7</td><td>65</td><td class="r">1</td><td>0</td><td>aauasga</td></tr>
-</tbody>
-</table>
-</div>
+  <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+    <div class="chart-container" style="flex:1;min-width:280px">
+      <h3>POP支付金额占比（环形图）</h3>
+      <div class="chart-wrapper" style="height:200px"><canvas id="chartDoughnut"></canvas></div>
+    </div>
+    <div class="chart-container" style="flex:1;min-width:280px">
+      <h3>全托昨日销量占比（饼图）</h3>
+      <div class="chart-wrapper" style="height:200px"><canvas id="chartPie"></canvas></div>
+    </div>
+    <div class="chart-container" style="flex:1;min-width:280px">
+      <h3>全托昨日销量分布（极坐标图）</h3>
+      <div class="chart-wrapper" style="height:200px"><canvas id="chartPolar"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section-title">📊 图表分析</div>
+
+  <div class="chart-container">
+    <h3>POP支付金额排名</h3>
+    <div class="chart-wrapper"><canvas id="chartPayRank"></canvas></div>
+    <div class="chart-tip">💡 点击柱状图可跳转到该店铺详情</div>
+  </div>
+
+  <div class="chart-container">
+    <h3>曝光量 vs 访客数</h3>
+    <div class="chart-wrapper"><canvas id="chartExposureVisitors"></canvas></div>
+    <div class="chart-tip">💡 点击柱状图可跳转到该店铺详情</div>
+  </div>
+
+  <div class="chart-container">
+    <h3>广告投产比（7天）</h3>
+    <div class="chart-wrapper"><canvas id="chartAdROI"></canvas></div>
+    <div class="chart-tip">💡 点击柱状图可跳转到该店铺详情</div>
+  </div>
+
+  <div class="chart-container">
+    <h3>全托昨日销量排名</h3>
+    <div class="chart-wrapper"><canvas id="chartFullSales"></canvas></div>
+    <div class="chart-tip">💡 点击柱状图可跳转到该店铺详情</div>
+  </div>
+
+  <div class="section-title">📋 POP店铺明细</div>
+  <div class="table-container">
+    <div class="table-scroll">
+      <table id="popTable"></table>
+    </div>
+  </div>
+
+  <div class="section-title">📋 全托管店铺明细</div>
+  <div class="table-container">
+    <div class="table-scroll">
+      <table id="fullTable"></table>
+    </div>
+  </div>
 </div>
 
-<div class="card" style="grid-column:span 12;padding:0">
-<div class="sec" style="padding:12px 12px 0">六、风险店铺汇总表</div>
-<div class="tbl">
-<table>
-<thead><tr><th>店铺</th><th>来源</th><th>等待处理纠纷数</th><th>纠纷剩余一天内到期数量</th><th>商品错误订单</th><th>人工审核订单</th><th>邮寄方式错误</th><th>过期订单</th></tr></thead>
-<tbody>
-<tr><td>profile</td><td>POP</td><td class="r">6</td><td>0</td><td>0</td><td class="r">2</td><td>0</td><td>0</td></tr>
-<tr><td>Sara</td><td>POP</td><td class="r">9</td><td>0</td><td class="r">4</td><td class="r">4</td><td>0</td><td>0</td></tr>
-<tr><td>8Li</td><td>POP</td><td class="r">1</td><td>0</td><td>0</td><td class="r">1</td><td>0</td><td>0</td></tr>
-<tr><td>Catherine</td><td>POP</td><td class="r">4</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>Imice</td><td>POP</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>Linda</td><td>POP</td><td>-</td><td>-</td><td class="r">1</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>bana</td><td>POP</td><td>-</td><td>-</td><td class="r">1</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>Otmil</td><td>POP</td><td>0</td><td>0</td><td class="r">1</td><td class="r">1</td><td>0</td><td>0</td></tr>
-<tr><td>Ella</td><td>POP</td><td>0</td><td>0</td><td class="r">2</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>Eric</td><td>POP</td><td class="r">1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
-<tr><td>Petery</td><td>POP</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td class="r">1</td></tr>
-<tr><td>8Li</td><td>全托管</td><td class="r">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>Catherine</td><td>全托管</td><td class="r">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>nexusclick</td><td>全托管</td><td class="r">2</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>nancytuo</td><td>全托管</td><td class="r">6</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>Linda</td><td>全托管</td><td class="r">2</td><td class="r">1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>bana</td><td>全托管</td><td class="r">2</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>Otmil</td><td>全托管</td><td class="r">3</td><td class="r">1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>Ella</td><td>全托管</td><td class="r">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>Eric</td><td>全托管</td><td class="r">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>Elong</td><td>全托管</td><td class="r">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-<tr><td>NKtuo</td><td>全托管</td><td class="r">1</td><td>0</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
-</tbody></table>
+<!-- 店铺详情页容器 -->
+<div id="storeDetails"></div>
+
+</div><!-- /main-content -->
+
+<!-- AI聊天浮动按钮 -->
+<button class="chat-fab" id="chatFab" onclick="openChat()">💬</button>
+
+<!-- AI聊天面板 -->
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div>
+      <div class="chat-title">🤖 AI 运营助手</div>
+      <div class="chat-sub">基于店铺数据智能问答</div>
+    </div>
+    <button class="chat-close" onclick="closeChat()">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <span class="chat-suggestion" onclick="sendQuickMsg('哪个店铺支付金额最高？')">哪个店铺支付金额最高？</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('哪些店铺有纠纷需要处理？')">哪些店铺有纠纷？</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('广告投产比排名')">广告投产比排名</span>
+    <span class="chat-suggestion" onclick="sendQuickMsg('全托昨日销量排名')">全托昨日销量排名</span>
+  </div>
+  <div class="chat-input-area">
+    <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
+    <button class="chat-send" id="chatSend" onclick="sendChatMsg()">发送</button>
+  </div>
 </div>
-</div>
-</div>
-</section>
 
-<hr>
+<script>
+var popData = [
+  {"store": "profile", "pay": 3752.33, "exposure": 36049.0, "visitors": 1807.0, "ctr": 0.0501262170934006, "orders": 65.0, "cvr": 0.0354, "adYest": 112.38, "ad7d": 749.7, "adOrdYest": 3.0, "adRoiYest": 14.12, "adRoi7d": 23.56, "balance": 1698.91, "dispute": 8, "disputeExpire": 0, "errOrder": 2, "manualOrder": 17, "mailErr": 0, "expired": 4, "owner": "Yasso", "deadStock": 35.0},
+  {"store": "Sara", "pay": 5870.82, "exposure": 41315.0, "visitors": 2264.0, "ctr": 0.0547984993343822, "orders": 99.0, "cvr": 0.0415, "adYest": 66.89, "ad7d": 695.1, "adOrdYest": 6.0, "adRoiYest": 15.07, "adRoi7d": 48.09, "balance": 1771.27, "dispute": 9, "disputeExpire": 0, "errOrder": 10, "manualOrder": 18, "mailErr": 0, "expired": 4, "owner": "", "deadStock": 6.0},
+  {"store": "8Li", "pay": 2034.5, "exposure": 24703.0, "visitors": 1107.0, "ctr": 0.044812370967089, "orders": 36.0, "cvr": 0.0307, "adYest": 60.0, "ad7d": 399.77, "adOrdYest": 1.0, "adRoiYest": 2.4, "adRoi7d": 13.48, "balance": 513.08, "dispute": 1, "disputeExpire": 0, "errOrder": 3, "manualOrder": 5, "mailErr": 0, "expired": 0, "owner": "Angelia", "deadStock": 10.0},
+  {"store": "Catherine", "pay": 771.44, "exposure": 21024.0, "visitors": 1141.0, "ctr": 0.0542713089802131, "orders": 28.0, "cvr": 0.0245, "adYest": 50.0, "ad7d": 381.0, "adOrdYest": 5.0, "adRoiYest": 13.94, "adRoi7d": 14.97, "balance": 568.89, "dispute": 2, "disputeExpire": 0, "errOrder": 3, "manualOrder": 3, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 10.0},
+  {"store": "Imice", "pay": 29.76, "exposure": 2952.0, "visitors": 203.0, "ctr": 0.0687669376693767, "orders": 2.0, "cvr": 0.0099, "adYest": 0.0, "ad7d": 30.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "吴铭慧", "deadStock": 10.0},
+  {"store": "nexusclick", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 8, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "NexusPOP", "pay": 0.0, "exposure": 1393.0, "visitors": 48.0, "ctr": 0.0344580043072505, "orders": 0.0, "cvr": 0.0, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 1, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "David", "pay": 0.0, "exposure": 0.0, "visitors": 4.0, "ctr": 0.0, "orders": 0.0, "cvr": 0.0, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "nancytuo", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 2, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "Linda", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 3, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "bana", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 1, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 0.0},
+  {"store": "Otmil", "pay": 172.03, "exposure": 7875.0, "visitors": 906.0, "ctr": 0.115047619047619, "orders": 6.0, "cvr": 0.0066, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 582.57, "dispute": 1, "disputeExpire": 0, "errOrder": 2, "manualOrder": 5, "mailErr": 0, "expired": 0, "owner": "Denny", "deadStock": 6.0},
+  {"store": "Ella", "pay": 153.67, "exposure": 817.0, "visitors": 214.0, "ctr": 0.261933904528764, "orders": 2.0, "cvr": 0.0093, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 138.81, "dispute": 0, "disputeExpire": 0, "errOrder": 5, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "Eric", "pay": 0.0, "exposure": 2708.0, "visitors": 120.0, "ctr": 0.0443131462333826, "orders": 0.0, "cvr": 0.0, "adYest": 0.0, "ad7d": 0.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 1, "manualOrder": 1, "mailErr": 0, "expired": 1, "owner": "Yasso", "deadStock": 4.0},
+  {"store": "sam", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "Angelia", "deadStock": 0.0},
+  {"store": "Elong", "pay": 46.14, "exposure": 4278.0, "visitors": 262.0, "ctr": 0.0612435717625058, "orders": 4.0, "cvr": 0.0153, "adYest": 7.0, "ad7d": 7.0, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 0.0, "balance": 0.0, "dispute": 0, "disputeExpire": 0, "errOrder": 5, "manualOrder": 0, "mailErr": 0, "expired": 0, "owner": "", "deadStock": 2.0},
+  {"store": "Petery", "pay": 147.33, "exposure": 8585.0, "visitors": 571.0, "ctr": 0.0665113570180547, "orders": 8.0, "cvr": 0.0088, "adYest": 16.56, "ad7d": 165.83, "adOrdYest": 0.0, "adRoiYest": 0.0, "adRoi7d": 10.03, "balance": 361.02, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 0, "mailErr": 0, "expired": 1, "owner": "Noah", "deadStock": 1.0},
+  {"store": "NKtuo", "pay": null, "exposure": null, "visitors": null, "ctr": null, "orders": null, "cvr": null, "adYest": null, "ad7d": null, "adOrdYest": null, "adRoiYest": null, "adRoi7d": null, "balance": null, "dispute": 0, "disputeExpire": 0, "errOrder": 0, "manualOrder": 2, "mailErr": 0, "expired": 0, "owner": "aauasga", "deadStock": 0.0}
+];
 
-<!-- POP详情 -->
-<section>
-<div class="sec">POP 详情</div>
+var fullData = [
+  {"store": "profile", "views": null, "visitors": null, "cvr": null, "salesYest": null, "sales7d": null, "dispute": null, "disputeExpire": null, "owner": "Yasso", "deadStock": 0.0},
+  {"store": "Sara", "views": 697.0, "visitors": 386.0, "cvr": 0.0363, "salesYest": 18.0, "sales7d": 113.0, "dispute": 1, "disputeExpire": 0, "owner": "", "deadStock": 5.0},
+  {"store": "8Li", "views": 303.0, "visitors": 146.0, "cvr": 0.0411, "salesYest": 9.0, "sales7d": 52.0, "dispute": 1, "disputeExpire": 0, "owner": "Angelia", "deadStock": 4.0},
+  {"store": "Catherine", "views": 292.0, "visitors": 182.0, "cvr": 0.011, "salesYest": 7.0, "sales7d": 81.0, "dispute": 0, "disputeExpire": 0, "owner": "", "deadStock": 2.0},
+  {"store": "Imice", "views": null, "visitors": null, "cvr": null, "salesYest": null, "sales7d": null, "dispute": null, "disputeExpire": null, "owner": "吴铭慧", "deadStock": 0.0},
+  {"store": "nexusclick", "views": 5122.0, "visitors": 2605.0, "cvr": 0.0269, "salesYest": 71.0, "sales7d": 390.0, "dispute": 1, "disputeExpire": 0, "owner": "", "deadStock": 6.0},
+  {"store": "NexusPOP", "views": null, "visitors": null, "cvr": null, "salesYest": null, "sales7d": null, "dispute": null, "disputeExpire": null, "owner": "", "deadStock": 0.0},
+  {"store": "David", "views": 291.0, "visitors": 141.0, "cvr": 0.0142, "salesYest": 3.0, "sales7d": 31.0, "dispute": 0, "disputeExpire": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "nancytuo", "views": 1617.0, "visitors": 713.0, "cvr": 0.0295, "salesYest": 25.0, "sales7d": 149.0, "dispute": 5, "disputeExpire": 4, "owner": "", "deadStock": 3.0},
+  {"store": "Linda", "views": 756.0, "visitors": 343.0, "cvr": 0.0292, "salesYest": 12.0, "sales7d": 75.0, "dispute": 4, "disputeExpire": 1, "owner": "", "deadStock": 4.0},
+  {"store": "bana", "views": 526.0, "visitors": 241.0, "cvr": 0.0166, "salesYest": 8.0, "sales7d": 74.0, "dispute": 5, "disputeExpire": 3, "owner": "", "deadStock": 4.0},
+  {"store": "Otmil", "views": 1329.0, "visitors": 619.0, "cvr": 0.0162, "salesYest": 13.0, "sales7d": 112.0, "dispute": 3, "disputeExpire": 2, "owner": "Denny", "deadStock": 4.0},
+  {"store": "Ella", "views": 746.0, "visitors": 348.0, "cvr": 0.0172, "salesYest": 6.0, "sales7d": 36.0, "dispute": 4, "disputeExpire": 0, "owner": "Aileen", "deadStock": 0.0},
+  {"store": "Eric", "views": 135.0, "visitors": 72.0, "cvr": 0.0556, "salesYest": 4.0, "sales7d": 17.0, "dispute": 1, "disputeExpire": 1, "owner": "Yasso", "deadStock": 1.0},
+  {"store": "sam", "views": 58.0, "visitors": 39.0, "cvr": 0.0256, "salesYest": 2.0, "sales7d": 14.0, "dispute": 0, "disputeExpire": 0, "owner": "Angelia", "deadStock": 2.0},
+  {"store": "Elong", "views": 508.0, "visitors": 251.0, "cvr": 0.012, "salesYest": 4.0, "sales7d": 43.0, "dispute": 1, "disputeExpire": 0, "owner": "", "deadStock": 1.0},
+  {"store": "Petery", "views": 16.0, "visitors": 13.0, "cvr": 0.0769, "salesYest": 2.0, "sales7d": 19.0, "dispute": 0, "disputeExpire": 0, "owner": "Noah", "deadStock": 0.0},
+  {"store": "NKtuo", "views": 4470.0, "visitors": 2146.0, "cvr": 0.0396, "salesYest": 168.0, "sales7d": 668.0, "dispute": 1, "disputeExpire": 0, "owner": "aauasga", "deadStock": 6.0}
+];
 
-<div id="pop-profile" class="card"><div class="sec">🏪 profile</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>1469.84</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>21720</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>1024</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.04714548802946593</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>38</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0342</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>77.09</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>476.46</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>5</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>14.66</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>21.28</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>1071.13</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b class="r">6</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b class="r">2</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+var reportDate = "2026-08-17";
 
-<div id="pop-Sara" class="card"><div class="sec">🏪 Sara</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>2746.31</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>31455</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>1639</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.05210618343665554</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>62</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.036</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>123.89</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>711.5</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>14</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>48.07</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>49.77</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>892.61</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b class="r">9</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b class="r">4</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b class="r">4</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== 后端API配置 =====
+var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
+var handledStatus={};
 
-<div id="pop-8Li" class="card"><div class="sec">🏪 8Li</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>864.4</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>18388</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>796</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.043289101587992165</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>19</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0226</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>50</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>320</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>5.35</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>13.64</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>352.61</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function loadHandledStatus(){
+  fetch(API_URL).then(function(r){return r.json()}).then(function(r){
+    if(r.success){handledStatus=r.data||{};renderHandledStatus();}
+  }).catch(function(e){console.log("load status failed",e)});
+}
 
-<div id="pop-Catherine" class="card"><div class="sec">🏪 Catherine</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>663.38</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>16992</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>772</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.0454331450094162</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>21</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0259</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>50</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>361.96</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>7.68</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>16.3</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>343.94</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b class="r">4</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function handleBtnHtml(store,type,val){
+  if(val<=0)return "";
+  var key=store+"|"+type+"|"+reportDate;
+  return ' <span class="handle-btn" id="btn-'+key+'" onclick="toggleHandle(\''+store+'\',\''+type+'\')">已处理</span>';
+}
 
-<div id="pop-Imice" class="card"><div class="sec">🏪 Imice</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>54.48</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>2169</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>139</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.06408483171968649</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0144</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>0.01</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function singleHandleBtn(store,source,context){
+  var p=popData.find(function(d){return d.store===store});
+  var f=fullData.find(function(d){return d.store===store});
+  var hasAbnormal=false;
+  if(source==="full"){
+    if(f){
+      if(num(f.dispute)>0||num(f.disputeExpire)>0)hasAbnormal=true;
+    }
+  }else{
+    if(p){
+      if(num(p.dispute)>0||num(p.disputeExpire)>0||num(p.errOrder)>0||num(p.manualOrder)>0||num(p.mailErr)>0||num(p.expired)>0)hasAbnormal=true;
+    }
+    if(f){
+      if(num(f.dispute)>0||num(f.disputeExpire)>0)hasAbnormal=true;
+    }
+  }
+  if(!hasAbnormal)return "";
+  var prefix=source==="full"?"full":"pop";
+  var ctx=context==="detail"?"detail-":"";
+  var key=store+"|all|"+reportDate;
+  var btnId="btn-"+ctx+prefix+"-"+key;
+  return ' <span class="handle-btn" id="'+btnId+'" onclick="event.preventDefault();event.stopPropagation();toggleAllHandle(\''+store+'\',\''+prefix+'\',\''+ctx+'\')" style="display:inline-block;padding:3px 10px;font-size:12px;border:1px solid #4a90d9;border-radius:6px;background:#4a90d9;color:#fff;font-weight:600;cursor:pointer;margin-left:6px;white-space:nowrap">🖱️ 标记已处理</span>';
+}
 
-<div id="pop-nexusclick" class="card"><div class="sec">🏪 nexusclick</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function renderSingleBtnStatus(){
+  Object.keys(handledStatus).forEach(function(key){
+    var info=handledStatus[key];
+    if(key.indexOf("|all|")===-1)return;
+    var btnIds=["btn-pop-"+key,"btn-full-"+key,"btn-detail-pop-"+key,"btn-detail-full-"+key];
+    btnIds.forEach(function(id){
+      var btn=document.getElementById(id);
+      if(btn&&info.handled){
+        btn.textContent="✓ 已处理";
+        btn.style.background="#2e7d32";
+        btn.style.borderColor="#2e7d32";
+      }
+    });
+  });
+}
 
-<div id="pop-NexusPOP" class="card"><div class="sec">🏪 NexusPOP</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>779</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>36</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.04621309370988447</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>0.09</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function toggleAllHandle(store,prefix,ctx){
+  var key=store+"|all|"+reportDate;
+  var isHandled=handledStatus[key]&&handledStatus[key].handled;
+  var btnId="btn-"+(ctx||"")+prefix+"-"+key;
+  var btn=document.getElementById(btnId);
+  if(btn){btn.textContent="...";btn.style.opacity=0.5;}
+  fetch(API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({key:key,handled:!isHandled,handler:navigator.userAgent.includes("Mobile")?"移动端":"PC端"})
+  }).then(function(r){return r.json()}).then(function(r){
+    if(r.success){
+      handledStatus=r.data||{};
+      renderSingleBtnStatus();
+      if(btn){btn.style.opacity=1;}
+    }
+  }).catch(function(e){
+    if(btn){btn.textContent="标记已处理";btn.style.opacity=1;}
+    console.log("toggle failed",e);
+  });
+}
 
-<div id="pop-David" class="card"><div class="sec">🏪 David</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-2146826281</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>12.32</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function renderHandledStatus(){
+  Object.keys(handledStatus).forEach(function(key){
+    var info=handledStatus[key];
+    var btn=document.getElementById("btn-"+key);
+    if(btn&&info.handled){
+      btn.textContent="✓已处理";
+      btn.classList.add("done");
+      btn.setAttribute("title","处理人:"+info.handler+" 时间:"+info.time);
+    }
+  });
+  renderSingleBtnStatus();
+}
 
-<div id="pop-nancytuo" class="card"><div class="sec">🏪 nancytuo</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+function toggleHandle(store,type){
+  var key=store+"|"+type+"|"+reportDate;
+  var isHandled=handledStatus[key]&&handledStatus[key].handled;
+  var btn=document.getElementById("btn-"+key);
+  if(btn){btn.textContent="...";btn.style.opacity=0.5;}
+  fetch(API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({key:key,handled:!isHandled,handler:navigator.userAgent.includes("Mobile")?"移动端":"PC端"})
+  }).then(function(r){return r.json()}).then(function(r){
+    if(r.success){
+      handledStatus=r.data||{};
+      renderHandledStatus();
+      if(btn){btn.style.opacity=1;}
+    }
+  }).catch(function(e){
+    if(btn){btn.textContent="已处理";btn.style.opacity=1;}
+    console.log("toggle failed",e);
+  });
+}
 
-<div id="pop-Linda" class="card"><div class="sec">🏪 Linda</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== 工具函数 =====
+function num(v){
+  if(v===null||v===undefined||v===""||v==="-")return 0;
+  var n=parseFloat(v);
+  return isNaN(n)?0:n;
+}
+function fmtMoney(v){
+  var n=num(v);
+  return "¥"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtUSD(v){
+  var n=num(v);
+  return "$"+n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function fmtInt(v){
+  var n=num(v);
+  return n.toLocaleString("en-US");
+}
+function fmtPct(v){
+  if(v===null||v===undefined||v===""||v==="-")return "0.00%";
+  var n=parseFloat(v);
+  if(isNaN(n))return "0.00%";
+  return (n*100).toFixed(2)+"%";
+}
+function fmtNum(v,digits){
+  var n=num(v);
+  if(digits===undefined)digits=2;
+  return n.toLocaleString("en-US",{minimumFractionDigits:digits,maximumFractionDigits:digits});
+}
+function hasPopData(s){
+  var d=popData.find(function(x){return x.store===s});
+  return d&&d.pay!==null;
+}
+function hasFullData(s){
+  var d=fullData.find(function(x){return x.store===s});
+  return d&&d.salesYest!==null;
+}
+function disputeTag(val){
+  var n=num(val);
+  if(n===0)return '<span class="tag tag-green">'+n+'</span>';
+  return '<span class="tag tag-red">'+n+'</span>';
+}
+function deadStockTag(val){
+  var n=num(val);
+  if(n===0)return '<span class="tag tag-green">'+n+'</span>';
+  return '<span class="tag tag-orange">'+n+'</span>';
+}
+function balanceTag(balance,ad7d){
+  var b=num(balance),a=num(ad7d);
+  if(a===0){return '<span class="tag tag-green">'+fmtMoney(b)+'</span>';}
+  if(b>=a){return '<span class="tag tag-green">'+fmtMoney(b)+'</span>';}
+  if(b>=a/2){return '<span class="tag tag-orange">'+fmtMoney(b)+'</span>';}
+  return '<span class="tag tag-red">'+fmtMoney(b)+'</span>';
+}
+function abnormalTag(store){
+  var p=popData.find(function(d){return d.store===store});
+  if(p&&p.pay!==null){
+    if(num(p.pay)===0&&num(p.exposure)===0&&num(p.visitors)===0){
+      return ' <span class="tag tag-red">数据异常</span>';
+    }
+  }
+  return '';
+}
+function abnormalTagFull(store){
+  var f=fullData.find(function(d){return d.store===store});
+  if(f&&f.salesYest!==null){
+    if(num(f.views)===0&&num(f.visitors)===0&&num(f.cvr)===0){
+      return ' <span class="tag tag-red">数据异常</span>';
+    }
+  }
+  return '';
+}
+function disputeTagTri(val){
+  var n=num(val);
+  if(n===0)return '<span class="tag tag-green">'+n+'</span>';
+  if(n===1)return '<span class="tag tag-orange">'+n+'</span>';
+  return '<span class="tag tag-red">'+n+'</span>';
+}
+function rankBadge(rank){
+  var cls=rank===1?"rank-1":rank===2?"rank-2":rank===3?"rank-3":"rank-other";
+  return '<span class="rank-badge '+cls+'">'+rank+'</span>';
+}
 
-<div id="pop-bana" class="card"><div class="sec">🏪 bana</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== 日期显示 =====
+document.getElementById("sidebarDate").textContent=reportDate;
+document.getElementById("topbarDate").textContent=reportDate;
 
-<div id="pop-Otmil" class="card"><div class="sec">🏪 Otmil</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>216.64</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>11520</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>827</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.07178819444444444</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>6</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0073</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>678.2</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== 合并店铺列表（保持POP顺序） =====
+var allStores=popData.map(function(d){return d.store});
 
-<div id="pop-Ella" class="card"><div class="sec">🏪 Ella</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>3.44</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>660</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>220</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.3333333333333333</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0045</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-10.57</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b class="r">2</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== 侧边栏店铺导航 =====
+(function(){
+  var nav=document.getElementById("storeNav");
+  var html="";
+  allStores.forEach(function(s){
+    var p=popData.find(function(d){return d.store===s});
+    var amt="";
+    if(p&&p.pay!==null&&p.pay>0)amt="$"+fmtNum(p.pay,2);
+    html+='<div class="nav-item" id="nav-'+s+'" onclick="showStore(\''+s+'\')">'+
+      '<span class="nav-name">'+s+'</span>'+
+      '<span class="nav-amt">'+amt+'</span>'+
+    '</div>';
+  });
+  nav.innerHTML=html;
+})();
 
-<div id="pop-Eric" class="card"><div class="sec">🏪 Eric</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>143.79</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>3165</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>140</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.044233807266982623</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>3</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0214</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== KPI汇总 =====
+var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0,popDeadStockTotal=0,fullDeadStockTotal=0;
+popData.forEach(function(d){
+  if(d.pay!==null)popPayTotal+=num(d.pay);
+  if(d.orders!==null)popOrderTotal+=num(d.orders);
+  if(d.adYest!==null)adYestTotal+=num(d.adYest);
+  if(d.balance!==null)balanceTotal+=num(d.balance);
+  if(d.deadStock!==null)popDeadStockTotal+=num(d.deadStock);
+});
+fullData.forEach(function(d){
+  if(d.salesYest!==null)fullYestTotal+=num(d.salesYest);
+  if(d.sales7d!==null)full7dTotal+=num(d.sales7d);
+  if(d.deadStock!==null)fullDeadStockTotal+=num(d.deadStock);
+});
 
-<div id="pop-sam" class="card"><div class="sec">🏪 sam</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+(function(){
+  var grid=document.getElementById("kpiGrid");
+  grid.innerHTML=
+  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
+    '<div class="kpi-label">POP支付总额</div>'+
+    '<div class="kpi-value">'+fmtUSD(popPayTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
+    '<div class="kpi-label">总订单数</div>'+
+    '<div class="kpi-value">'+fmtInt(popOrderTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
+    '<div class="kpi-label">昨日广告花费</div>'+
+    '<div class="kpi-value">'+fmtMoney(adYestTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
+    '<div class="kpi-label">广告账号总余额</div>'+
+    '<div class="kpi-value">'+fmtMoney(balanceTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
+    '<div class="kpi-label">全托昨日销量</div>'+
+    '<div class="kpi-value">'+fmtInt(fullYestTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
+    '<div class="kpi-label">全托7日销量</div>'+
+    '<div class="kpi-value">'+fmtInt(full7dTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
+    '<div class="kpi-label">POP仓发不动销品</div>'+
+    '<div class="kpi-value">'+fmtInt(popDeadStockTotal)+'</div>'+
+  '</div>'+
+  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
+    '<div class="kpi-label">全托仓发不动销品</div>'+
+    '<div class="kpi-value">'+fmtInt(fullDeadStockTotal)+'</div>'+
+  '</div>';
+})();
 
-<div id="pop-Elong" class="card"><div class="sec">🏪 Elong</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>292.12</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>4613</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>318</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.06893561673531325</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>8</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0252</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== POP明细表格 =====
+(function(){
+  var sorted=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
+  var noPay=[];
+  var rows=sorted.concat(noPay);
+  var html="<thead><tr>"+
+    "<th>排名</th><th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th>"+
+    "<th>点击率</th><th>订单</th><th>转化率</th><th>7天广告</th><th>投产</th>"+
+    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>仓发不动销</th><th>负责人</th><th>异常是否处理</th>"+
+  "</tr></thead><tbody>";
+  rows.forEach(function(d,idx){
+    var rank=idx+1;
+    var pay=d.pay!==null?fmtUSD(d.pay):"";
+    var exposure=d.exposure!==null?fmtInt(d.exposure):"";
+    var visitors=d.visitors!==null?fmtInt(d.visitors):"";
+    var ctr=d.ctr!==null?fmtPct(d.ctr):"";
+    var orders=d.orders!==null?fmtInt(d.orders):"";
+    var cvr=d.cvr!==null?fmtPct(d.cvr):"";
+    var ad7d=d.ad7d!==null?fmtMoney(d.ad7d):"";
+    var roi7d=d.adRoi7d!==null?fmtNum(d.adRoi7d,2):"";
+    var bal=d.balance!==null?balanceTag(d.balance,d.ad7d):"";
+    var owner=d.owner||"";
+    html+="<tr>"+
+      "<td>"+rankBadge(rank)+"</td>"+
+      '<td><a class="store-link" onclick="showStoreByName(\''+d.store+'\')">'+d.store+'</a>'+abnormalTag(d.store)+'</td>'+
+      "<td>"+pay+"</td>"+
+      "<td>"+exposure+"</td>"+
+      "<td>"+visitors+"</td>"+
+      "<td>"+ctr+"</td>"+
+      "<td>"+orders+"</td>"+
+      "<td>"+cvr+"</td>"+
+      "<td>"+ad7d+"</td>"+
+      "<td>"+roi7d+"</td>"+
+      "<td>"+bal+"</td>"+
+      "<td>"+disputeTag(d.dispute)+"</td>"+
+      "<td>"+disputeTag(d.disputeExpire)+"</td>"+
+      "<td>"+disputeTag(d.errOrder)+"</td>"+
+      "<td>"+disputeTag(d.manualOrder)+"</td>"+
+      "<td>"+disputeTag(d.mailErr)+"</td>"+
+      "<td>"+disputeTag(d.expired)+"</td>"+
+      "<td>"+(d.deadStock!==null?deadStockTag(d.deadStock):"")+"</td>"+
+      "<td>"+owner+"</td>"+
+      "<td>"+singleHandleBtn(d.store)+"</td>"+
+    "</tr>";
+  });
+  html+="</tbody>";
+  document.getElementById("popTable").innerHTML=html;
+})();
 
-<div id="pop-Petery" class="card"><div class="sec">🏪 Petery</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>152.58</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>5110</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>306</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>0.059882583170254404</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>4</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0098</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>54.25</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>54.25</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>425.66</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b class="r">1</b></div>
-</div></div>
+// ===== 全托管明细表格 =====
+(function(){
+  var sorted=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  var noSales=[];
+  var rows=sorted.concat(noSales);
+  var html="<thead><tr>"+
+    "<th>排名</th><th>店铺</th><th>浏览量</th><th>访客数</th><th>转化率</th>"+
+    "<th>昨日销量</th><th>7日销量</th><th>纠纷</th><th>到期</th><th>仓发不动销</th><th>负责人</th><th>异常是否处理</th>"+
+  "</tr></thead><tbody>";
+  rows.forEach(function(d,idx){
+    var rank=idx+1;
+    var views=d.views!==null?fmtInt(d.views):"";
+    var visitors=d.visitors!==null?fmtInt(d.visitors):"";
+    var cvr=d.cvr!==null?fmtPct(d.cvr):"";
+    var sy=d.salesYest!==null?fmtInt(d.salesYest):"";
+    var s7=d.sales7d!==null?fmtInt(d.sales7d):"";
+    var owner=d.owner||"";
+    html+="<tr>"+
+      "<td>"+rankBadge(rank)+"</td>"+
+      '<td><a class="store-link" onclick="showStoreByName(\''+d.store+'\')">'+d.store+'</a>'+abnormalTagFull(d.store)+'</td>'+
+      "<td>"+views+"</td>"+
+      "<td>"+visitors+"</td>"+
+      "<td>"+cvr+"</td>"+
+      "<td>"+sy+"</td>"+
+      "<td>"+s7+"</td>"+
+      "<td>"+disputeTagTri(d.dispute)+"</td>"+
+      "<td>"+disputeTagTri(d.disputeExpire)+"</td>"+
+      "<td>"+(d.deadStock!==null?deadStockTag(d.deadStock):"")+"</td>"+
+      "<td>"+owner+"</td>"+
+      "<td>"+singleHandleBtn(d.store,"full")+"</td>"+
+    "</tr>";
+  });
+  html+="</tbody>";
+  document.getElementById("fullTable").innerHTML=html;
+})();
 
-<div id="pop-NKtuo" class="card"><div class="sec">🏪 NKtuo</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">支付金额</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">曝光量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">点击率</span><b>-2146826281</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">订单数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告花费</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告订单</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">昨天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">7天广告投产</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">广告账户余额</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">商品错误订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">人工审核订单</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">邮寄方式错误</span><b>0</b></div>
-<div class="card" style="grid-column:span 4"><span class="t">过期订单</span><b>0</b></div>
-</div></div>
+// ===== 店铺详情页 =====
+(function(){
+  var container=document.getElementById("storeDetails");
+  var html="";
+  allStores.forEach(function(s){
+    var p=popData.find(function(d){return d.store===s});
+    var f=fullData.find(function(d){return d.store===s});
+    var hasPop=p&&p.pay!==null;
+    var hasFull=f&&f.salesYest!==null;
+    html+='<div class="store-detail" id="store-'+s+'">';
+    html+='<h2>📊 '+s+' 店铺详情</h2>';
+    // 雷达图放在顶部
+    var radarData=null;
+    if(hasPop){
+      radarData={labels:["支付金额","订单数","曝光量","访客数","转化率"],vals:[num(p.pay),num(p.orders),num(p.exposure),num(p.visitors),num(p.cvr)]};
+    }else if(hasFull){
+      radarData={labels:["浏览量","访客数","转化率","昨日销量","七日销量"],vals:[num(f.views),num(f.visitors),num(f.cvr),num(f.salesYest),num(f.sales7d)]};
+    }
+    if(radarData){
+      html+='<div class="chart-container" style="margin-bottom:16px">';
+      html+='<h3 style="font-size:14px;font-weight:600;margin-bottom:8px">📊 店铺多维度雷达图</h3>';
+      html+='<div class="chart-wrapper" style="height:260px"><canvas id="radar-'+s+'"></canvas></div>';
+      html+='</div>';
+    }
+    if(hasPop){
+      html+='<h3>💰 POP 数据</h3>';
+      html+='<div class="detail-kpi-grid">';
+      var popLabels=["支付金额","曝光量","访客数","点击率","订单数","转化率","昨天广告花费","7天广告花费","昨天广告订单","昨天广告投产","7天广告投产","广告账户余额","等待处理纠纷数","纠纷剩余一天内到期","商品错误订单","人工审核订单","邮寄方式错误","过期订单","仓发不动销品"];
+      var popVals=[
+        fmtUSD(p.pay),fmtInt(p.exposure),fmtInt(p.visitors),fmtPct(p.ctr),fmtInt(p.orders),fmtPct(p.cvr),
+        fmtMoney(p.adYest),fmtMoney(p.ad7d),fmtInt(p.adOrdYest),fmtNum(p.adRoiYest,2),fmtNum(p.adRoi7d,2),fmtMoney(p.balance),
+        num(p.dispute),num(p.disputeExpire),num(p.errOrder),num(p.manualOrder),num(p.mailErr),num(p.expired),
+        p.deadStock!==null?num(p.deadStock):""
+      ];
+      for(var i=0;i<popLabels.length;i++){
+        var valColor="";
+        if(i===12){valColor=num(p.dispute)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(i===13){valColor=num(p.disputeExpire)===1?'style="color:#ef6c00"':num(p.disputeExpire)>1?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(i===14){valColor=num(p.errOrder)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(i===15){valColor=num(p.manualOrder)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(i===16){valColor=num(p.mailErr)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(i===17){valColor=num(p.expired)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(i===11){var b=num(p.balance),a=num(p.ad7d);if(a>0){if(b>=a)valColor='style="color:#2e7d32"';else if(b>=a/2)valColor='style="color:#ef6c00"';else valColor='style="color:#d32f2f"';}}
+        html+='<div class="detail-kpi-card">'+
+          '<div class="detail-kpi-label">'+popLabels[i]+'</div>'+
+          '<div class="detail-kpi-value" '+valColor+'>'+popVals[i]+'</div>'+
+        '</div>';
+      }
+      html+='</div>';
+    }
 
-</section>
+    if(hasFull){
+      html+='<h3>🏪 全托管数据</h3>';
+      html+='<div class="detail-kpi-grid">';
+      var fLabels=["浏览量","访客数","转化率","全托昨日销量","全托七日销量","等待处理纠纷数","纠纷剩余一天内到期","仓发不动销品","负责人"];
+      var fVals=[
+        fmtInt(f.views),fmtInt(f.visitors),fmtPct(f.cvr),fmtInt(f.salesYest),fmtInt(f.sales7d),
+        num(f.dispute),num(f.disputeExpire),f.deadStock!==null?num(f.deadStock):"",f.owner||""
+      ];
+      for(var j=0;j<fLabels.length;j++){
+        var fc="";
+        if(j===5){fc=num(f.dispute)>0?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        if(j===6){fc=num(f.disputeExpire)===1?'style="color:#ef6c00"':num(f.disputeExpire)>1?'style="color:#d32f2f"':'style="color:#2e7d32"';}
+        var isFOwner=j===8;
+        html+='<div class="detail-kpi-card">'+
+          '<div class="detail-kpi-label">'+fLabels[j]+'</div>'+
+          (isFOwner?'<div class="detail-kpi-value owner-field" '+fc+'>'+fVals[j]+'</div>':
+           '<div class="detail-kpi-value" '+fc+'>'+fVals[j]+'</div>')+
+        '</div>';
+      }
+      html+='</div>';
+    }
 
-<hr>
+    // 负责人+异常处理卡片（始终显示，放在最底部）
+    var ownerVal=(p&&p.owner)||(f&&f.owner)||"";
+    html+='<div class="detail-kpi-grid" style="grid-template-columns:1fr">';
+    html+='<div class="detail-kpi-card" style="border:2px solid #4a90d9">';
+    html+='<div class="detail-kpi-label" style="display:flex;align-items:center;justify-content:space-between">';
+    html+='<span>负责人</span>';
+    var detailBtn=singleHandleBtn(s,hasPop?"pop":"full","detail");
+    if(detailBtn){
+      html+='<span class="detail-kpi-label" style="font-weight:normal">⚠️ 该店铺存在纠纷或者订单异常，点击标记已处理</span>';
+    }else{
+      html+='<span class="detail-kpi-label" style="font-weight:normal;color:#2e7d32">✓ 该店铺暂无异常</span>';
+    }
+    html+='</div>';
+    html+='<div class="detail-kpi-value owner-field" style="display:flex;align-items:center;justify-content:space-between">';
+    html+='<span>'+ownerVal+'</span>';
+    if(detailBtn){
+      html+=detailBtn;
+    }else{
+      html+='<span style="color:#2e7d32;font-size:14px">✓ 无异常</span>';
+    }
+    html+='</div></div></div>';
 
-<!-- 全托详情 -->
-<section>
-<div class="sec">全托管 详情</div>
+    if(!hasPop&&!hasFull){
+      html+='<p style="color:#888;padding:20px 0">该店铺暂无详细数据</p>';
+    }
+    html+='</div>';
+  });
+  container.innerHTML=html;
 
-<div id="ft-profile" class="card"><div class="sec">🏪 profile</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-</div></div>
+  // 为每个有数据的店铺创建雷达图
+  allStores.forEach(function(s){
+    var p=popData.find(function(d){return d.store===s});
+    var f=fullData.find(function(d){return d.store===s});
+    var hasPop=p&&p.pay!==null;
+    var hasFull=f&&f.salesYest!==null;
+    var canvas=document.getElementById("radar-"+s);
+    if(!canvas)return;
+    var ctx=canvas.getContext("2d");
+    var labels,vals,maxVals;
+    if(hasPop){
+      var allPop=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0});
+      labels=["支付金额","订单数","曝光量","访客数","转化率"];
+      vals=[num(p.pay),num(p.orders),num(p.exposure),num(p.visitors),num(p.cvr)];
+      maxVals=[Math.max.apply(null,allPop.map(function(d){return num(d.pay)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.orders)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.exposure)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.visitors)}))||1,Math.max.apply(null,allPop.map(function(d){return num(d.cvr)}))||1];
+    }else if(hasFull){
+      var allFull=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0});
+      labels=["浏览量","访客数","转化率","昨日销量","七日销量"];
+      vals=[num(f.views),num(f.visitors),num(f.cvr),num(f.salesYest),num(f.sales7d)];
+      maxVals=[Math.max.apply(null,allFull.map(function(d){return num(d.views)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.visitors)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.cvr)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.salesYest)}))||1,Math.max.apply(null,allFull.map(function(d){return num(d.sales7d)}))||1];
+    }else{return;}
+    var data=vals.map(function(v,i){return Math.round(v/maxVals[i]*100)});
+    new Chart(ctx,{
+      type:"radar",
+      data:{labels:labels,datasets:[{label:s,data:data,borderColor:"#4a90d9",backgroundColor:"rgba(74,144,217,0.15)",borderWidth:2,pointRadius:3,pointBackgroundColor:"#4a90d9"}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{r:{beginAtZero:true,max:100,ticks:{stepSize:25,font:{size:9},backdropColor:"transparent"},pointLabels:{font:{size:11}}}}}
+    });
+  });
+})();
 
-<div id="ft-Sara" class="card"><div class="sec">🏪 Sara</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>541</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>292</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0445</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>14</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>109</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// ===== 图表 =====
+var charts={};
 
-<div id="ft-8Li" class="card"><div class="sec">🏪 8Li</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>203</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>107</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0654</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>10</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>51</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+function chartClickHandler(event,elements){
+  if(elements.length>0){
+    var idx=elements[0].index;
+    var label=this.data.labels[idx];
+    if(label)showStoreByName(label);
+  }
+}
 
-<div id="ft-Catherine" class="card"><div class="sec">🏪 Catherine</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>225</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>141</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0071</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>3</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>75</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+function roiColor(val){
+  if(val>=10)return "#4caf50";
+  if(val>=1)return "#ffc107";
+  return "#f44336";
+}
 
-<div id="ft-Imice" class="card"><div class="sec">🏪 Imice</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-</div></div>
+// 图表1: POP支付金额排名
+(function(){
+  var sorted=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0}).sort(function(a,b){return num(b.pay)-num(a.pay)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.pay)});
+  var ctx=document.getElementById("chartPayRank").getContext("2d");
+  charts.payRank=new Chart(ctx,{
+    type:"bar",
+    data:{labels:labels,datasets:[{label:"支付金额",data:data,backgroundColor:"#4a90d9",borderRadius:4}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      onClick:chartClickHandler,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return fmtUSD(c.raw)}}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:function(v){return "$"+v.toLocaleString()}}}}
+    }
+  });
+})();
 
-<div id="ft-nexusclick" class="card"><div class="sec">🏪 nexusclick</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>2859</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>1484</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0222</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>35</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>234</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// 图表2: 曝光量 vs 访客数
+(function(){
+  var sorted=popData.filter(function(d){return d.pay!==null}).sort(function(a,b){return num(b.pay)-num(a.pay)});
+  var labels=sorted.map(function(d){return d.store});
+  var exposure=sorted.map(function(d){return num(d.exposure)});
+  var visitors=sorted.map(function(d){return num(d.visitors)});
+  var ctx=document.getElementById("chartExposureVisitors").getContext("2d");
+  charts.expVis=new Chart(ctx,{
+    type:"bar",
+    data:{labels:labels,datasets:[
+      {label:"曝光量",data:exposure,backgroundColor:"#4a90d9",borderRadius:4},
+      {label:"访客数",data:visitors,backgroundColor:"#ff9800",borderRadius:4}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      onClick:chartClickHandler,
+      plugins:{legend:{display:true,position:"top"}},
+      scales:{y:{beginAtZero:true}}
+    }
+  });
+})();
 
-<div id="ft-NexusPOP" class="card"><div class="sec">🏪 NexusPOP</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>-</b></div>
-</div></div>
+// 图表3: 广告投产比(7天)
+(function(){
+  var sorted=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0}).sort(function(a,b){return num(b.adRoi7d)-num(a.adRoi7d)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.adRoi7d)});
+  var colors=data.map(function(v){return roiColor(v)});
+  var ctx=document.getElementById("chartAdROI").getContext("2d");
+  charts.adRoi=new Chart(ctx,{
+    type:"bar",
+    data:{labels:labels,datasets:[{label:"7天广告投产",data:data,backgroundColor:colors,borderRadius:4}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      onClick:chartClickHandler,
+      plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true}}
+    }
+  });
+})();
 
-<div id="ft-David" class="card"><div class="sec">🏪 David</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>258</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>114</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0263</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>4</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>24</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// 图表4: 全托昨日销量排名
+(function(){
+  var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.salesYest)});
+  var ctx=document.getElementById("chartFullSales").getContext("2d");
+  charts.fullSales=new Chart(ctx,{
+    type:"bar",
+    data:{labels:labels,datasets:[{label:"昨日销量",data:data,backgroundColor:"#7b68ee",borderRadius:4}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      onClick:chartClickHandler,
+      plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true}}
+    }
+  });
+})();
 
-<div id="ft-nancytuo" class="card"><div class="sec">🏪 nancytuo</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>1531</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>718</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0279</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>30</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>171</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">6</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// ===== 交互逻辑 =====
+function showOverview(){
+  document.getElementById("overviewPage").style.display="block";
+  var details=document.querySelectorAll(".store-detail");
+  details.forEach(function(d){d.classList.remove("active")});
+  document.querySelectorAll(".nav-item").forEach(function(n){n.classList.remove("active")});
+  document.getElementById("nav-overview").classList.add("active");
+  if(window.location.hash&&window.location.hash.indexOf("store-")===-1){history.replaceState(null,"",window.location.pathname);}
+  else if(window.location.hash.indexOf("store-")!==-1){history.replaceState(null,"",window.location.pathname);}
+  scrollToTop();
+  if(window.innerWidth<=768)closeSidebar();
+}
 
-<div id="ft-Linda" class="card"><div class="sec">🏪 Linda</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>604</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>260</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0154</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>7</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>56</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b class="r">1</b></div>
-</div></div>
+function showStore(name){
+  document.getElementById("overviewPage").style.display="none";
+  var details=document.querySelectorAll(".store-detail");
+  details.forEach(function(d){d.classList.remove("active")});
+  var el=document.getElementById("store-"+name);
+  if(el)el.classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(function(n){n.classList.remove("active")});
+  var navEl=document.getElementById("nav-"+name);
+  if(navEl)navEl.classList.add("active");
+  if(window.location.hash!=="#store-"+name){window.location.hash="store-"+name;}
+  scrollToTop();
+  if(window.innerWidth<=768)closeSidebar();
+}
 
-<div id="ft-bana" class="card"><div class="sec">🏪 bana</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>426</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>205</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0244</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>9</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>55</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+function showStoreByName(name){
+  showStore(name);
+}
 
-<div id="ft-Otmil" class="card"><div class="sec">🏪 Otmil</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>1535</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>671</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0089</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>8</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>95</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">3</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b class="r">1</b></div>
-</div></div>
+function scrollToSection(id){
+  var el=document.getElementById(id);
+  if(!el){
+    // 如果总览页隐藏了，先显示
+    showOverview();
+    el=document.getElementById(id);
+  }
+  if(el){
+    try{
+      el.scrollIntoView({behavior:"smooth",block:"start"});
+    }catch(e){
+      var top=el.offsetTop;
+      try{window.scrollTo({top:top,behavior:"smooth"})}catch(e2){window.scrollTo(0,top)}
+    }
+  }
+}
 
-<div id="ft-Ella" class="card"><div class="sec">🏪 Ella</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>332</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>164</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0244</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>5</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>22</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+function scrollToTop(){
+  try{window.scrollTo({top:0,behavior:"smooth"})}catch(e){window.scrollTo(0,0)}
+}
 
-<div id="ft-Eric" class="card"><div class="sec">🏪 Eric</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>116</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>61</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0492</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>3</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>18</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+function toggleSidebar(){
+  var sb=document.getElementById("sidebar");
+  var ov=document.getElementById("overlay");
+  sb.classList.toggle("open");
+  ov.classList.toggle("show");
+}
 
-<div id="ft-sam" class="card"><div class="sec">🏪 sam</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>71</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>40</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.05</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>2</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>13</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+function closeSidebar(){
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("overlay").classList.remove("show");
+}
 
-<div id="ft-Elong" class="card"><div class="sec">🏪 Elong</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>154</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>90</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0333</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>6</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>31</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// 给表格section加id方便跳转
+document.getElementById("popTable").closest(".table-container").id="popTableSection";
+var fullTbl=document.getElementById("fullTable");
+fullTbl.closest(".table-container").id="fullTableSection";
 
-<div id="ft-Petery" class="card"><div class="sec">🏪 Petery</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>8</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>7</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>-</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>8</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b>0</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// 初始显示总览
+showOverview();
 
-<div id="ft-NKtuo" class="card"><div class="sec">🏪 NKtuo</div><div class="grid">
-<div class="card" style="grid-column:span 3"><span class="t">浏览量</span><b>854</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">访客数</span><b>468</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">转化率</span><b>0.0107</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托昨日销量</span><b>7</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">全托七日销量</span><b>65</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">等待处理纠纷数</span><b class="r">1</b></div>
-<div class="card" style="grid-column:span 3"><span class="t">纠纷剩余一天内到期数量</span><b>0</b></div>
-</div></div>
+// 三图并列: 环形图、饼图、极坐标图
+(function(){
+  var sorted=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0}).sort(function(a,b){return num(b.pay)-num(a.pay)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.pay)});
+  var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043"];
+  var ctx=document.getElementById("chartDoughnut").getContext("2d");
+  charts.doughnut=new Chart(ctx,{type:"doughnut",data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:10},boxWidth:10}},tooltip:{callbacks:{label:function(c){return c.label+": "+fmtUSD(c.raw)}}}},cutout:"50%"}});
+})();
+(function(){
+  var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.salesYest)});
+  var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043","#26a69a","#ab47bc"];
+  var ctx=document.getElementById("chartPie").getContext("2d");
+  charts.pie=new Chart(ctx,{type:"pie",data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:"#fff"}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:10},boxWidth:10}}}}});
+})();
+(function(){
+  var sorted=fullData.filter(function(d){return d.salesYest!==null&&num(d.salesYest)>0}).sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  var labels=sorted.map(function(d){return d.store});
+  var data=sorted.map(function(d){return num(d.salesYest)});
+  var colors=["#4a90d9","#ff9800","#4caf50","#e91e63","#9c27b0","#00bcd4","#ff5722","#795548","#607d8b","#8bc34a","#cddc39","#ff7043","#26a69a","#ab47bc"];
+  var ctx=document.getElementById("chartPolar").getContext("2d");
+  charts.polar=new Chart(ctx,{type:"polarArea",data:{labels:labels,datasets:[{data:data,backgroundColor:colors.map(function(c){return c+"99"}),borderColor:colors,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:9},boxWidth:8}}},scales:{r:{beginAtZero:true,ticks:{font:{size:8}}}}}});
+})();
 
-</section>
+// URL hash 路由
+if(window.location.hash&&window.location.hash.indexOf("store-")!==-1){
+  var hashStore=window.location.hash.replace("#store-","");
+  var storeExists=popData.find(function(d){return d.store===hashStore});
+  if(storeExists){showStore(hashStore);}
+}
 
-</main>
-</div>
-</body></html>
+// 监听 hash 变化
+window.addEventListener("hashchange",function(){
+  if(window.location.hash&&window.location.hash.indexOf("store-")!==-1){
+    var hashStore=window.location.hash.replace("#store-","");
+    var storeExists=popData.find(function(d){return d.store===hashStore});
+    if(storeExists){showStore(hashStore);}
+  }else{
+    showOverview();
+  }
+});
+
+// 加载已处理状态
+loadHandledStatus();
+
+// ===== AI 聊天功能 =====
+var DEEPSEEK_API_KEY=["sk-566fba","6f61364","6568","6afd","4dee","580e","531"].join("");
+var DEEPSEEK_API_URL="https://api.deepseek.com/v1/chat/completions";
+var chatHistory=[];
+var chatInitialized=false;
+var chatLoading=false;
+
+function openChat(){
+  if(fabDragInfo&&fabDragInfo.hasMoved())return;
+  document.getElementById("chatFab").classList.add("hidden");
+  document.getElementById("chatPanel").classList.add("show");
+  if(!chatInitialized){
+    chatInitialized=true;
+    setTimeout(function(){initChat()},300);
+  }
+  setTimeout(function(){var el=document.getElementById("chatInput");if(el)el.focus()},400);
+}
+
+function closeChat(){
+  if(panelDragInfo&&panelDragInfo.hasMoved())return;
+  document.getElementById("chatPanel").classList.remove("show");
+  document.getElementById("chatFab").classList.remove("hidden");
+}
+
+function addChatMsg(text,role){
+  var container=document.getElementById("chatMessages");
+  var div=document.createElement("div");
+  div.className="chat-msg "+role;
+  div.textContent=text;
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+  return div;
+}
+
+function buildDataContext(){
+  var lines=[];
+  lines.push("当前日期："+reportDate);
+  lines.push("");
+  // 预计算POP排名
+  var popRanked=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
+  lines.push("【POP店铺数据（按支付金额降序）】");
+  popRanked.forEach(function(d,i){
+    lines.push("#"+(i+1)+" "+d.store+": 支付$"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+  });
+  // 无POP数据的店铺
+  var popNoData=popData.filter(function(d){return d.pay===null});
+  if(popNoData.length>0){
+    lines.push("");
+    lines.push("【仅纠纷数据的POP店铺（无POP业务）】");
+    popNoData.forEach(function(d){
+      lines.push(d.store+": 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
+    });
+  }
+  lines.push("");
+  // 预计算全托管排名
+  var fullRanked=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
+  lines.push("【全托管店铺数据（按昨日销量降序）】");
+  fullRanked.forEach(function(d,i){
+    lines.push("#"+(i+1)+" "+d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+  });
+  lines.push("");
+  // 预计算汇总
+  lines.push("【汇总数据（已精确计算，请直接引用）】");
+  lines.push("POP支付总额: $"+popPayTotal.toFixed(2));
+  lines.push("POP总订单数: "+popOrderTotal);
+  lines.push("昨日广告总花费: ¥"+adYestTotal.toFixed(2));
+  lines.push("广告账号总余额: ¥"+balanceTotal.toFixed(2));
+  lines.push("全托昨日总销量: "+fullYestTotal);
+  lines.push("全托7日总销量: "+full7dTotal);
+  lines.push("支付金额TOP3: "+popRanked[0].store+"($"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"($"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"($"+num(popRanked[2].pay).toFixed(2)+")");
+  lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")、"+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")、"+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
+  // 纠纷预警
+  var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
+  var fullDispute=fullData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
+  lines.push("有纠纷的POP店铺: "+(disputeStores.length>0?disputeStores.join("、"):"无"));
+  lines.push("有纠纷的全托店铺: "+(fullDispute.length>0?fullDispute.join("、"):"无"));
+  // 到期纠纷预警
+  var expireStores=popData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
+  var fullExpire=fullData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
+  lines.push("纠纷即将到期的POP店铺: "+(expireStores.length>0?expireStores.join("、"):"无"));
+  lines.push("纠纷即将到期的全托店铺: "+(fullExpire.length>0?fullExpire.join("、"):"无"));
+  // 异常订单预警（注意：异常订单与纠纷是不同概念）
+  var errOrderStores=popData.filter(function(d){return d.pay!==null&&num(d.errOrder)>0}).map(function(d){return d.store+"("+num(d.errOrder)+"个)"});
+  var manualStores=popData.filter(function(d){return d.pay!==null&&num(d.manualOrder)>0}).map(function(d){return d.store+"("+num(d.manualOrder)+"个)"});
+  var mailErrStores=popData.filter(function(d){return d.pay!==null&&num(d.mailErr)>0}).map(function(d){return d.store+"("+num(d.mailErr)+"个)"});
+  var expiredStores=popData.filter(function(d){return d.pay!==null&&num(d.expired)>0}).map(function(d){return d.store+"("+num(d.expired)+"个)"});
+  lines.push("商品错误订单: "+(errOrderStores.length>0?errOrderStores.join("、"):"无"));
+  lines.push("人工审核订单: "+(manualStores.length>0?manualStores.join("、"):"无"));
+  lines.push("邮寄方式错误: "+(mailErrStores.length>0?mailErrStores.join("、"):"无"));
+  lines.push("过期订单: "+(expiredStores.length>0?expiredStores.join("、"):"无"));
+  // 广告投产预警
+  var lowRoi=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0&&num(d.adRoi7d)<1}).map(function(d){return d.store+"(投产"+num(d.adRoi7d).toFixed(2)+")"});
+  lines.push("7天广告投产<1的店铺: "+(lowRoi.length>0?lowRoi.join("、"):"无"));
+  return lines.join("\n");
+}
+
+function callDeepSeek(messages,onSuccess,onError){
+  var xhr=new XMLHttpRequest();
+  xhr.open("POST",DEEPSEEK_API_URL,true);
+  xhr.setRequestHeader("Content-Type","application/json");
+  xhr.setRequestHeader("Authorization","Bearer "+DEEPSEEK_API_KEY);
+  xhr.onreadystatechange=function(){
+    if(xhr.readyState===4){
+      if(xhr.status===200){
+        try{
+          var resp=JSON.parse(xhr.responseText);
+          var content=resp.choices&&resp.choices[0]&&resp.choices[0].message?resp.choices[0].message.content:"";
+          onSuccess(content);
+        }catch(e){onError("解析失败: "+e.message)}
+      }else{
+        onError("API错误("+xhr.status+"): "+xhr.responseText.substring(0,200));
+      }
+    }
+  };
+  xhr.send(JSON.stringify({model:"deepseek-chat",messages:messages,temperature:0.7,max_tokens:1500}));
+}
+
+function initChat(){
+  addChatMsg("正在分析店铺数据，生成运营建议...","loading");
+  var ctx=buildDataContext();
+  var sysMsg="你是专业的电商运营分析师。以下数据已按排名排序并预计算了汇总值，请直接引用这些数据，不要自行计算。注意：纠纷数和异常订单（商品错误、人工审核、邮寄错误、过期订单）是不同的概念，不要混淆。给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、到期纠纷、异常订单、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
+  callDeepSeek(
+    [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建议"}],
+    function(content){
+      var loadingEl=document.querySelector(".chat-msg.loading");
+      if(loadingEl)loadingEl.remove();
+      addChatMsg(content,"ai");
+      chatHistory.push({role:"system",content:sysMsg});
+      chatHistory.push({role:"assistant",content:content});
+    },
+    function(err){
+      var loadingEl=document.querySelector(".chat-msg.loading");
+      if(loadingEl)loadingEl.remove();
+      addChatMsg("AI连接失败: "+err+"\n你可以直接提问，我会基于数据回答。","error");
+    }
+  );
+}
+
+function sendChatMsg(){
+  if(chatLoading)return;
+  var input=document.getElementById("chatInput");
+  var text=input.value.trim();
+  if(!text)return;
+  addChatMsg(text,"user");
+  input.value="";
+  input.style.height="auto";
+  var loadingEl=addChatMsg("思考中...","loading");
+  chatLoading=true;
+  document.getElementById("chatSend").disabled=true;
+  var ctx=buildDataContext();
+  var msgs=[];
+  if(chatHistory.length>0){
+    msgs=chatHistory.slice();
+    msgs.push({role:"user",content:"数据上下文:\n"+ctx+"\n\n用户问题: "+text+"\n请基于数据简洁回答。"});
+  }else{
+    msgs.push({role:"system",content:"你是专业的电商运营分析师，根据以下数据回答问题。\n"+ctx});
+    msgs.push({role:"user",content:text});
+  }
+  callDeepSeek(msgs,function(content){
+    loadingEl.remove();
+    addChatMsg(content,"ai");
+    chatHistory.push({role:"user",content:text});
+    chatHistory.push({role:"assistant",content:content});
+    chatLoading=false;
+    document.getElementById("chatSend").disabled=false;
+  },function(err){
+    loadingEl.remove();
+    addChatMsg("请求失败: "+err,"error");
+    chatLoading=false;
+    document.getElementById("chatSend").disabled=false;
+  });
+}
+
+function sendQuickMsg(msg){
+  document.getElementById("chatInput").value=msg;
+  sendChatMsg();
+}
+
+// textarea自适应高度
+document.getElementById("chatInput").addEventListener("input",function(){
+  this.style.height="auto";
+  this.style.height=Math.min(this.scrollHeight,80)+"px";
+});
+
+// ===== 拖动功能 =====
+function makeDraggable(el,handle){
+  var isDragging=false,startX=0,startY=0,origX=0,origY=0,hasMoved=false;
+  function onStart(e){
+    var touch=e.touches?e.touches[0]:e;
+    isDragging=true;hasMoved=false;
+    startX=touch.clientX;startY=touch.clientY;
+    var rect=el.getBoundingClientRect();
+    origX=rect.left;origY=rect.top;
+    el.classList.add("dragging");
+    e.preventDefault();
+  }
+  function onMove(e){
+    if(!isDragging)return;
+    var touch=e.touches?e.touches[0]:e;
+    var dx=touch.clientX-startX;
+    var dy=touch.clientY-startY;
+    if(Math.abs(dx)>3||Math.abs(dy)>3)hasMoved=true;
+    var newX=origX+dx;
+    var newY=origY+dy;
+    var maxX=window.innerWidth-el.offsetWidth;
+    var maxY=window.innerHeight-el.offsetHeight;
+    newX=Math.max(0,Math.min(newX,maxX));
+    newY=Math.max(0,Math.min(newY,maxY));
+    el.style.left=newX+"px";
+    el.style.top=newY+"px";
+    el.style.right="auto";
+    el.style.bottom="auto";
+    e.preventDefault();
+  }
+  function onEnd(){
+    isDragging=false;
+    el.classList.remove("dragging");
+  }
+  handle.addEventListener("mousedown",onStart);
+  handle.addEventListener("touchstart",onStart,{passive:false});
+  document.addEventListener("mousemove",onMove);
+  document.addEventListener("touchmove",onMove,{passive:false});
+  document.addEventListener("mouseup",onEnd);
+  document.addEventListener("touchend",onEnd);
+  return{hasMoved:function(){return hasMoved}};
+}
+
+var fabDragInfo=makeDraggable(document.getElementById("chatFab"),document.getElementById("chatFab"));
+var panelDragInfo=makeDraggable(document.getElementById("chatPanel"),document.querySelector(".chat-header"));
+</script>
+</body>
+</html>
