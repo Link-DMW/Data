@@ -675,18 +675,16 @@ var allStores=popData.map(function(d){return d.store});
 })();
 
 // ===== KPI汇总 =====
-var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0,popDeadStockTotal=0,fullDeadStockTotal=0;
+var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0;
 popData.forEach(function(d){
   if(d.pay!==null)popPayTotal+=num(d.pay);
   if(d.orders!==null)popOrderTotal+=num(d.orders);
   if(d.adYest!==null)adYestTotal+=num(d.adYest);
   if(d.balance!==null)balanceTotal+=num(d.balance);
-  if(d.deadStock!==null)popDeadStockTotal+=num(d.deadStock);
 });
 fullData.forEach(function(d){
   if(d.salesYest!==null)fullYestTotal+=num(d.salesYest);
   if(d.sales7d!==null)full7dTotal+=num(d.sales7d);
-  if(d.deadStock!==null)fullDeadStockTotal+=num(d.deadStock);
 });
 
 (function(){
@@ -715,14 +713,6 @@ fullData.forEach(function(d){
   '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
     '<div class="kpi-label">全托7日销量</div>'+
     '<div class="kpi-value">'+fmtInt(full7dTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'popTableSection\')">'+
-    '<div class="kpi-label">POP仓发不动销品</div>'+
-    '<div class="kpi-value">'+fmtInt(popDeadStockTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托仓发不动销品(SKU数量)</div>'+
-    '<div class="kpi-value">'+fmtInt(fullDeadStockTotal)+'</div>'+
   '</div>';
 })();
 
