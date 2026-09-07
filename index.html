@@ -8,7 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="店铺看板">
 <meta name="theme-color" content="#1a1a2e">
 <title>店铺指标看板</title>
-<script src="chart.umd.min.js"></script>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><rect x='20' y='50' width='12' height='30' rx='2' fill='%2348dbfb'/><rect x='44' y='35' width='12' height='45' rx='2' fill='%2348dbfb'/><rect x='68' y='25' width='12' height='55' rx='2' fill='%2348dbfb'/></svg>"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><rect x='20' y='50' width='12' height='30' rx='2' fill='%2348dbfb'/><rect x='44' y='35' width='12' height='45' rx='2' fill='%2348dbfb'/><rect x='68' y='25' width='12' height='55' rx='2' fill='%2348dbfb'/></svg>"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html{font-size:14px;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
@@ -711,10 +713,6 @@ fullData.forEach(function(d){
   '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
     '<div class="kpi-label">全托7日销量</div>'+
     '<div class="kpi-value">'+fmtInt(full7dTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托仓发不动销品(SKU数量)</div>'+
-    '<div class="kpi-value">'+fmtInt(fullDeadStockTotal)+'</div>'+
   '</div>'+
   '</div>';
 })();
