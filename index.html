@@ -675,7 +675,7 @@ var allStores=popData.map(function(d){return d.store});
 })();
 
 // ===== KPI汇总 =====
-var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0,fullDeadTotal=0;
+var popPayTotal=0,popOrderTotal=0,adYestTotal=0,balanceTotal=0,fullYestTotal=0,full7dTotal=0;
 popData.forEach(function(d){
   if(d.pay!==null)popPayTotal+=num(d.pay);
   if(d.orders!==null)popOrderTotal+=num(d.orders);
@@ -685,7 +685,6 @@ popData.forEach(function(d){
 fullData.forEach(function(d){
   if(d.salesYest!==null)fullYestTotal+=num(d.salesYest);
   if(d.sales7d!==null)full7dTotal+=num(d.sales7d);
-  if(d.deadStock!==null)fullDeadTotal+=num(d.deadStock);
 });
 
 (function(){
@@ -714,10 +713,6 @@ fullData.forEach(function(d){
   '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
     '<div class="kpi-label">全托7日销量</div>'+
     '<div class="kpi-value">'+fmtInt(full7dTotal)+'</div>'+
-  '</div>'+
-  '<div class="kpi-card" onclick="scrollToSection(\'fullTableSection\')">'+
-    '<div class="kpi-label">全托仓发不动销品(SKU数量)</div>'+
-    '<div class="kpi-value">'+fmtInt(fullDeadTotal)+'</div>'+
   '</div>'+
   '</div>';
 })();
