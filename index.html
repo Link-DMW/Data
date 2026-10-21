@@ -10,7 +10,7 @@
 <title>店铺指标看板</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><rect x='20' y='50' width='12' height='30' rx='2' fill='%2348dbfb'/><rect x='44' y='35' width='12' height='45' rx='2' fill='%2348dbfb'/><rect x='68' y='25' width='12' height='55' rx='2' fill='%2348dbfb'/></svg>"/>
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><rect x='20' y='50' width='12' height='30' rx='2' fill='%2348dbfb'/><rect x='44' y='35' width='12' height='45' rx='2' fill='%2348dbfb'/><rect x='68' y='25' width='12' height='55' rx='2' fill='%2348dbfb'/></svg>"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html{font-size:14px;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
@@ -171,87 +171,26 @@ tbody tr:hover{background:#f9f9fb}
 .detail-kpi-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
 .owner-field{font-size:16px;font-weight:600;color:#1a1a2e}
 
-/* ===== AI聊天框 ===== */
-.chat-fab{
-  position:fixed;right:16px;bottom:16px;z-index:500;
-  width:52px;height:52px;border-radius:50%;
-  background:linear-gradient(135deg,#4a90d9,#0f3460);
-  border:none;cursor:grab;color:#fff;font-size:24px;
-  box-shadow:0 4px 16px rgba(0,0,0,.25);
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s,opacity .2s;
-  touch-action:none;user-select:none;-webkit-user-select:none;
-}
-.chat-fab:active{cursor:grabbing}
-.chat-fab.dragging{transition:none}
-.chat-fab:hover{-webkit-transform:scale(1.08);transform:scale(1.08)}
-.chat-fab.hidden{opacity:0;pointer-events:none;-webkit-transform:scale(0);transform:scale(0)}
-
-.chat-panel{
-  position:fixed;right:16px;bottom:16px;z-index:501;
-  width:calc(100vw - 32px);max-width:380px;
-  height:520px;max-height:calc(100vh - 32px);
-  background:#fff;border-radius:14px;
-  box-shadow:0 8px 32px rgba(0,0,0,.2);
-  display:none;flex-direction:column;overflow:hidden;
-  animation:chatSlideUp .25s ease;
-}
-.chat-header{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
-.chat-header:active{cursor:grabbing}
-@keyframes chatSlideUp{from{opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
-.chat-panel.show{display:flex}
-
-.chat-header{
-  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-  color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.chat-header .chat-title{font-size:15px;font-weight:700}
-.chat-header .chat-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
-.chat-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.chat-close:hover{background:rgba(255,255,255,.25)}
-
-.chat-messages{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:14px 12px;display:flex;flex-direction:column;gap:10px;
-  background:#f7f8fa;
-}
-.chat-msg{max-width:85%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
-.chat-msg.ai{background:#fff;color:#333;align-self:flex-start;border:1px solid #e8eaed;border-bottom-left-radius:4px}
-.chat-msg.user{background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.chat-msg.loading{color:#999;font-style:italic}
-.chat-msg.error{background:#ffe0e0;color:#d32f2f;border:1px solid #ffcdd2}
-
-.chat-input-area{
-  flex-shrink:0;padding:10px 12px;border-top:1px solid #e8eaed;background:#fff;
-  display:flex;gap:8px;
-}
-.chat-input{
-  flex:1;border:1px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;
-  outline:none;font-family:inherit;resize:none;max-height:80px;
-  -webkit-appearance:none;
-}
-.chat-input:focus{border-color:#4a90d9}
-.chat-send{
-  background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;border:none;
-  border-radius:8px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;
-}
-.chat-send:hover{opacity:.9}
-.chat-send:disabled{opacity:.5;cursor:not-allowed}
-
-.chat-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 8px;background:#fff;flex-shrink:0}
-.chat-suggestion{
-  background:#e8f0fe;color:#0f3460;border:1px solid #c5dcfa;
-  border-radius:12px;padding:4px 10px;font-size:11px;cursor:pointer;
-  white-space:nowrap;
-}
-.chat-suggestion:hover{background:#d0e4fc}
-
-@media(max-width:768px){
-  .chat-panel{height:60vh;max-height:60vh}
-  .chat-fab{width:48px;height:48px;font-size:22px}
-}
+/* ===== 历史数据页 ===== */
+.seg{display:inline-flex;background:#e9edf3;border-radius:8px;padding:3px;gap:2px}
+.seg button{border:none;background:transparent;color:#5a6473;font-size:13px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;-webkit-appearance:none}
+.seg button.on{background:#fff;color:#0f3460;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.hist-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.hist-note{font-size:11px;color:#8a94a6;line-height:1.6}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.metric-card{background:#fff;border-radius:10px;padding:12px 12px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.03)}
+.metric-card .m-label{font-size:11px;color:#888;margin-bottom:6px;font-weight:500}
+.metric-card .m-value{font-size:19px;font-weight:700;color:#1a1a2e;word-break:break-all}
+.metric-card .m-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
+.metric-card .m-delta{font-size:11px;margin-top:5px;color:#8a94a6}
+.growth-up{color:#2e7d32;font-weight:700}
+.growth-down{color:#d32f2f;font-weight:700}
+.growth-flat{color:#8a94a6;font-weight:600}
+.bar-cell{display:flex;align-items:center;gap:6px;min-width:90px}
+.bar-track{display:block;flex:1;height:6px;background:#eef1f6;border-radius:3px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:3px;background:#4a90d9}
+.empty-hint{background:#fff;border-radius:10px;padding:18px 14px;font-size:12px;color:#8a94a6;line-height:1.7;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+@media(min-width:769px){.metric-grid{grid-template-columns:repeat(4,1fr)}}
 
 /* ===== 已处理按钮 ===== */
 .handle-btn{
@@ -305,7 +244,10 @@ tbody tr:hover{background:#f9f9fb}
   <div class="nav-item active" id="nav-overview" onclick="showOverview()">
     <span class="nav-name">📈 全部店铺</span>
   </div>
-  <div class="sidebar-group-title">店铺</div>
+    <div class="nav-item" id="nav-history" onclick="showHistory()">
+    <span class="nav-name">📅 历史数据</span>
+  </div>
+<div class="sidebar-group-title">店铺</div>
   <div id="storeNav"></div>
 </aside>
 
@@ -382,35 +324,44 @@ tbody tr:hover{background:#f9f9fb}
   </div>
 </div>
 
+<!-- ===== 历史数据页 ===== -->
+<div id="historyPage" style="display:none">
+  <div class="hist-head">
+    <div class="seg">
+      <button id="segWeek" class="on" onclick="setHistPeriod('week')">周数据</button>
+      <button id="segMonth" onclick="setHistPeriod('month')">月数据</button>
+    </div>
+    <div class="hist-note" id="histNote">加载中…</div>
+  </div>
+
+  <div class="metric-grid" id="histMetricGrid"></div>
+
+  <div class="chart-container">
+    <h3 id="histGrowthTitle">店铺访客环比增长（近7天 vs 前7天）</h3>
+    <div class="chart-wrapper" style="height:320px"><canvas id="chartHistGrowth"></canvas></div>
+    <div class="chart-tip">💡 访客 = POP访客 + 全托访客，按日均比较；点柱子进店铺详情</div>
+  </div>
+
+  <div class="chart-container">
+    <h3 id="histTrendTitle">近12周 · 日均总访客趋势</h3>
+    <div class="chart-wrapper"><canvas id="chartHistTrend"></canvas></div>
+    <div class="chart-tip">💡 自然周（周一起）/ 自然月，按有数据的日期取日均</div>
+  </div>
+
+  <div class="section-title">📋 店铺访客增长明细</div>
+  <div class="table-container">
+    <div class="table-scroll">
+      <table id="histTable"></table>
+    </div>
+  </div>
+
+  <div class="empty-hint" id="histEmpty" style="display:none"></div>
+</div>
+
 <!-- 店铺详情页容器 -->
 <div id="storeDetails"></div>
 
 </div><!-- /main-content -->
-
-<!-- AI聊天浮动按钮 -->
-<button class="chat-fab" id="chatFab" onclick="openChat()">💬</button>
-
-<!-- AI聊天面板 -->
-<div class="chat-panel" id="chatPanel">
-  <div class="chat-header">
-    <div>
-      <div class="chat-title">🤖 AI 运营助手</div>
-      <div class="chat-sub">基于店铺数据智能问答</div>
-    </div>
-    <button class="chat-close" onclick="closeChat()">✕</button>
-  </div>
-  <div class="chat-messages" id="chatMessages"></div>
-  <div class="chat-suggestions" id="chatSuggestions">
-    <span class="chat-suggestion" onclick="sendQuickMsg('哪个店铺支付金额最高？')">哪个店铺支付金额最高？</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('哪些店铺有纠纷需要处理？')">哪些店铺有纠纷？</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('广告投产比排名')">广告投产比排名</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('全托昨日销量排名')">全托昨日销量排名</span>
-  </div>
-  <div class="chat-input-area">
-    <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
-    <button class="chat-send" id="chatSend" onclick="sendChatMsg()">发送</button>
-  </div>
-</div>
 
 <script>
 var popData = [
@@ -1023,18 +974,19 @@ function roiColor(val){
 // ===== 交互逻辑 =====
 function showOverview(){
   document.getElementById("overviewPage").style.display="block";
+  var hp=document.getElementById("historyPage");if(hp)hp.style.display="none";
   var details=document.querySelectorAll(".store-detail");
   details.forEach(function(d){d.classList.remove("active")});
   document.querySelectorAll(".nav-item").forEach(function(n){n.classList.remove("active")});
   document.getElementById("nav-overview").classList.add("active");
-  if(window.location.hash&&window.location.hash.indexOf("store-")===-1){history.replaceState(null,"",window.location.pathname);}
-  else if(window.location.hash.indexOf("store-")!==-1){history.replaceState(null,"",window.location.pathname);}
+  if(window.location.hash){try{history.replaceState(null,"",window.location.pathname)}catch(e){}}
   scrollToTop();
   if(window.innerWidth<=768)closeSidebar();
 }
 
 function showStore(name){
   document.getElementById("overviewPage").style.display="none";
+  var hp=document.getElementById("historyPage");if(hp)hp.style.display="none";
   var details=document.querySelectorAll(".store-detail");
   details.forEach(function(d){d.classList.remove("active")});
   var el=document.getElementById("store-"+name);
@@ -1089,9 +1041,6 @@ document.getElementById("popTable").closest(".table-container").id="popTableSect
 var fullTbl=document.getElementById("fullTable");
 fullTbl.closest(".table-container").id="fullTableSection";
 
-// 初始显示总览
-showOverview();
-
 // 三图并列: 环形图、饼图、极坐标图
 (function(){
   var sorted=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0}).sort(function(a,b){return num(b.pay)-num(a.pay)});
@@ -1118,12 +1067,17 @@ showOverview();
   charts.polar=new Chart(ctx,{type:"polarArea",data:{labels:labels,datasets:[{data:data,backgroundColor:colors.map(function(c){return c+"99"}),borderColor:colors,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:9},boxWidth:8}}},scales:{r:{beginAtZero:true,ticks:{font:{size:8}}}}}});
 })();
 
-// URL hash 路由
-if(window.location.hash&&window.location.hash.indexOf("store-")!==-1){
-  var hashStore=window.location.hash.replace("#store-","");
-  var storeExists=popData.find(function(d){return d.store===hashStore});
-  if(storeExists){showStore(hashStore);}
-}
+// 初始视图：先看 URL hash，再决定显示哪一页
+(function(){
+  var h=window.location.hash||"";
+  if(h.indexOf("store-")!==-1){
+    var hs=h.replace("#store-","");
+    if(popData.find(function(d){return d.store===hs})||fullData.find(function(d){return d.store===hs})){showStore(hs);return;}
+  }else if(h==="#history"){
+    showHistory();return;
+  }
+  showOverview();
+})();
 
 // 监听 hash 变化
 window.addEventListener("hashchange",function(){
@@ -1131,6 +1085,8 @@ window.addEventListener("hashchange",function(){
     var hashStore=window.location.hash.replace("#store-","");
     var storeExists=popData.find(function(d){return d.store===hashStore});
     if(storeExists){showStore(hashStore);}
+  }else if(window.location.hash==="#history"){
+    showHistory();
   }else{
     showOverview();
   }
@@ -1139,235 +1095,279 @@ window.addEventListener("hashchange",function(){
 // 加载已处理状态
 loadHandledStatus();
 
-// ===== AI 聊天功能 =====
-var DEEPSEEK_API_KEY=["sk-566fba","6f61364","6568","6afd","4dee","580e","531"].join("");
-var DEEPSEEK_API_URL="https://api.deepseek.com/v1/chat/completions";
-var chatHistory=[];
-var chatInitialized=false;
-var chatLoading=false;
+// ===== 历史数据（周数据 / 月数据 / 店铺访客增长） =====
+var historyDays=null;
+var historyLoaded=false;
+var historyLoadError=null;
+var histPeriod="week";
 
-function openChat(){
-  if(fabDragInfo&&fabDragInfo.hasMoved())return;
-  document.getElementById("chatFab").classList.add("hidden");
-  document.getElementById("chatPanel").classList.add("show");
-  if(!chatInitialized){
-    chatInitialized=true;
-    setTimeout(function(){initChat()},300);
-  }
-  setTimeout(function(){var el=document.getElementById("chatInput");if(el)el.focus()},400);
+function addDaysStr(dstr,n){
+  var p=dstr.split("-");
+  var t=Date.UTC(+p[0],+p[1]-1,+p[2])+n*86400000;
+  var d=new Date(t);
+  var m=d.getUTCMonth()+1,day=d.getUTCDate();
+  return d.getUTCFullYear()+"-"+(m<10?"0":"")+m+"-"+(day<10?"0":"")+day;
 }
 
-function closeChat(){
-  if(panelDragInfo&&panelDragInfo.hasMoved())return;
-  document.getElementById("chatPanel").classList.remove("show");
-  document.getElementById("chatFab").classList.remove("hidden");
+function todayOnlyHistory(){
+  return [{
+    d:reportDate,
+    p:popData.map(function(d){return [d.store,d.pay,d.orders,d.visitors]}),
+    f:fullData.map(function(d){return [d.store,d.visitors,d.salesYest,d.sales7d]})
+  }];
 }
 
-function addChatMsg(text,role){
-  var container=document.getElementById("chatMessages");
-  var div=document.createElement("div");
-  div.className="chat-msg "+role;
-  div.textContent=text;
-  container.appendChild(div);
-  container.scrollTop=container.scrollHeight;
-  return div;
-}
-
-function buildDataContext(){
-  var lines=[];
-  lines.push("当前日期："+reportDate);
-  lines.push("");
-  // 预计算POP排名
-  var popRanked=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
-  lines.push("【POP店铺数据（按支付金额降序）】");
-  popRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 支付$"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
-  });
-  // 无POP数据的店铺
-  var popNoData=popData.filter(function(d){return d.pay===null});
-  if(popNoData.length>0){
-    lines.push("");
-    lines.push("【仅纠纷数据的POP店铺（无POP业务）】");
-    popNoData.forEach(function(d){
-      lines.push(d.store+": 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
+function loadHistoryData(cb){
+  if(historyLoaded){cb();return;}
+  fetch("history.json?v="+encodeURIComponent(reportDate))
+    .then(function(r){if(!r.ok)throw new Error("HTTP "+r.status);return r.json()})
+    .then(function(j){
+      historyDays=(j&&j.days)||[];
+      historyDays.sort(function(x,y){return x.d<y.d?-1:1});
+      historyLoaded=true;historyLoadError=null;
+      if(!historyDays.length){historyDays=todayOnlyHistory();historyLoadError=new Error("history.json 为空");}
+      cb();
+    })
+    .catch(function(e){
+      historyDays=todayOnlyHistory();
+      historyLoaded=true;historyLoadError=e;
+      cb();
     });
-  }
-  lines.push("");
-  // 预计算全托管排名
-  var fullRanked=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
-  lines.push("【全托管店铺数据（按昨日销量降序）】");
-  fullRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
-  });
-  lines.push("");
-  // 预计算汇总
-  lines.push("【汇总数据（已精确计算，请直接引用）】");
-  lines.push("POP支付总额: $"+popPayTotal.toFixed(2));
-  lines.push("POP总订单数: "+popOrderTotal);
-  lines.push("昨日广告总花费: ¥"+adYestTotal.toFixed(2));
-  lines.push("广告账号总余额: ¥"+balanceTotal.toFixed(2));
-  lines.push("全托昨日总销量: "+fullYestTotal);
-  lines.push("全托7日总销量: "+full7dTotal);
-  lines.push("支付金额TOP3: "+popRanked[0].store+"($"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"($"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"($"+num(popRanked[2].pay).toFixed(2)+")");
-  lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")、"+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")、"+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
-  // 纠纷预警
-  var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
-  var fullDispute=fullData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
-  lines.push("有纠纷的POP店铺: "+(disputeStores.length>0?disputeStores.join("、"):"无"));
-  lines.push("有纠纷的全托店铺: "+(fullDispute.length>0?fullDispute.join("、"):"无"));
-  // 到期纠纷预警
-  var expireStores=popData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
-  var fullExpire=fullData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
-  lines.push("纠纷即将到期的POP店铺: "+(expireStores.length>0?expireStores.join("、"):"无"));
-  lines.push("纠纷即将到期的全托店铺: "+(fullExpire.length>0?fullExpire.join("、"):"无"));
-  // 异常订单预警（注意：异常订单与纠纷是不同概念）
-  var errOrderStores=popData.filter(function(d){return d.pay!==null&&num(d.errOrder)>0}).map(function(d){return d.store+"("+num(d.errOrder)+"个)"});
-  var manualStores=popData.filter(function(d){return d.pay!==null&&num(d.manualOrder)>0}).map(function(d){return d.store+"("+num(d.manualOrder)+"个)"});
-  var mailErrStores=popData.filter(function(d){return d.pay!==null&&num(d.mailErr)>0}).map(function(d){return d.store+"("+num(d.mailErr)+"个)"});
-  var expiredStores=popData.filter(function(d){return d.pay!==null&&num(d.expired)>0}).map(function(d){return d.store+"("+num(d.expired)+"个)"});
-  lines.push("商品错误订单: "+(errOrderStores.length>0?errOrderStores.join("、"):"无"));
-  lines.push("人工审核订单: "+(manualStores.length>0?manualStores.join("、"):"无"));
-  lines.push("邮寄方式错误: "+(mailErrStores.length>0?mailErrStores.join("、"):"无"));
-  lines.push("过期订单: "+(expiredStores.length>0?expiredStores.join("、"):"无"));
-  // 广告投产预警
-  var lowRoi=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0&&num(d.adRoi7d)<1}).map(function(d){return d.store+"(投产"+num(d.adRoi7d).toFixed(2)+")"});
-  lines.push("7天广告投产<1的店铺: "+(lowRoi.length>0?lowRoi.join("、"):"无"));
-  return lines.join("\n");
 }
 
-function callDeepSeek(messages,onSuccess,onError){
-  var xhr=new XMLHttpRequest();
-  xhr.open("POST",DEEPSEEK_API_URL,true);
-  xhr.setRequestHeader("Content-Type","application/json");
-  xhr.setRequestHeader("Authorization","Bearer "+DEEPSEEK_API_KEY);
-  xhr.onreadystatechange=function(){
-    if(xhr.readyState===4){
-      if(xhr.status===200){
-        try{
-          var resp=JSON.parse(xhr.responseText);
-          var content=resp.choices&&resp.choices[0]&&resp.choices[0].message?resp.choices[0].message.content:"";
-          onSuccess(content);
-        }catch(e){onError("解析失败: "+e.message)}
-      }else{
-        onError("API错误("+xhr.status+"): "+xhr.responseText.substring(0,200));
-      }
-    }
+function histRange(period){
+  var n=(period==="month")?30:7;
+  var curTo=reportDate,curFrom=addDaysStr(curTo,-(n-1));
+  var prevTo=addDaysStr(curFrom,-1),prevFrom=addDaysStr(prevTo,-(n-1));
+  return {n:n,curFrom:curFrom,curTo:curTo,prevFrom:prevFrom,prevTo:prevTo};
+}
+
+function histSum(fromD,toD){
+  var pop={},full={},nd=0;
+  (historyDays||[]).forEach(function(day){
+    if(!day||!day.d)return;
+    if(day.d<fromD||day.d>toD)return;
+    nd++;
+    (day.p||[]).forEach(function(r){
+      var s=r[0];if(!s)return;
+      if(!pop[s])pop[s]={pay:0,orders:0,visitors:0};
+      if(typeof r[1]==="number")pop[s].pay+=r[1];
+      if(typeof r[2]==="number")pop[s].orders+=r[2];
+      if(typeof r[3]==="number")pop[s].visitors+=r[3];
+    });
+    (day.f||[]).forEach(function(r){
+      var s=r[0];if(!s)return;
+      if(!full[s])full[s]={visitors:0,sales:0};
+      if(typeof r[1]==="number")full[s].visitors+=r[1];
+      if(typeof r[2]==="number")full[s].sales+=r[2];
+    });
+  });
+  return {pop:pop,full:full,days:nd};
+}
+
+function histOwner(store){
+  var p=popData.find(function(d){return d.store===store});
+  if(p&&p.owner)return p.owner;
+  var f=fullData.find(function(d){return d.store===store});
+  return (f&&f.owner)||"—";
+}
+
+function histDelta(pct){
+  if(!isFinite(pct))return '<span class="growth-flat">—</span>';
+  var cls=pct>0.05?"growth-up":(pct<-0.05?"growth-down":"growth-flat");
+  var sign=pct>0?"+":"";
+  return '<span class="'+cls+'">'+(Math.abs(pct)<0.05?"0.0":sign+pct.toFixed(1))+"%</span>";
+}
+
+function buildHistData(period){
+  var rg=histRange(period);
+  var a=histSum(rg.curFrom,rg.curTo),b=histSum(rg.prevFrom,rg.prevTo);
+  var names={};
+  Object.keys(a.pop).forEach(function(s){names[s]=1});
+  Object.keys(a.full).forEach(function(s){names[s]=1});
+  Object.keys(b.pop).forEach(function(s){names[s]=1});
+  Object.keys(b.full).forEach(function(s){names[s]=1});
+  var rows=[];
+  Object.keys(names).forEach(function(s){
+    var ap=a.pop[s]||{},af=a.full[s]||{},bp=b.pop[s]||{},bf=b.full[s]||{};
+    var curVis=(ap.visitors||0)+(af.visitors||0);
+    var prevVis=(bp.visitors||0)+(bf.visitors||0);
+    var curAvg=a.days?curVis/a.days:0;
+    var prevAvg=b.days?prevVis/b.days:0;
+    var g=(prevAvg>0)?((curAvg-prevAvg)/prevAvg*100):(curAvg>0?100:0);
+    rows.push({store:s,curVis:curVis,prevVis:prevVis,curAvg:curAvg,prevAvg:prevAvg,growth:g,
+      popVis:ap.visitors||0,fullVis:af.visitors||0,
+      pay:ap.pay||0,orders:ap.orders||0,sales:af.sales||0,owner:histOwner(s)});
+  });
+  rows.sort(function(x,y){return y.growth-x.growth});
+  var tot={curVis:0,prevVis:0,pay:0,orders:0,sales:0,payPrev:0,ordersPrev:0,salesPrev:0};
+  rows.forEach(function(r){
+    tot.curVis+=r.curVis;tot.prevVis+=r.prevVis;
+    tot.pay+=r.pay;tot.orders+=r.orders;tot.sales+=r.sales;
+  });
+  Object.keys(b.pop).forEach(function(s){tot.payPrev+=(b.pop[s].pay||0);tot.ordersPrev+=(b.pop[s].orders||0)});
+  Object.keys(b.full).forEach(function(s){tot.salesPrev+=(b.full[s].sales||0)});
+  return {rows:rows,rg:rg,a:a,b:b,tot:tot};
+}
+
+function renderHistCards(d){
+  var grid=document.getElementById("histMetricGrid");
+  var curAvg=d.a.days?d.tot.curVis/d.a.days:0;
+  var prevAvg=d.b.days?d.tot.prevVis/d.b.days:0;
+  var payAvg=d.a.days?d.tot.pay/d.a.days:0;
+  var payPrevAvg=d.b.days?d.tot.payPrev/d.b.days:0;
+  var ordAvg=d.a.days?d.tot.orders/d.a.days:0;
+  var ordPrevAvg=d.b.days?d.tot.ordersPrev/d.b.days:0;
+  var salesAvg=d.a.days?d.tot.sales/d.a.days:0;
+  var salesPrevAvg=d.b.days?d.tot.salesPrev/d.b.days:0;
+  var chg=function(cur,prev){return prev>0?((cur-prev)/prev*100):(cur>0?100:0)};
+  var card=function(label,value,unit,pct){
+    return '<div class="metric-card"><div class="m-label">'+label+'</div>'+
+      '<div class="m-value">'+value+(unit?'<span class="unit">'+unit+'</span>':'')+'</div>'+
+      '<div class="m-delta">日均环比 '+histDelta(pct)+'</div></div>';
   };
-  xhr.send(JSON.stringify({model:"deepseek-chat",messages:messages,temperature:0.7,max_tokens:1500}));
+  grid.innerHTML=
+    card("日均总访客",fmtInt(Math.round(curAvg)),"人/天",chg(curAvg,prevAvg))+
+    card("POP支付总额",fmtUSD(d.tot.pay),"",chg(payAvg,payPrevAvg))+
+    card("POP订单数",fmtInt(d.tot.orders),"单",chg(ordAvg,ordPrevAvg))+
+    card("全托销量",fmtInt(d.tot.sales),"件",chg(salesAvg,salesPrevAvg));
 }
 
-function initChat(){
-  addChatMsg("正在分析店铺数据，生成运营建议...","loading");
-  var ctx=buildDataContext();
-  var sysMsg="你是专业的电商运营分析师。以下数据已按排名排序并预计算了汇总值，请直接引用这些数据，不要自行计算。注意：纠纷数和异常订单（商品错误、人工审核、邮寄错误、过期订单）是不同的概念，不要混淆。给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、到期纠纷、异常订单、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
-  callDeepSeek(
-    [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建议"}],
-    function(content){
-      var loadingEl=document.querySelector(".chat-msg.loading");
-      if(loadingEl)loadingEl.remove();
-      addChatMsg(content,"ai");
-      chatHistory.push({role:"system",content:sysMsg});
-      chatHistory.push({role:"assistant",content:content});
-    },
-    function(err){
-      var loadingEl=document.querySelector(".chat-msg.loading");
-      if(loadingEl)loadingEl.remove();
-      addChatMsg("AI连接失败: "+err+"\n你可以直接提问，我会基于数据回答。","error");
+function renderHistTable(d){
+  var t=document.getElementById("histTable");
+  var maxAbs=1;
+  d.rows.forEach(function(r){maxAbs=Math.max(maxAbs,Math.abs(r.growth))});
+  var h='<thead><tr><th>店铺</th><th>本期日均访客</th><th>上期日均访客</th><th>环比</th><th>POP支付</th><th>订单</th><th>全托销量</th><th>负责人</th></tr></thead><tbody>';
+  d.rows.forEach(function(r,i){
+    var w=Math.min(100,Math.abs(r.growth)/maxAbs*100);
+    var color=r.growth>0?"#2e7d32":(r.growth<0?"#d32f2f":"#9aa3b2");
+    h+='<tr>'+
+      '<td style="text-align:left">'+rankBadge(i+1)+' <span class="store-link" onclick="showStore(\''+r.store+'\')">'+r.store+'</span></td>'+
+      '<td>'+fmtInt(Math.round(r.curAvg))+'</td>'+
+      '<td>'+fmtInt(Math.round(r.prevAvg))+'</td>'+
+      '<td><span class="bar-cell"><span class="bar-track"><span class="bar-fill" style="width:'+w.toFixed(0)+'%;background:'+color+'"></span></span>'+histDelta(r.growth)+'</span></td>'+
+      '<td>'+fmtUSD(r.pay)+'</td>'+
+      '<td>'+fmtInt(r.orders)+'</td>'+
+      '<td>'+fmtInt(r.sales)+'</td>'+
+      '<td>'+(r.owner||"—")+'</td>'+
+      '</tr>';
+  });
+  h+='</tbody>';
+  t.innerHTML=h;
+}
+
+function trendBuckets(period){
+  var days=(historyDays||[]).slice().sort(function(x,y){return x.d<y.d?-1:1});
+  var map={},keys=[];
+  days.forEach(function(day){
+    var key;
+    if(period==="month"){
+      key=day.d.substring(0,7);
+    }else{
+      var p=day.d.split("-");
+      var t=Date.UTC(+p[0],+p[1]-1,+p[2]);
+      var dow=new Date(t).getUTCDay();
+      key=addDaysStr(day.d,-((dow+6)%7));
     }
-  );
+    if(!map[key]){map[key]={vis:0,pay:0,sales:0,days:0};keys.push(key);}
+    var bg=map[key];bg.days++;
+    (day.p||[]).forEach(function(r){
+      if(typeof r[3]==="number")bg.vis+=r[3];
+      if(typeof r[1]==="number")bg.pay+=r[1];
+    });
+    (day.f||[]).forEach(function(r){
+      if(typeof r[1]==="number")bg.vis+=r[1];
+      if(typeof r[2]==="number")bg.sales+=r[2];
+    });
+  });
+  var max=period==="month"?6:12;
+  var use=keys.slice(-max);
+  var labels=[],visits=[],pays=[],sales=[];
+  use.forEach(function(k){
+    var bg=map[k];
+    labels.push(period==="month"?k:k.substring(5));
+    visits.push(bg.days?Math.round(bg.vis/bg.days):0);
+    pays.push(Math.round(bg.pay*100)/100);
+    sales.push(bg.sales);
+  });
+  return {labels:labels,visits:visits,pays:pays,sales:sales};
 }
 
-function sendChatMsg(){
-  if(chatLoading)return;
-  var input=document.getElementById("chatInput");
-  var text=input.value.trim();
-  if(!text)return;
-  addChatMsg(text,"user");
-  input.value="";
-  input.style.height="auto";
-  var loadingEl=addChatMsg("思考中...","loading");
-  chatLoading=true;
-  document.getElementById("chatSend").disabled=true;
-  var ctx=buildDataContext();
-  var msgs=[];
-  if(chatHistory.length>0){
-    msgs=chatHistory.slice();
-    msgs.push({role:"user",content:"数据上下文:\n"+ctx+"\n\n用户问题: "+text+"\n请基于数据简洁回答。"});
-  }else{
-    msgs.push({role:"system",content:"你是专业的电商运营分析师，根据以下数据回答问题。\n"+ctx});
-    msgs.push({role:"user",content:text});
-  }
-  callDeepSeek(msgs,function(content){
-    loadingEl.remove();
-    addChatMsg(content,"ai");
-    chatHistory.push({role:"user",content:text});
-    chatHistory.push({role:"assistant",content:content});
-    chatLoading=false;
-    document.getElementById("chatSend").disabled=false;
-  },function(err){
-    loadingEl.remove();
-    addChatMsg("请求失败: "+err,"error");
-    chatLoading=false;
-    document.getElementById("chatSend").disabled=false;
+function renderHistCharts(d,period){
+  var top=d.rows.filter(function(r){return r.curAvg>0||r.prevAvg>0}).slice(0,12);
+  if(charts.histGrowth)charts.histGrowth.destroy();
+  charts.histGrowth=new Chart(document.getElementById("chartHistGrowth").getContext("2d"),{
+    type:"bar",
+    data:{labels:top.map(function(r){return r.store}),
+      datasets:[{label:"访客环比",data:top.map(function(r){return Math.round(r.growth*10)/10}),
+        backgroundColor:top.map(function(r){return r.growth>=0?"#2e7d32":"#d32f2f"}),
+        borderRadius:4,maxBarThickness:22}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:"y",
+      onClick:function(ev,els){if(els&&els.length){showStore(top[els[0].index].store)}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw+"%"}}}},
+      scales:{x:{grid:{color:"#f0f2f5"},ticks:{font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:10}}}}}
+  });
+
+  var tb=trendBuckets(period);
+  if(charts.histTrend)charts.histTrend.destroy();
+  charts.histTrend=new Chart(document.getElementById("chartHistTrend").getContext("2d"),{
+    type:"line",
+    data:{labels:tb.labels,
+      datasets:[{label:"日均总访客",data:tb.visits,borderColor:"#4a90d9",backgroundColor:"rgba(74,144,217,.12)",
+        fill:true,tension:.3,pointRadius:3,borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return "日均访客 "+fmtInt(c.raw)}}}},
+      scales:{y:{beginAtZero:false,grace:"10%",grid:{color:"#f0f2f5"}},x:{grid:{display:false},ticks:{font:{size:9},maxTicksLimit:7,autoSkip:true}}}}
   });
 }
 
-function sendQuickMsg(msg){
-  document.getElementById("chatInput").value=msg;
-  sendChatMsg();
+function renderHistory(){
+  var note=document.getElementById("histNote");
+  if(!historyDays){note.textContent="加载中…";return;}
+  var period=histPeriod;
+  var d=buildHistData(period);
+  var total=(historyDays||[]).length;
+  var first=total?historyDays[0].d:"",last=total?historyDays[total-1].d:"";
+  var txt;
+  if(historyLoadError){
+    txt="⚠ 未读到 history.json（"+historyLoadError.message+"）：本地 file:// 打开无法读取，需通过 http 访问；当前仅显示今日数据";
+  }else{
+    txt="历史数据 "+total+" 天（"+first+" ~ "+last+"）｜本期覆盖 "+d.a.days+"/"+d.rg.n+" 天，上期 "+d.b.days+"/"+d.rg.n+" 天";
+  }
+  note.textContent=txt;
+  document.getElementById("histGrowthTitle").textContent="店铺访客环比增长（近"+d.rg.n+"天 vs 前"+d.rg.n+"天）";
+  document.getElementById("histTrendTitle").textContent=(period==="month")?"近6月 · 日均总访客趋势":"近12周 · 日均总访客趋势";
+  renderHistCards(d);
+  renderHistTable(d);
+  renderHistCharts(d,period);
+  var empty=document.getElementById("histEmpty");
+  if(!d.rows.length){
+    empty.style.display="block";
+    empty.textContent="这段时间还没有历史数据。在 D:\\HTML 运行 build-history.ps1 生成 history.json 后刷新即可。";
+  }else{
+    empty.style.display="none";
+  }
 }
 
-// textarea自适应高度
-document.getElementById("chatInput").addEventListener("input",function(){
-  this.style.height="auto";
-  this.style.height=Math.min(this.scrollHeight,80)+"px";
-});
-
-// ===== 拖动功能 =====
-function makeDraggable(el,handle){
-  var isDragging=false,startX=0,startY=0,origX=0,origY=0,hasMoved=false;
-  function onStart(e){
-    var touch=e.touches?e.touches[0]:e;
-    isDragging=true;hasMoved=false;
-    startX=touch.clientX;startY=touch.clientY;
-    var rect=el.getBoundingClientRect();
-    origX=rect.left;origY=rect.top;
-    el.classList.add("dragging");
-    e.preventDefault();
-  }
-  function onMove(e){
-    if(!isDragging)return;
-    var touch=e.touches?e.touches[0]:e;
-    var dx=touch.clientX-startX;
-    var dy=touch.clientY-startY;
-    if(Math.abs(dx)>3||Math.abs(dy)>3)hasMoved=true;
-    var newX=origX+dx;
-    var newY=origY+dy;
-    var maxX=window.innerWidth-el.offsetWidth;
-    var maxY=window.innerHeight-el.offsetHeight;
-    newX=Math.max(0,Math.min(newX,maxX));
-    newY=Math.max(0,Math.min(newY,maxY));
-    el.style.left=newX+"px";
-    el.style.top=newY+"px";
-    el.style.right="auto";
-    el.style.bottom="auto";
-    e.preventDefault();
-  }
-  function onEnd(){
-    isDragging=false;
-    el.classList.remove("dragging");
-  }
-  handle.addEventListener("mousedown",onStart);
-  handle.addEventListener("touchstart",onStart,{passive:false});
-  document.addEventListener("mousemove",onMove);
-  document.addEventListener("touchmove",onMove,{passive:false});
-  document.addEventListener("mouseup",onEnd);
-  document.addEventListener("touchend",onEnd);
-  return{hasMoved:function(){return hasMoved}};
+function setHistPeriod(p){
+  histPeriod=p;
+  document.getElementById("segWeek").className=(p==="week")?"on":"";
+  document.getElementById("segMonth").className=(p==="month")?"on":"";
+  if(historyDays)renderHistory();
 }
 
-var fabDragInfo=makeDraggable(document.getElementById("chatFab"),document.getElementById("chatFab"));
-var panelDragInfo=makeDraggable(document.getElementById("chatPanel"),document.querySelector(".chat-header"));
+function showHistory(){
+  document.getElementById("overviewPage").style.display="none";
+  document.querySelectorAll(".store-detail").forEach(function(d){d.classList.remove("active")});
+  document.getElementById("historyPage").style.display="block";
+  document.querySelectorAll(".nav-item").forEach(function(n){n.classList.remove("active")});
+  var nav=document.getElementById("nav-history");
+  if(nav)nav.classList.add("active");
+  try{history.replaceState(null,"",window.location.pathname+"#history")}catch(e){}
+  scrollToTop();
+  if(window.innerWidth<=768)closeSidebar();
+  loadHistoryData(function(){renderHistory()});
+}
 </script>
 </body>
 </html>
