@@ -1366,7 +1366,7 @@ function renderHistory(){
   var first=total?historyDays[0].d:"",last=total?historyDays[total-1].d:"";
   var txt;
   if(historyLoadError){
-    txt="⚠ 未读到 history.json（"+historyLoadError.message+"）：本地 file:// 打开无法读取，需通过 http 访问；当前仅显示今日数据";
+    txt="⚠ 未拿到历史数据（"+historyLoadError.message+"）：后端 /history 不可用，本地也没有缓存；当前仅显示今日数据";
   }else{
     txt="历史数据 "+total+" 天（"+first+" ~ "+last+"）｜本期覆盖 "+d.a.days+"/"+d.rg.n+" 天，上期 "+d.b.days+"/"+d.rg.n+" 天";
   }
@@ -1380,7 +1380,7 @@ function renderHistory(){
   var empty=document.getElementById("histEmpty");
   if(!d.rows.length){
     empty.style.display="block";
-    empty.textContent="这段时间还没有历史数据。在 D:\\HTML 运行 build-history.ps1 生成 history.json 后刷新即可。";
+    empty.textContent="这段时间还没有历史数据。确认后端 /history 已灌入历史（scf-backend\\seed-history.ps1）。";
   }else{
     empty.style.display="none";
   }
