@@ -414,6 +414,8 @@ var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
 var HIST_API_URL=(function(){
   var m=window.location.search.match(/[?&]api=([^&]+)/);
   if(m){var v=decodeURIComponent(m[1]);return v.charAt(v.length-1)==="/"?v:v+"/";}
+  var h=window.location.hostname;
+  if(h==="127.0.0.1"||h==="localhost"){return window.location.origin+"/";}
   return API_URL;
 })();
 var handledStatus={};
