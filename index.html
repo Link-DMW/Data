@@ -175,6 +175,7 @@ tbody tr:hover{background:#f9f9fb}
 .seg{display:inline-flex;background:#e9edf3;border-radius:8px;padding:3px;gap:2px}
 .seg button{border:none;background:transparent;color:#5a6473;font-size:13px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;-webkit-appearance:none}
 .seg button.on{background:#fff;color:#0f3460;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+@media(max-width:768px){.seg button{padding:5px 9px;font-size:12px}.seg{gap:0}}
 .hist-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
 .hist-note{font-size:11px;color:#8a94a6;line-height:1.6}
 .metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
@@ -1479,7 +1480,7 @@ function renderStoreTrend(store){
         }}}
       },
       scales:{
-        x:{grid:{display:false},ticks:{font:{size:9},maxTicksLimit:8,autoSkip:true}},
+        x:{grid:{display:false},ticks:{font:{size:9},maxTicksLimit:(window.innerWidth<480?5:8),autoSkip:true}},
         y:{beginAtZero:true,grid:{color:"#f0f2f5"},ticks:{font:{size:9}}}
       }}
   });
