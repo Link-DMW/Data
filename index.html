@@ -195,6 +195,19 @@ tbody tr:hover{background:#f9f9fb}
 .wow-flat{color:#9aa3b2;font-weight:600}
 .wow-wait{color:#c9ced6}
 .no-abn{font-size:12px;color:#8b95a5;letter-spacing:.2px}
+/* 单店周/月汇总 */
+.store-sum{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:16px;overflow:hidden}
+.store-sum .ss-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #f0f2f5;flex-wrap:wrap;gap:6px}
+.store-sum .ss-title{font-size:14px;font-weight:700;color:#1a1a2e}
+.store-sum .ss-sub{font-size:11px;color:#8a94a6}
+.store-sum table{width:100%;border-collapse:collapse;font-size:12px}
+.store-sum th{background:#f7f9fc;color:#5a6473;font-weight:600;padding:7px 8px;border-bottom:1px solid #eef1f6;text-align:center;white-space:nowrap}
+.store-sum td{padding:8px;border-bottom:1px solid #f4f6f9;text-align:center;white-space:nowrap}
+.store-sum td:first-child,.store-sum th:first-child{text-align:left;color:#5a6473}
+.store-sum tbody tr:last-child td{border-bottom:none}
+.store-sum .ss-num{font-weight:700;color:#1a1a2e}
+.store-sum .ss-avg{display:block;font-size:10px;color:#9aa3b2;font-weight:400;margin-top:2px}
+@media(max-width:768px){.store-sum table{font-size:11px}.store-sum td,.store-sum th{padding:6px 5px}}
 @media(max-width:768px){.date-nav{gap:6px;padding:6px 8px}.date-nav .dn-date{font-size:13px}}
 .trend-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .trend-head h3{font-size:14px;font-weight:600;margin:0;flex:1 1 auto}
@@ -888,6 +901,7 @@ fullData.forEach(function(d){
     html+='<div class="store-detail" id="store-'+s+'">';
     html+='<h2>📊 '+s+' 店铺详情</h2>';
     html+=dateNavHtml();
+    html+='<div class="store-sum" id="storeSum-'+s+'"></div>';
     // 雷达图放在顶部
     var radarData=null;
     if(hasPop){
@@ -1230,6 +1244,78 @@ loadHandledStatus();
 // ===== 历史数据（按天向后端取数 + 天数切换） =====
 
 // 顶部先读 ?days=（避免被后续 replaceState 清掉）
+// ===== 单店铺「周 / 月」汇总 =====
+function storePeriodAgg(store, list) {
+  var acc = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0, nd: list.length };
+  list.forEach(function (day) {
+    (day.p || []).forEach(function (r) {
+      if (r[0] !== store) return;
+      if (typeof r[1] === "number") acc.pay += r[1];
+      if (typeof r[2] === "number") acc.orders += r[2];
+      if (typeof r[3] === "number") acc.pvis += r[3];
+    });
+    (day.f || []).forEach(function (r) {
+      if (r[0] !== store) return;
+      if (typeof r[1] === "number") acc.fvis += r[1];
+      if (typeof r[2] === "number") acc.fsales += r[2];
+    });
+  });
+  return acc;
+}
+
+function storePeriod(store, n) {
+  var all = (histData.days || []).filter(function (d) { return d.d <= reportDate; });
+  if (all.length < 2) return null;
+  var cur = all.slice(-n), prev = all.slice(-2 * n, -n);
+  return { cur: storePeriodAgg(store, cur), prev: storePeriodAgg(store, prev), n: n, havePrev: prev.length > 0 };
+}
+
+function ssDelta(curAvg, prevAvg, havePrev) {
+  if (!havePrev || !prevAvg) return '<span class="wow-flat">—</span>';
+  var g = (curAvg - prevAvg) / prevAvg * 100;
+  var cls = g > 0.05 ? "wow-up" : (g < -0.05 ? "wow-down" : "wow-flat");
+  var arrow = g > 0.05 ? "▲" : (g < -0.05 ? "▼" : "•");
+  return '<span class="wow ' + cls + '"><span class="ar">' + arrow + '</span>' + (g > 0 ? "+" : "") + g.toFixed(1) + "%</span>";
+}
+
+function ssCell(period, key, fmt) {
+  var cur = period.cur[key], prev = period.prev[key];
+  var avg = period.cur.nd ? cur / period.cur.nd : 0;
+  var pavg = period.prev.nd ? prev / period.prev.nd : 0;
+  var isInt = (fmt === fmtInt);
+  var avgTxt = isInt ? fmtInt(Math.round(avg)) : fmt(avg);
+  return '<span class="ss-num">' + fmt(cur) +
+    '<span class="ss-avg">日均 ' + avgTxt + '</span>' +
+    '<span class="ss-avg">' + ssDelta(avg, pavg, period.havePrev) + '</span></span>';
+}
+
+function renderStoreSummary(store) {
+  var box = document.getElementById("storeSum-" + store);
+  if (!box) return;
+  var w = storePeriod(store, 7), m = storePeriod(store, 30);
+  if (!w || !m) { box.innerHTML = ""; return; }
+  function row(label, key, fmt) {
+    return "<tr><td>" + label + "</td>" +
+      "<td>" + ssCell(w, key, fmt) + "</td>" +
+      "<td>" + ssCell(m, key, fmt) + "</td></tr>";
+  }
+  box.innerHTML =
+    '<div class="ss-head"><div class="ss-title">📦 本店汇总</div>' +
+    '<div class="ss-sub">截至 ' + reportDate + ' ｜ 环比 = 本周期日均 vs 上一周期日均</div></div>' +
+    '<table><thead><tr><th>指标</th><th>近 7 天</th><th>近 30 天</th></tr></thead><tbody>' +
+    row("POP 支付", "pay", fmtUSD) +
+    row("POP 订单", "orders", fmtInt) +
+    row("POP 访客", "pvis", fmtInt) +
+    row("全托访客", "fvis", fmtInt) +
+    row("全托销量", "fsales", fmtInt) +
+    '</tbody></table>';
+}
+
+function fillStoreSummaries() {
+  var list = (typeof allStores !== "undefined" && allStores) ? allStores : [];
+  list.forEach(function (s) { renderStoreSummary(s); });
+}
+
 // ===== 表格「周访客增长」列 =====
 function weekVisitors(store, kind, days) {
   var sum = 0;
@@ -1615,7 +1701,7 @@ function showHistory() {
 
 // 表格里的周访客增长：等历史数据到位再填
 if (document.getElementById("popTable")) {
-  ensureDays(14, fillWeeklyColumn);
+  ensureDays(30, function () { fillWeeklyColumn(); fillStoreSummaries(); });
 }
 </script>
 </body>
