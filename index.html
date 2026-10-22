@@ -220,6 +220,10 @@ tbody tr:hover{background:#f9f9fb}
 .metric-card .m-label{font-size:11px;color:#888;margin-bottom:6px;font-weight:500}
 .metric-card .m-value{font-size:19px;font-weight:700;color:#1a1a2e;word-break:break-all}
 .metric-card .m-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
+.metric-card .m-value.wow-up,.metric-card .m-value .wow-up{color:#d32f2f}
+.metric-card .m-value.wow-down,.metric-card .m-value .wow-down{color:#2e7d32}
+.metric-card .m-value.wow-flat{color:#8a94a6}
+.metric-grid .metric-note{grid-column:1/-1;font-size:11px;color:#8a94a6;margin:0 0 2px}
 .metric-card .m-delta{font-size:11px;margin-top:5px;color:#8a94a6}
 .growth-up{color:#d32f2f;font-weight:700}
 .growth-down{color:#2e7d32;font-weight:700}
@@ -1325,6 +1329,7 @@ function renderStoreKpi(store) {
   function avgTxt(p, val) { return p.nd ? fmtInt(Math.round(val / p.nd)) : "0"; }
 
   box.innerHTML =
+    '<div class="metric-note">环比 = 本周期日均 vs 上一周期日均（周 = 近 7 天，月 = 近 30 天）</div>' +
     card("周访客增长", gTxt, "", cls) +
     card("周销量（全托）", fmtInt(w.cur.fsales), "件", "", "日均 " + avgTxt(w.cur, w.cur.fsales) + " 件") +
     card("周访客", fmtInt(curVis), "人", "", "日均 " + avgTxt(w.cur, curVis) + " 人") +
