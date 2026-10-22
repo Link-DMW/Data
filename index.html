@@ -10,7 +10,7 @@
 <title>店铺指标看板</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><rect x='20' y='50' width='12' height='30' rx='2' fill='%2348dbfb'/><rect x='44' y='35' width='12' height='45' rx='2' fill='%2348dbfb'/><rect x='68' y='25' width='12' height='55' rx='2' fill='%2348dbfb'/></svg>"/>
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><rect x='20' y='50' width='12' height='30' rx='2' fill='%2348dbfb'/><rect x='44' y='35' width='12' height='45' rx='2' fill='%2348dbfb'/><rect x='68' y='25' width='12' height='55' rx='2' fill='%2348dbfb'/></svg>"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 html{font-size:14px;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
@@ -171,87 +171,68 @@ tbody tr:hover{background:#f9f9fb}
 .detail-kpi-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
 .owner-field{font-size:16px;font-weight:600;color:#1a1a2e}
 
-/* ===== AI聊天框 ===== */
-.chat-fab{
-  position:fixed;right:16px;bottom:16px;z-index:500;
-  width:52px;height:52px;border-radius:50%;
-  background:linear-gradient(135deg,#4a90d9,#0f3460);
-  border:none;cursor:grab;color:#fff;font-size:24px;
-  box-shadow:0 4px 16px rgba(0,0,0,.25);
-  display:flex;align-items:center;justify-content:center;
-  transition:transform .2s,opacity .2s;
-  touch-action:none;user-select:none;-webkit-user-select:none;
-}
-.chat-fab:active{cursor:grabbing}
-.chat-fab.dragging{transition:none}
-.chat-fab:hover{-webkit-transform:scale(1.08);transform:scale(1.08)}
-.chat-fab.hidden{opacity:0;pointer-events:none;-webkit-transform:scale(0);transform:scale(0)}
-
-.chat-panel{
-  position:fixed;right:16px;bottom:16px;z-index:501;
-  width:calc(100vw - 32px);max-width:380px;
-  height:520px;max-height:calc(100vh - 32px);
-  background:#fff;border-radius:14px;
-  box-shadow:0 8px 32px rgba(0,0,0,.2);
-  display:none;flex-direction:column;overflow:hidden;
-  animation:chatSlideUp .25s ease;
-}
-.chat-header{cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
-.chat-header:active{cursor:grabbing}
-@keyframes chatSlideUp{from{opacity:0;-webkit-transform:translateY(20px);transform:translateY(20px)}to{opacity:1;-webkit-transform:translateY(0);transform:translateY(0)}}
-.chat-panel.show{display:flex}
-
-.chat-header{
-  background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-  color:#fff;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
-.chat-header .chat-title{font-size:15px;font-weight:700}
-.chat-header .chat-sub{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
-.chat-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
-.chat-close:hover{background:rgba(255,255,255,.25)}
-
-.chat-messages{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:14px 12px;display:flex;flex-direction:column;gap:10px;
-  background:#f7f8fa;
-}
-.chat-msg{max-width:85%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.6;word-break:break-word;white-space:pre-wrap}
-.chat-msg.ai{background:#fff;color:#333;align-self:flex-start;border:1px solid #e8eaed;border-bottom-left-radius:4px}
-.chat-msg.user{background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
-.chat-msg.loading{color:#999;font-style:italic}
-.chat-msg.error{background:#ffe0e0;color:#d32f2f;border:1px solid #ffcdd2}
-
-.chat-input-area{
-  flex-shrink:0;padding:10px 12px;border-top:1px solid #e8eaed;background:#fff;
-  display:flex;gap:8px;
-}
-.chat-input{
-  flex:1;border:1px solid #ddd;border-radius:8px;padding:8px 12px;font-size:13px;
-  outline:none;font-family:inherit;resize:none;max-height:80px;
-  -webkit-appearance:none;
-}
-.chat-input:focus{border-color:#4a90d9}
-.chat-send{
-  background:linear-gradient(135deg,#4a90d9,#0f3460);color:#fff;border:none;
-  border-radius:8px;padding:0 16px;font-size:13px;font-weight:600;cursor:pointer;
-  white-space:nowrap;flex-shrink:0;
-}
-.chat-send:hover{opacity:.9}
-.chat-send:disabled{opacity:.5;cursor:not-allowed}
-
-.chat-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 8px;background:#fff;flex-shrink:0}
-.chat-suggestion{
-  background:#e8f0fe;color:#0f3460;border:1px solid #c5dcfa;
-  border-radius:12px;padding:4px 10px;font-size:11px;cursor:pointer;
-  white-space:nowrap;
-}
-.chat-suggestion:hover{background:#d0e4fc}
-
-@media(max-width:768px){
-  .chat-panel{height:60vh;max-height:60vh}
-  .chat-fab{width:48px;height:48px;font-size:22px}
-}
+/* ===== 历史数据页 ===== */
+.seg{display:inline-flex;background:#e9edf3;border-radius:8px;padding:3px;gap:2px}
+.seg button{border:none;background:transparent;color:#5a6473;font-size:13px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:inherit;-webkit-appearance:none}
+.seg button.on{background:#fff;color:#0f3460;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.hist-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.export-btn{border:1px solid #4a90d9;background:#fff;color:#0f3460;font-size:12px;font-weight:600;padding:6px 10px;border-radius:6px;cursor:pointer;font-family:inherit}
+.export-btn:hover{background:#eaf3fd}
+/* ===== 日期左右切换 ===== */
+.date-nav{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:8px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:14px}
+.date-nav .dn-btn{width:32px;height:32px;border:1px solid #d5dbe3;background:#fff;border-radius:8px;font-size:18px;line-height:1;cursor:pointer;color:#0f3460;padding:0}
+.date-nav .dn-btn:hover{background:#eaf3fd}
+.date-nav .dn-btn:disabled{opacity:.35;cursor:default;background:#fff}
+.date-nav .dn-date{flex:1;text-align:center;font-weight:700;color:#1a1a2e;font-size:15px}
+.date-nav .dn-date .dn-sub{display:block;font-weight:400;font-size:11px;color:#8a94a6;margin-top:2px}
+.date-nav .dn-today{border:1px solid #4a90d9;color:#0f3460;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.date-nav .dn-today:hover{background:#eaf3fd}
+/* 周访客增长列 */
+.wow{font-weight:700;white-space:nowrap}
+.wow .ar{font-size:10px;margin-right:2px}
+.wow-up{color:#d32f2f}
+.wow-down{color:#2e7d32}
+.wow-flat{color:#9aa3b2;font-weight:600}
+.wow-wait{color:#c9ced6}
+.no-abn{font-size:12px;color:#8b95a5;letter-spacing:.2px}
+/* 单店周/月汇总 */
+.store-sum{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:16px;overflow:hidden}
+.store-sum .ss-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #f0f2f5;flex-wrap:wrap;gap:6px}
+.store-sum .ss-title{font-size:14px;font-weight:700;color:#1a1a2e}
+.store-sum .ss-sub{font-size:11px;color:#8a94a6}
+.store-sum table{width:100%;border-collapse:collapse;font-size:12px}
+.store-sum th{background:#f7f9fc;color:#5a6473;font-weight:600;padding:7px 8px;border-bottom:1px solid #eef1f6;text-align:center;white-space:nowrap}
+.store-sum td{padding:8px;border-bottom:1px solid #f4f6f9;text-align:center;white-space:nowrap}
+.store-sum td:first-child,.store-sum th:first-child{text-align:left;color:#5a6473}
+.store-sum tbody tr:last-child td{border-bottom:none}
+.store-sum .ss-num{font-weight:700;color:#1a1a2e}
+@media(min-width:769px){.metric-grid.mg5{grid-template-columns:repeat(5,1fr)}}
+.store-sum .ss-avg{display:block;font-size:10px;color:#9aa3b2;font-weight:400;margin-top:2px}
+@media(max-width:768px){.store-sum table{font-size:11px}.store-sum td,.store-sum th{padding:6px 5px}}
+@media(max-width:768px){.date-nav{gap:6px;padding:6px 8px}.date-nav .dn-date{font-size:13px}}
+.trend-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.trend-head h3{font-size:14px;font-weight:600;margin:0;flex:1 1 auto}
+@media(max-width:768px){.seg button{padding:5px 9px;font-size:12px}.seg{gap:0}}
+.hist-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.hist-note{font-size:11px;color:#8a94a6;line-height:1.6}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+.metric-card{background:#fff;border-radius:10px;padding:12px 12px 10px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.03)}
+.metric-card .m-label{font-size:11px;color:#888;margin-bottom:6px;font-weight:500}
+.metric-card .m-value{font-size:19px;font-weight:700;color:#1a1a2e;word-break:break-all}
+.metric-card .m-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
+.metric-card .m-value.wow-up,.metric-card .m-value .wow-up{color:#d32f2f}
+.metric-card .m-value.wow-down,.metric-card .m-value .wow-down{color:#2e7d32}
+.metric-card .m-value.wow-flat{color:#8a94a6}
+.metric-grid .metric-note{grid-column:1/-1;font-size:11px;color:#8a94a6;margin:0 0 2px}
+.metric-card .m-delta{font-size:11px;margin-top:5px;color:#8a94a6}
+.growth-up{color:#d32f2f;font-weight:700}
+.growth-down{color:#2e7d32;font-weight:700}
+.growth-flat{color:#8a94a6;font-weight:600}
+.bar-cell{display:flex;align-items:center;gap:6px;min-width:90px}
+.bar-track{display:block;flex:1;height:6px;background:#eef1f6;border-radius:3px;overflow:hidden}
+.bar-fill{display:block;height:100%;border-radius:3px;background:#4a90d9}
+.empty-hint{background:#fff;border-radius:10px;padding:18px 14px;font-size:12px;color:#8a94a6;line-height:1.7;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+@media(min-width:769px){.metric-grid{grid-template-columns:repeat(4,1fr)}}
 
 /* ===== 已处理按钮 ===== */
 .handle-btn{
@@ -305,7 +286,10 @@ tbody tr:hover{background:#f9f9fb}
   <div class="nav-item active" id="nav-overview" onclick="showOverview()">
     <span class="nav-name">📈 全部店铺</span>
   </div>
-  <div class="sidebar-group-title">店铺</div>
+    <div class="nav-item" id="nav-history" onclick="showHistory()" style="display:none">
+    <span class="nav-name">📅 历史数据</span>
+  </div>
+<div class="sidebar-group-title">店铺</div>
   <div id="storeNav"></div>
 </aside>
 
@@ -324,6 +308,7 @@ tbody tr:hover{background:#f9f9fb}
 
 <!-- ===== 总览页 ===== -->
 <div id="overviewPage">
+  <div id="overviewDateNav"></div>
   <div class="kpi-grid" id="kpiGrid"></div>
 
   <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px">
@@ -382,35 +367,50 @@ tbody tr:hover{background:#f9f9fb}
   </div>
 </div>
 
+<!-- ===== 历史数据页 ===== -->
+<div id="historyPage" style="display:none">
+  <div class="hist-head">
+    <div class="seg" id="histSeg">
+      <button class="on" data-n="7" onclick="setHistDays(7)">近7天</button>
+      <button data-n="14" onclick="setHistDays(14)">近14天</button>
+      <button data-n="30" onclick="setHistDays(30)">近30天</button>
+      <button data-n="60" onclick="setHistDays(60)">近60天</button>
+      <button data-n="0" onclick="setHistDays(0)">全部</button>
+    </div>
+    <div class="hist-tools">
+      <button class="export-btn" onclick="exportHistCsv()">⬇ 导出当前区间 CSV</button>
+      <div class="hist-note" id="histNote">加载中…</div>
+    </div>
+  </div>
+
+  <div class="metric-grid" id="histMetricGrid"></div>
+
+  <div class="chart-container">
+    <h3 id="histGrowthTitle">店铺访客环比增长</h3>
+    <div class="chart-wrapper" style="height:320px"><canvas id="chartHistGrowth"></canvas></div>
+    <div class="chart-tip">💡 访客 = POP访客 + 全托访客；环比是「本期日均 vs 上期日均」；点柱子进店铺详情</div>
+  </div>
+
+  <div class="chart-container">
+    <h3 id="histTrendTitle">总访客趋势</h3>
+    <div class="chart-wrapper"><canvas id="chartHistTrend"></canvas></div>
+    <div class="chart-tip">💡 按天展示；区间超过 62 天自动按自然周聚合</div>
+  </div>
+
+  <div class="section-title">📋 店铺明细（当前区间合计）</div>
+  <div class="table-container">
+    <div class="table-scroll">
+      <table id="histTable"></table>
+    </div>
+  </div>
+
+  <div class="empty-hint" id="histEmpty" style="display:none"></div>
+</div>
+
 <!-- 店铺详情页容器 -->
 <div id="storeDetails"></div>
 
 </div><!-- /main-content -->
-
-<!-- AI聊天浮动按钮 -->
-<button class="chat-fab" id="chatFab" onclick="openChat()">💬</button>
-
-<!-- AI聊天面板 -->
-<div class="chat-panel" id="chatPanel">
-  <div class="chat-header">
-    <div>
-      <div class="chat-title">🤖 AI 运营助手</div>
-      <div class="chat-sub">基于店铺数据智能问答</div>
-    </div>
-    <button class="chat-close" onclick="closeChat()">✕</button>
-  </div>
-  <div class="chat-messages" id="chatMessages"></div>
-  <div class="chat-suggestions" id="chatSuggestions">
-    <span class="chat-suggestion" onclick="sendQuickMsg('哪个店铺支付金额最高？')">哪个店铺支付金额最高？</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('哪些店铺有纠纷需要处理？')">哪些店铺有纠纷？</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('广告投产比排名')">广告投产比排名</span>
-    <span class="chat-suggestion" onclick="sendQuickMsg('全托昨日销量排名')">全托昨日销量排名</span>
-  </div>
-  <div class="chat-input-area">
-    <textarea class="chat-input" id="chatInput" rows="1" placeholder="输入问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChatMsg()}"></textarea>
-    <button class="chat-send" id="chatSend" onclick="sendChatMsg()">发送</button>
-  </div>
-</div>
 
 <script>
 var popData = [
@@ -458,6 +458,103 @@ var reportDate = "2026-10-22";
 
 // ===== 后端API配置 =====
 var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
+// 历史数据接口：默认与状态接口同一个函数；本地预览可用 ?api=http://127.0.0.1:9100 覆盖
+
+var HIST_API_URL=(function(){
+  var m=window.location.search.match(/[?&]api=([^&]+)/);
+  if(m){var v=decodeURIComponent(m[1]);return v.charAt(v.length-1)==="/"?v:v+"/";}
+  var h=window.location.hostname;
+  if(h==="127.0.0.1"||h==="localhost"){return window.location.origin+"/";}
+  return API_URL;
+})();
+// 历史页状态：必须早于路由调用（showHistory 会被 #history 触发）
+// ===== 日期视图：?d=YYYY-MM-DD 查看某一天（只读），←/→ 切换 ----------
+var TODAY_DATE = reportDate;
+var VIEW_DATE = (function () { var m = window.location.search.match(/[?&]d=(\d{4}-\d{2}-\d{2})/); return m ? m[1] : null; })();
+var DATE_LIST = [];
+
+function shiftDate(dstr, n) {
+  var p = dstr.split("-");
+  var t = Date.UTC(+p[0], +p[1] - 1, +p[2]) + n * 86400000;
+  var d = new Date(t), m = d.getUTCMonth() + 1, dd = d.getUTCDate();
+  return d.getUTCFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (dd < 10 ? "0" : "") + dd;
+}
+
+function hydrateDay(d) {
+  var base = (typeof HIST_API_URL === "string" && HIST_API_URL) ? HIST_API_URL : "";
+  if (!base) return false;
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", base + "history/day?d=" + d, false);
+    xhr.send(null);
+    if (xhr.status !== 200) return false;
+    var j = JSON.parse(xhr.responseText);
+    var day = (j && j.data) ? j.data : j;
+    if (!day || !Array.isArray(day.p)) return false;
+    popData = day.p.map(function (r) {
+      return { store: r[0], pay: r[1], orders: r[2], visitors: r[3], exposure: r[4], ctr: r[5], cvr: r[6],
+        adYest: r[7], ad7d: r[8], adOrdYest: r[9], adRoiYest: r[10], adRoi7d: r[11], balance: r[12],
+        dispute: r[13], disputeExpire: r[14], errOrder: r[15], manualOrder: r[16], mailErr: r[17],
+        expired: r[18], deadStock: r[19], owner: r[20] };
+    });
+    fullData = (day.f || []).map(function (r) {
+      return { store: r[0], visitors: r[1], salesYest: r[2], sales7d: r[3], views: r[4], cvr: r[5],
+        dispute: r[6], disputeExpire: r[7], deadStock: r[8], owner: r[9] };
+    });
+    return true;
+  } catch (e) { return false; }
+}
+
+if (VIEW_DATE && VIEW_DATE !== reportDate) {
+  if (hydrateDay(VIEW_DATE)) reportDate = VIEW_DATE;
+}
+
+function dateNavHtml() {
+  var isToday = (reportDate === TODAY_DATE);
+  return '<div class="date-nav">' +
+    '<button class="dn-btn" onclick="goDay(-1)" aria-label="前一天">‹</button>' +
+    '<div class="dn-date">' + reportDate +
+    '<span class="dn-sub">' + (isToday ? "今天 · 实时看板" : "历史数据 · 只读") + '</span></div>' +
+    '<button class="dn-btn" onclick="goDay(1)" aria-label="后一天">›</button>' +
+    (isToday ? "" : '<button class="dn-today" onclick="goToday()">回到今天</button>') +
+    '</div>';
+}
+
+function goDay(delta) {
+  var target = null;
+  var i = DATE_LIST.indexOf(reportDate);
+  if (DATE_LIST.length && i !== -1) {
+    var j = i + delta;
+    if (j < 0 || j >= DATE_LIST.length) return;
+    target = DATE_LIST[j];
+  } else if (DATE_LIST.length && i === -1) {
+    target = delta < 0 ? DATE_LIST[DATE_LIST.length - 1] : null;
+  } else {
+    target = shiftDate(reportDate, delta);
+  }
+  if (!target) return;
+  location.href = location.pathname + "?d=" + target + (location.hash || "");
+}
+
+function goToday() {
+  location.href = location.pathname + (location.hash || "");
+}
+
+// 日期列表（用于边界判断）+ 总览页导航渲染
+(function () {
+  var nav = document.getElementById("overviewDateNav");
+  if (nav) nav.innerHTML = dateNavHtml();
+  var base = (typeof HIST_API_URL === "string" && HIST_API_URL) ? HIST_API_URL : "";
+  if (!base) return;
+  fetch(base + "history/days").then(function (r) { return r.json(); }).then(function (j) {
+    if (j && Array.isArray(j.dates) && j.dates.length) DATE_LIST = j.dates.slice().sort();
+  }).catch(function () { });
+})();
+
+var histData = { days: [], total: 0, source: '', error: null, loading: null, fetched: 0 };
+var HIST_INIT_DAYS = (function () { var m = window.location.search.match(/[?&]days=(\d+)/); return m ? parseInt(m[1], 10) : null; })();
+var histWindow = (HIST_INIT_DAYS === null ? 7 : HIST_INIT_DAYS);
+var histSource = '';
 var handledStatus={};
 
 function loadHandledStatus(){
@@ -488,7 +585,7 @@ function singleHandleBtn(store,source,context){
       if(num(f.dispute)>0||num(f.disputeExpire)>0)hasAbnormal=true;
     }
   }
-  if(!hasAbnormal)return "";
+  if(!hasAbnormal)return '<span class="no-abn">无异常</span>';
   var prefix=source==="full"?"full":"pop";
   var ctx=context==="detail"?"detail-":"";
   var key=store+"|all|"+reportDate;
@@ -720,7 +817,7 @@ fullData.forEach(function(d){
   var html="<thead><tr>"+
     "<th>排名</th><th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th>"+
     "<th>点击率</th><th>订单</th><th>转化率</th><th>7天广告</th><th>投产</th>"+
-    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>负责人</th><th>异常是否处理</th>"+
+    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>负责人</th><th>周访客增长</th><th>异常是否处理</th>"+
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
@@ -753,6 +850,7 @@ fullData.forEach(function(d){
       "<td>"+disputeTag(d.mailErr)+"</td>"+
       "<td>"+disputeTag(d.expired)+"</td>"+
       "<td>"+owner+"</td>"+
+      '<td class="wow-cell" data-store="'+d.store+'" data-kind="pop">—</td>'+
       "<td>"+singleHandleBtn(d.store)+"</td>"+
     "</tr>";
   });
@@ -767,7 +865,7 @@ fullData.forEach(function(d){
   var rows=sorted.concat(noSales);
   var html="<thead><tr>"+
     "<th>排名</th><th>店铺</th><th>浏览量</th><th>访客数</th><th>转化率</th>"+
-    "<th>昨日销量</th><th>7日销量</th><th>纠纷</th><th>到期</th><th>负责人</th><th>异常是否处理</th>"+
+    "<th>昨日销量</th><th>7日销量</th><th>纠纷</th><th>到期</th><th>负责人</th><th>周访客增长</th><th>异常是否处理</th>"+
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
@@ -788,6 +886,7 @@ fullData.forEach(function(d){
       "<td>"+disputeTagTri(d.dispute)+"</td>"+
       "<td>"+disputeTagTri(d.disputeExpire)+"</td>"+
       "<td>"+owner+"</td>"+
+      '<td class="wow-cell" data-store="'+d.store+'" data-kind="full">—</td>'+
       "<td>"+singleHandleBtn(d.store,"full")+"</td>"+
     "</tr>";
   });
@@ -806,6 +905,8 @@ fullData.forEach(function(d){
     var hasFull=f&&f.salesYest!==null;
     html+='<div class="store-detail" id="store-'+s+'">';
     html+='<h2>📊 '+s+' 店铺详情</h2>';
+    html+=dateNavHtml();
+    html+='<div class="metric-grid mg5" id="storeKpi-'+s+'"></div>';
     // 雷达图放在顶部
     var radarData=null;
     if(hasPop){
@@ -819,6 +920,7 @@ fullData.forEach(function(d){
       html+='<div class="chart-wrapper" style="height:260px"><canvas id="radar-'+s+'"></canvas></div>';
       html+='</div>';
     }
+
     if(hasPop){
       html+='<h3>💰 POP 数据</h3>';
       html+='<div class="detail-kpi-grid">';
@@ -1023,18 +1125,19 @@ function roiColor(val){
 // ===== 交互逻辑 =====
 function showOverview(){
   document.getElementById("overviewPage").style.display="block";
+  var hp=document.getElementById("historyPage");if(hp)hp.style.display="none";
   var details=document.querySelectorAll(".store-detail");
   details.forEach(function(d){d.classList.remove("active")});
   document.querySelectorAll(".nav-item").forEach(function(n){n.classList.remove("active")});
   document.getElementById("nav-overview").classList.add("active");
-  if(window.location.hash&&window.location.hash.indexOf("store-")===-1){history.replaceState(null,"",window.location.pathname);}
-  else if(window.location.hash.indexOf("store-")!==-1){history.replaceState(null,"",window.location.pathname);}
+  if(window.location.hash){try{history.replaceState(null,"",window.location.pathname)}catch(e){}}
   scrollToTop();
   if(window.innerWidth<=768)closeSidebar();
 }
 
 function showStore(name){
   document.getElementById("overviewPage").style.display="none";
+  var hp=document.getElementById("historyPage");if(hp)hp.style.display="none";
   var details=document.querySelectorAll(".store-detail");
   details.forEach(function(d){d.classList.remove("active")});
   var el=document.getElementById("store-"+name);
@@ -1089,9 +1192,6 @@ document.getElementById("popTable").closest(".table-container").id="popTableSect
 var fullTbl=document.getElementById("fullTable");
 fullTbl.closest(".table-container").id="fullTableSection";
 
-// 初始显示总览
-showOverview();
-
 // 三图并列: 环形图、饼图、极坐标图
 (function(){
   var sorted=popData.filter(function(d){return d.pay!==null&&num(d.pay)>0}).sort(function(a,b){return num(b.pay)-num(a.pay)});
@@ -1118,12 +1218,17 @@ showOverview();
   charts.polar=new Chart(ctx,{type:"polarArea",data:{labels:labels,datasets:[{data:data,backgroundColor:colors.map(function(c){return c+"99"}),borderColor:colors,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,onClick:chartClickHandler,plugins:{legend:{display:true,position:"right",labels:{font:{size:9},boxWidth:8}}},scales:{r:{beginAtZero:true,ticks:{font:{size:8}}}}}});
 })();
 
-// URL hash 路由
-if(window.location.hash&&window.location.hash.indexOf("store-")!==-1){
-  var hashStore=window.location.hash.replace("#store-","");
-  var storeExists=popData.find(function(d){return d.store===hashStore});
-  if(storeExists){showStore(hashStore);}
-}
+// 初始视图：先看 URL hash，再决定显示哪一页
+(function(){
+  var h=window.location.hash||"";
+  if(h.indexOf("store-")!==-1){
+    var hs=h.replace("#store-","");
+    if(popData.find(function(d){return d.store===hs})||fullData.find(function(d){return d.store===hs})){showStore(hs);return;}
+  }else if(h==="#history"){
+    showHistory();return;
+  }
+  showOverview();
+})();
 
 // 监听 hash 变化
 window.addEventListener("hashchange",function(){
@@ -1131,6 +1236,8 @@ window.addEventListener("hashchange",function(){
     var hashStore=window.location.hash.replace("#store-","");
     var storeExists=popData.find(function(d){return d.store===hashStore});
     if(storeExists){showStore(hashStore);}
+  }else if(window.location.hash==="#history"){
+    showHistory();
   }else{
     showOverview();
   }
@@ -1139,235 +1246,483 @@ window.addEventListener("hashchange",function(){
 // 加载已处理状态
 loadHandledStatus();
 
-// ===== AI 聊天功能 =====
-var DEEPSEEK_API_KEY=["sk-566fba","6f61364","6568","6afd","4dee","580e","531"].join("");
-var DEEPSEEK_API_URL="https://api.deepseek.com/v1/chat/completions";
-var chatHistory=[];
-var chatInitialized=false;
-var chatLoading=false;
+// ===== 历史数据（按天向后端取数 + 天数切换） =====
 
-function openChat(){
-  if(fabDragInfo&&fabDragInfo.hasMoved())return;
-  document.getElementById("chatFab").classList.add("hidden");
-  document.getElementById("chatPanel").classList.add("show");
-  if(!chatInitialized){
-    chatInitialized=true;
-    setTimeout(function(){initChat()},300);
-  }
-  setTimeout(function(){var el=document.getElementById("chatInput");if(el)el.focus()},400);
-}
-
-function closeChat(){
-  if(panelDragInfo&&panelDragInfo.hasMoved())return;
-  document.getElementById("chatPanel").classList.remove("show");
-  document.getElementById("chatFab").classList.remove("hidden");
-}
-
-function addChatMsg(text,role){
-  var container=document.getElementById("chatMessages");
-  var div=document.createElement("div");
-  div.className="chat-msg "+role;
-  div.textContent=text;
-  container.appendChild(div);
-  container.scrollTop=container.scrollHeight;
-  return div;
-}
-
-function buildDataContext(){
-  var lines=[];
-  lines.push("当前日期："+reportDate);
-  lines.push("");
-  // 预计算POP排名
-  var popRanked=popData.filter(function(d){return d.pay!==null}).slice().sort(function(a,b){return num(b.pay)-num(a.pay)});
-  lines.push("【POP店铺数据（按支付金额降序）】");
-  popRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 支付$"+num(d.pay).toFixed(2)+", 曝光"+num(d.exposure)+", 访客"+num(d.visitors)+", 点击率"+fmtPct(d.ctr)+", 订单"+num(d.orders)+", 转化率"+fmtPct(d.cvr)+", 昨日广告¥"+num(d.adYest).toFixed(2)+", 7天广告¥"+num(d.ad7d).toFixed(2)+", 昨日广告投产"+num(d.adRoiYest).toFixed(2)+", 7天广告投产"+num(d.adRoi7d).toFixed(2)+", 余额¥"+num(d.balance).toFixed(2)+", 纠纷"+num(d.dispute)+", 到期纠纷"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
+// 顶部先读 ?days=（避免被后续 replaceState 清掉）
+// ===== 单店铺「周 / 月」汇总 =====
+function storePeriodAgg(store, list) {
+  var acc = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0, nd: list.length };
+  list.forEach(function (day) {
+    (day.p || []).forEach(function (r) {
+      if (r[0] !== store) return;
+      if (typeof r[1] === "number") acc.pay += r[1];
+      if (typeof r[2] === "number") acc.orders += r[2];
+      if (typeof r[3] === "number") acc.pvis += r[3];
+    });
+    (day.f || []).forEach(function (r) {
+      if (r[0] !== store) return;
+      if (typeof r[1] === "number") acc.fvis += r[1];
+      if (typeof r[2] === "number") acc.fsales += r[2];
+    });
   });
-  // 无POP数据的店铺
-  var popNoData=popData.filter(function(d){return d.pay===null});
-  if(popNoData.length>0){
-    lines.push("");
-    lines.push("【仅纠纷数据的POP店铺（无POP业务）】");
-    popNoData.forEach(function(d){
-      lines.push(d.store+": 纠纷"+num(d.dispute)+", 负责人:"+(d.owner||"无"));
+  return acc;
+}
+
+function storePeriod(store, n) {
+  var all = (histData.days || []).filter(function (d) { return d.d <= reportDate; });
+  if (all.length < 2) return null;
+  var cur = all.slice(-n), prev = all.slice(-2 * n, -n);
+  return { cur: storePeriodAgg(store, cur), prev: storePeriodAgg(store, prev), n: n, havePrev: prev.length > 0 };
+}
+
+function ssDelta(curAvg, prevAvg, havePrev) {
+  if (!havePrev || !prevAvg) return '<span class="wow-flat">—</span>';
+  var g = (curAvg - prevAvg) / prevAvg * 100;
+  var cls = g > 0.05 ? "wow-up" : (g < -0.05 ? "wow-down" : "wow-flat");
+  var arrow = g > 0.05 ? "▲" : (g < -0.05 ? "▼" : "•");
+  return '<span class="wow ' + cls + '"><span class="ar">' + arrow + '</span>' + (g > 0 ? "+" : "") + g.toFixed(1) + "%</span>";
+}
+
+function ssCell(period, key, fmt) {
+  var cur = period.cur[key], prev = period.prev[key];
+  var avg = period.cur.nd ? cur / period.cur.nd : 0;
+  var pavg = period.prev.nd ? prev / period.prev.nd : 0;
+  var isInt = (fmt === fmtInt);
+  var avgTxt = isInt ? fmtInt(Math.round(avg)) : fmt(avg);
+  return '<span class="ss-num">' + fmt(cur) +
+    '<span class="ss-avg">日均 ' + avgTxt + '</span>' +
+    '<span class="ss-avg">' + ssDelta(avg, pavg, period.havePrev) + '</span></span>';
+}
+
+
+
+function fillStoreKpis() {
+  var list = (typeof allStores !== "undefined" && allStores) ? allStores : [];
+  list.forEach(function (s) { renderStoreKpi(s); });
+}
+
+
+
+// ===== 店铺页 KPI：本周（近7天）汇总 + 周访客增长 =====
+function renderStoreKpi(store) {
+  var box = document.getElementById("storeKpi-" + store);
+  if (!box) return;
+  var w = storePeriod(store, 7);
+  var mo = storePeriod(store, 30);
+  if (!w || !mo) { box.innerHTML = ""; return; }
+
+  function vis(p) { return p.pvis + p.fvis; }
+  var curVis = vis(w.cur), prevVis = vis(w.prev);
+  var curAvg = w.cur.nd ? curVis / w.cur.nd : 0;
+  var prevAvg = w.prev.nd ? prevVis / w.prev.nd : 0;
+  var g = (w.havePrev && prevAvg > 0) ? ((curAvg - prevAvg) / prevAvg * 100) : NaN;
+  var cls = !isFinite(g) ? "wow-flat" : (g > 0.05 ? "wow-up" : (g < -0.05 ? "wow-down" : "wow-flat"));
+  var arrow = !isFinite(g) ? "" : (g > 0.05 ? "\u25b2" : (g < -0.05 ? "\u25bc" : "\u2022"));
+  var gTxt = !isFinite(g) ? "\u2014" : (arrow + (g > 0 ? "+" : "") + g.toFixed(1) + "%");
+
+  function card(label, value, unit, valueCls, sub) {
+    return '<div class="metric-card"><div class="m-label">' + label + '</div>' +
+      '<div class="m-value ' + (valueCls || "") + '">' + value +
+      (unit ? '<span class="unit">' + unit + '</span>' : '') + '</div>' +
+      (sub ? '<div class="m-delta">' + sub + '</div>' : '') + '</div>';
+  }
+  function avgTxt(p, val) { return p.nd ? fmtInt(Math.round(val / p.nd)) : "0"; }
+
+  box.innerHTML =
+    '<div class="metric-note">环比 = 本周期日均 vs 上一周期日均（周 = 近 7 天，月 = 近 30 天）</div>' +
+    card("周访客增长", gTxt, "", cls) +
+    card("周销量（全托）", fmtInt(w.cur.fsales), "件", "", "日均 " + avgTxt(w.cur, w.cur.fsales) + " 件") +
+    card("周访客", fmtInt(curVis), "人", "", "日均 " + avgTxt(w.cur, curVis) + " 人") +
+    card("月销量（全托）", fmtInt(mo.cur.fsales), "件", "", "日均 " + avgTxt(mo.cur, mo.cur.fsales) + " 件") +
+    card("月访客", fmtInt(vis(mo.cur)), "人", "", "日均 " + avgTxt(mo.cur, vis(mo.cur)) + " 人");
+}
+// ===== 表格「周访客增长」列 =====
+function weekVisitors(store, kind, days) {
+  var sum = 0;
+  for (var i = 0; i < days.length; i++) {
+    var day = days[i];
+    var v = kind === "full" ? histVal(day.f, store, 1) : histVal(day.p, store, 3);
+    if (v !== null) sum += v;
+  }
+  return sum / (days.length || 1);
+}
+
+function fillWeeklyColumn() {
+  var all = (histData.days || []).filter(function (d) { return d.d <= reportDate; });
+  if (all.length < 8) return;
+  var cur = all.slice(-7), prev = all.slice(-14, -7);
+  var cells = document.querySelectorAll(".wow-cell");
+  for (var i = 0; i < cells.length; i++) {
+    var el = cells[i];
+    var store = el.getAttribute("data-store");
+    var kind = el.getAttribute("data-kind");
+    var a = weekVisitors(store, kind, cur);
+    var b = weekVisitors(store, kind, prev);
+    var html;
+    if (!b) {
+      html = '<span class="wow wow-flat">—</span>';
+    } else {
+      var g = (a - b) / b * 100;
+      var cls = g > 0.05 ? "wow-up" : (g < -0.05 ? "wow-down" : "wow-flat");
+      var arrow = g > 0.05 ? "▲" : (g < -0.05 ? "▼" : "•");
+      var sign = g > 0 ? "+" : "";
+      html = '<span class="wow ' + cls + '" title="近7天日均 ' + Math.round(a) + ' 人 vs 前7天 ' + Math.round(b) + ' 人">' +
+        '<span class="ar">' + arrow + '</span>' + sign + g.toFixed(1) + '%</span>';
+    }
+    el.innerHTML = html;
+  }
+}
+
+// HIST_INIT_DAYS 已在顶部定义
+
+function todayOnlyHistory() {
+  return [{
+    d: reportDate,
+    p: popData.map(function (d) { return [d.store, d.pay, d.orders, d.visitors]; }),
+    f: fullData.map(function (d) { return [d.store, d.visitors, d.salesYest, d.sales7d]; })
+  }];
+}
+
+function histJsonUrl(qs) {
+  return HIST_API_URL ? (HIST_API_URL + "history" + qs) : null;
+}
+
+function fetchJson(url) {
+  return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+}
+
+// 索引：拿到总天数，决定要拉多少
+function loadIndex(cb) {
+  var u = HIST_API_URL ? (HIST_API_URL + "history/days") : null;
+  if (!u) return cb(0);
+  fetchJson(u).then(function (j) {
+    var n = (j && typeof j.count === "number") ? j.count : 0;
+    histData.total = n;
+    cb(n);
+  }).catch(function () { cb(0); });
+}
+
+// 按需加载：n=0 表示全部。会多取一倍，保证「上一期」可比
+function ensureDays(n, cb) {
+  var have = histData.days.length;
+  var enough = have > 0 && (n === 0 ? (histData.fetched === 0 || have >= histData.total) : (n * 2 <= have));
+  if (enough) { cb(); return; }
+  if (histData.loading) { histData.loading.push(cb); return; }
+  histData.loading = [cb];
+
+  var finish = function () {
+    var list = histData.loading || [];
+    histData.loading = null;
+    list.forEach(function (f) { try { f(); } catch (e) { console.error(e); } });
+  };
+
+  var doFetch = function (total) {
+    var qs = "";
+    if (n > 0 && total > 0 && n * 2 < total) qs = "?days=" + (n * 2);
+    var url = histJsonUrl(qs);
+    var chain = url ? fetchJson(url) : Promise.reject(new Error("无后端地址"));
+    chain.then(function (j) {
+      var days = (j && j.data && j.data.days) ? j.data.days : ((j && j.days) ? j.days : []);
+      if (!days.length) throw new Error("空数据");
+      days.sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+      histData.days = days;
+      histData.fetched = qs ? parseInt(qs.replace(/\D/g, ""), 10) : 0;
+      histData.error = null;
+      histSource = "后端 /history" + qs;
+      finish();
+    }).catch(function (e1) {
+      // 兜底1：同目录 history.json
+      fetchJson("history.json?v=" + encodeURIComponent(reportDate)).then(function (j) {
+        var days = (j && j.data && j.data.days) ? j.data.days : ((j && j.days) ? j.days : []);
+        if (!days.length) throw new Error("空数据");
+        days.sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+        histData.days = days; histData.fetched = 0; histData.error = null;
+        histSource = "本地 history.json";
+        finish();
+      }).catch(function (e2) {
+        histData.days = todayOnlyHistory();
+        histData.fetched = 0;
+        histData.error = e1;
+        histSource = "";
+        finish();
+      });
+    });
+  };
+
+  if (histData.total > 0) doFetch(histData.total);
+  else loadIndex(doFetch);
+}
+
+// ---------- 取值 ----------
+function histVal(arr, store, idx) {
+  if (!arr) return null;
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] && arr[i][0] === store) {
+      var v = arr[i][idx];
+      return (typeof v === "number") ? v : null;
+    }
+  }
+  return null;
+}
+
+function histOwner(store) {
+  var p = popData.find(function (d) { return d.store === store; });
+  if (p && p.owner) return p.owner;
+  var f = fullData.find(function (d) { return d.store === store; });
+  return (f && f.owner) || "—";
+}
+
+function histRange(n) {
+  var all = histData.days || [];
+  var total = all.length;
+  var len = (!n || n >= total) ? total : n;
+  var cur = all.slice(total - len);
+  var prevEnd = total - len - 1;
+  var prev = prevEnd >= 0 ? all.slice(Math.max(0, prevEnd - len + 1), prevEnd + 1) : [];
+  return { len: len, cur: cur, prev: prev, total: total };
+}
+
+function aggDays(days) {
+  var acc = {};
+  (days || []).forEach(function (day) {
+    var p = day.p || [], f = day.f || [];
+    var seen = {};
+    p.forEach(function (r) {
+      var s = r[0]; seen[s] = 1;
+      var a = acc[s] || (acc[s] = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 });
+      if (typeof r[1] === "number") a.pay += r[1];
+      if (typeof r[2] === "number") a.orders += r[2];
+      if (typeof r[3] === "number") a.pvis += r[3];
+    });
+    f.forEach(function (r) {
+      var s = r[0]; seen[s] = 1;
+      var a = acc[s] || (acc[s] = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 });
+      if (typeof r[1] === "number") a.fvis += r[1];
+      if (typeof r[2] === "number") a.fsales += r[2];
+    });
+    Object.keys(seen).forEach(function (s) { if (!acc[s]) acc[s] = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 }; });
+  });
+  return { byStore: acc, nd: (days || []).length };
+}
+
+function histDelta(pct) {
+  if (!isFinite(pct)) return '<span class="growth-flat">—</span>';
+  var cls = pct > 0.05 ? "growth-up" : (pct < -0.05 ? "growth-down" : "growth-flat");
+  var sign = pct > 0 ? "+" : "";
+  return '<span class="' + cls + '">' + (Math.abs(pct) < 0.05 ? "0.0" : sign + pct.toFixed(1)) + "%</span>";
+}
+
+function buildHistData(n) {
+  var rg = histRange(n);
+  var a = aggDays(rg.cur), b = aggDays(rg.prev);
+  var names = {};
+  Object.keys(a.byStore).forEach(function (s) { names[s] = 1; });
+  Object.keys(b.byStore).forEach(function (s) { names[s] = 1; });
+  var rows = [], tot = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0, prevPay: 0, prevOrders: 0, prevFsales: 0 };
+  Object.keys(names).forEach(function (s) {
+    var x = a.byStore[s] || { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 };
+    var y = b.byStore[s] || { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 };
+    var curVis = x.pvis + x.fvis, prevVis = y.pvis + y.fvis;
+    var curAvg = a.nd ? curVis / a.nd : 0, prevAvg = b.nd ? prevVis / b.nd : 0;
+    var g = (!b.nd) ? NaN : (prevAvg > 0 ? ((curAvg - prevAvg) / prevAvg * 100) : (curAvg > 0 ? 100 : 0));
+    rows.push({ store: s, curVis: curVis, prevVis: prevVis, curAvg: curAvg, prevAvg: prevAvg, growth: g, pay: x.pay, orders: x.orders, fsales: x.fsales, owner: histOwner(s) });
+    tot.pay += x.pay; tot.orders += x.orders; tot.pvis += x.pvis; tot.fvis += x.fvis; tot.fsales += x.fsales;
+    tot.prevPay += y.pay; tot.prevOrders += y.orders; tot.prevFsales += y.fsales;
+  });
+  rows.sort(function (m, n2) { return (isNaN(n2.growth) ? -1e9 : n2.growth) - (isNaN(m.growth) ? -1e9 : m.growth); });
+  return { rows: rows, rg: rg, a: a, b: b, tot: tot };
+}
+
+function renderHistCards(d) {
+  var grid = document.getElementById("histMetricGrid");
+  var nd = d.a.nd || 1, pnd = d.b.nd || 1;
+  var hasPrev = d.b.nd > 0;
+  var curAvg = (d.tot.pvis + d.tot.fvis) / nd;
+  var prevAvg = (d.tot.pvis + d.tot.fvis) / pnd;
+  var payAvg = d.tot.pay / nd, payPrev = d.tot.prevPay / pnd;
+  var ordAvg = d.tot.orders / nd, ordPrev = d.tot.prevOrders / pnd;
+  var saleAvg = d.tot.fsales / nd, salePrev = d.tot.prevFsales / pnd;
+  function chg(c, p) { return hasPrev ? (p > 0 ? ((c - p) / p * 100) : (c > 0 ? 100 : 0)) : NaN; }
+  function card(label, value, unit, pct, sub) {
+    var tail = hasPrev ? ((sub || "日均环比") + " " + histDelta(pct)) : "无上一期可对比";
+    return '<div class="metric-card"><div class="m-label">' + label + '</div>' +
+      '<div class="m-value">' + value + (unit ? '<span class="unit">' + unit + '</span>' : '') + '</div>' +
+      '<div class="m-delta">' + tail + '</div></div>';
+  }
+  grid.innerHTML =
+    card("日均总访客", fmtInt(Math.round(curAvg)), "人/天", chg(curAvg, prevAvg)) +
+    card("POP支付合计", fmtUSD(d.tot.pay), "", chg(payAvg, payPrev)) +
+    card("POP订单合计", fmtInt(d.tot.orders), "单", chg(ordAvg, ordPrev)) +
+    card("全托销量合计", fmtInt(d.tot.fsales), "件", chg(saleAvg, salePrev));
+}
+
+function renderHistTable(d) {
+  var t = document.getElementById("histTable");
+  var maxAbs = 1;
+  d.rows.forEach(function (r) { if (isFinite(r.growth)) maxAbs = Math.max(maxAbs, Math.abs(r.growth)); });
+  var h = '<thead><tr><th>店铺</th><th>本期日均访客</th><th>上期日均访客</th><th>环比</th><th>POP支付</th><th>订单</th><th>全托销量</th><th>负责人</th></tr></thead><tbody>';
+  d.rows.forEach(function (r, i) {
+    var w = isFinite(r.growth) ? Math.min(100, Math.abs(r.growth) / maxAbs * 100) : 0;
+    var color = r.growth > 0 ? "#d32f2f" : (r.growth < 0 ? "#2e7d32" : "#9aa3b2");
+    h += '<tr>' +
+      '<td style="text-align:left">' + rankBadge(i + 1) + ' <span class="store-link" onclick="showStore(\'' + r.store + '\')">' + r.store + '</span></td>' +
+      '<td>' + fmtInt(Math.round(r.curAvg)) + '</td>' +
+      '<td>' + fmtInt(Math.round(r.prevAvg)) + '</td>' +
+      '<td><span class="bar-cell"><span class="bar-track"><span class="bar-fill" style="width:' + w.toFixed(0) + '%;background:' + color + '"></span></span>' + histDelta(r.growth) + '</span></td>' +
+      '<td>' + fmtUSD(r.pay) + '</td><td>' + fmtInt(r.orders) + '</td><td>' + fmtInt(r.fsales) + '</td><td>' + (r.owner || "—") + '</td></tr>';
+  });
+  t.innerHTML = h + '</tbody>';
+}
+
+function renderHistCharts(d) {
+  var hasPrev = d.b.nd > 0;
+  var gc = document.getElementById('chartHistGrowth');
+  if (gc && gc.parentNode) gc.parentNode.style.display = hasPrev ? 'block' : 'none';
+  if (!hasPrev) {
+    if (charts.histGrowth) { charts.histGrowth.destroy(); charts.histGrowth = null; }
+    document.getElementById("histGrowthTitle").textContent = "店铺访客环比增长（当前区间没有上一期可对比）";
+  }
+  var top = hasPrev ? d.rows.filter(function (r) { return r.curAvg > 0 || r.prevAvg > 0; }).slice(0, 12) : [];
+  if (hasPrev) {
+    if (charts.histGrowth) charts.histGrowth.destroy();
+    charts.histGrowth = new Chart(document.getElementById("chartHistGrowth").getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: top.map(function (r) { return r.store; }),
+        datasets: [{
+          label: "访客环比",
+          data: top.map(function (r) { return Math.round(r.growth * 10) / 10; }),
+          backgroundColor: top.map(function (r) { return r.growth >= 0 ? "#d32f2f" : "#2e7d32"; }),
+          borderRadius: 4, maxBarThickness: 22
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: "y",
+        onClick: function (ev, els) { if (els && els.length) showStore(top[els[0].index].store); },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return c.raw + "%"; } } } },
+        scales: { x: { grid: { color: "#f0f2f5" }, ticks: { font: { size: 9 } } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
+      }
     });
   }
-  lines.push("");
-  // 预计算全托管排名
-  var fullRanked=fullData.filter(function(d){return d.salesYest!==null}).slice().sort(function(a,b){return num(b.salesYest)-num(a.salesYest)});
-  lines.push("【全托管店铺数据（按昨日销量降序）】");
-  fullRanked.forEach(function(d,i){
-    lines.push("#"+(i+1)+" "+d.store+": 浏览"+num(d.views)+", 访客"+num(d.visitors)+", 转化率"+fmtPct(d.cvr)+", 昨日销量"+num(d.salesYest)+", 7日销量"+num(d.sales7d)+", 纠纷"+num(d.dispute)+", 到期"+num(d.disputeExpire)+", 负责人:"+(d.owner||"无"));
-  });
-  lines.push("");
-  // 预计算汇总
-  lines.push("【汇总数据（已精确计算，请直接引用）】");
-  lines.push("POP支付总额: $"+popPayTotal.toFixed(2));
-  lines.push("POP总订单数: "+popOrderTotal);
-  lines.push("昨日广告总花费: ¥"+adYestTotal.toFixed(2));
-  lines.push("广告账号总余额: ¥"+balanceTotal.toFixed(2));
-  lines.push("全托昨日总销量: "+fullYestTotal);
-  lines.push("全托7日总销量: "+full7dTotal);
-  lines.push("支付金额TOP3: "+popRanked[0].store+"($"+num(popRanked[0].pay).toFixed(2)+")、"+popRanked[1].store+"($"+num(popRanked[1].pay).toFixed(2)+")、"+popRanked[2].store+"($"+num(popRanked[2].pay).toFixed(2)+")");
-  lines.push("全托昨日销量TOP3: "+fullRanked[0].store+"("+num(fullRanked[0].salesYest)+")、"+fullRanked[1].store+"("+num(fullRanked[1].salesYest)+")、"+fullRanked[2].store+"("+num(fullRanked[2].salesYest)+")");
-  // 纠纷预警
-  var disputeStores=popData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
-  var fullDispute=fullData.filter(function(d){return num(d.dispute)>0}).map(function(d){return d.store+"("+num(d.dispute)+"个)"});
-  lines.push("有纠纷的POP店铺: "+(disputeStores.length>0?disputeStores.join("、"):"无"));
-  lines.push("有纠纷的全托店铺: "+(fullDispute.length>0?fullDispute.join("、"):"无"));
-  // 到期纠纷预警
-  var expireStores=popData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
-  var fullExpire=fullData.filter(function(d){return num(d.disputeExpire)>0}).map(function(d){return d.store+"("+num(d.disputeExpire)+"个)"});
-  lines.push("纠纷即将到期的POP店铺: "+(expireStores.length>0?expireStores.join("、"):"无"));
-  lines.push("纠纷即将到期的全托店铺: "+(fullExpire.length>0?fullExpire.join("、"):"无"));
-  // 异常订单预警（注意：异常订单与纠纷是不同概念）
-  var errOrderStores=popData.filter(function(d){return d.pay!==null&&num(d.errOrder)>0}).map(function(d){return d.store+"("+num(d.errOrder)+"个)"});
-  var manualStores=popData.filter(function(d){return d.pay!==null&&num(d.manualOrder)>0}).map(function(d){return d.store+"("+num(d.manualOrder)+"个)"});
-  var mailErrStores=popData.filter(function(d){return d.pay!==null&&num(d.mailErr)>0}).map(function(d){return d.store+"("+num(d.mailErr)+"个)"});
-  var expiredStores=popData.filter(function(d){return d.pay!==null&&num(d.expired)>0}).map(function(d){return d.store+"("+num(d.expired)+"个)"});
-  lines.push("商品错误订单: "+(errOrderStores.length>0?errOrderStores.join("、"):"无"));
-  lines.push("人工审核订单: "+(manualStores.length>0?manualStores.join("、"):"无"));
-  lines.push("邮寄方式错误: "+(mailErrStores.length>0?mailErrStores.join("、"):"无"));
-  lines.push("过期订单: "+(expiredStores.length>0?expiredStores.join("、"):"无"));
-  // 广告投产预警
-  var lowRoi=popData.filter(function(d){return d.pay!==null&&num(d.ad7d)>0&&num(d.adRoi7d)<1}).map(function(d){return d.store+"(投产"+num(d.adRoi7d).toFixed(2)+")"});
-  lines.push("7天广告投产<1的店铺: "+(lowRoi.length>0?lowRoi.join("、"):"无"));
-  return lines.join("\n");
-}
 
-function callDeepSeek(messages,onSuccess,onError){
-  var xhr=new XMLHttpRequest();
-  xhr.open("POST",DEEPSEEK_API_URL,true);
-  xhr.setRequestHeader("Content-Type","application/json");
-  xhr.setRequestHeader("Authorization","Bearer "+DEEPSEEK_API_KEY);
-  xhr.onreadystatechange=function(){
-    if(xhr.readyState===4){
-      if(xhr.status===200){
-        try{
-          var resp=JSON.parse(xhr.responseText);
-          var content=resp.choices&&resp.choices[0]&&resp.choices[0].message?resp.choices[0].message.content:"";
-          onSuccess(content);
-        }catch(e){onError("解析失败: "+e.message)}
-      }else{
-        onError("API错误("+xhr.status+"): "+xhr.responseText.substring(0,200));
+  var days = d.rg.cur;
+  var weekly = days.length > 62;
+  var labels = [], vals = [], sum = 0, cnt = 0, bucket = null;
+  days.forEach(function (day) {
+    var v = 0, has = false;
+    (day.p || []).forEach(function (r) { if (typeof r[3] === "number") { v += r[3]; has = true; } });
+    (day.f || []).forEach(function (r) { if (typeof r[1] === "number") { v += r[1]; has = true; } });
+    if (!weekly) { labels.push(day.d.substring(5)); vals.push(has ? v : null); return; }
+    var dt = new Date(day.d + "T00:00:00Z");
+    var monday = new Date(dt.getTime() - ((dt.getUTCDay() + 6) % 7) * 86400000).toISOString().slice(0, 10);
+    if (bucket !== monday) {
+      if (bucket !== null) vals.push(cnt ? Math.round(sum / cnt) : null);
+      labels.push(monday.substring(5)); sum = 0; cnt = 0; bucket = monday;
+    }
+    if (has) { sum += v; cnt++; }
+  });
+  if (weekly && bucket !== null) vals.push(cnt ? Math.round(sum / cnt) : null);
+
+  if (charts.histTrend) charts.histTrend.destroy();
+  charts.histTrend = new Chart(document.getElementById("chartHistTrend").getContext("2d"), {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: weekly ? "周日均总访客" : "每日总访客", data: vals,
+        borderColor: "#4a90d9", backgroundColor: "rgba(74,144,217,.12)",
+        fill: true, tension: .3, pointRadius: labels.length > 40 ? 0 : 3, borderWidth: 2, spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: function (c) { return (weekly ? "周日均 " : "总访客 ") + fmtInt(c.raw); } } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 }, maxTicksLimit: (window.innerWidth < 480 ? 5 : 8), autoSkip: true } },
+        y: { beginAtZero: false, grace: "10%", grid: { color: "#f0f2f5" } }
       }
     }
-  };
-  xhr.send(JSON.stringify({model:"deepseek-chat",messages:messages,temperature:0.7,max_tokens:1500}));
-}
-
-function initChat(){
-  addChatMsg("正在分析店铺数据，生成运营建议...","loading");
-  var ctx=buildDataContext();
-  var sysMsg="你是专业的电商运营分析师。以下数据已按排名排序并预计算了汇总值，请直接引用这些数据，不要自行计算。注意：纠纷数和异常订单（商品错误、人工审核、邮寄错误、过期订单）是不同的概念，不要混淆。给出简洁有力的运营建议（3-5条要点），包括：表现好的店铺、需要关注的异常（纠纷、到期纠纷、异常订单、低转化、广告投产低等）、行动建议。用中文回复，简洁专业。\n\n"+ctx;
-  callDeepSeek(
-    [{role:"system",content:sysMsg},{role:"user",content:"请给出今日运营建议"}],
-    function(content){
-      var loadingEl=document.querySelector(".chat-msg.loading");
-      if(loadingEl)loadingEl.remove();
-      addChatMsg(content,"ai");
-      chatHistory.push({role:"system",content:sysMsg});
-      chatHistory.push({role:"assistant",content:content});
-    },
-    function(err){
-      var loadingEl=document.querySelector(".chat-msg.loading");
-      if(loadingEl)loadingEl.remove();
-      addChatMsg("AI连接失败: "+err+"\n你可以直接提问，我会基于数据回答。","error");
-    }
-  );
-}
-
-function sendChatMsg(){
-  if(chatLoading)return;
-  var input=document.getElementById("chatInput");
-  var text=input.value.trim();
-  if(!text)return;
-  addChatMsg(text,"user");
-  input.value="";
-  input.style.height="auto";
-  var loadingEl=addChatMsg("思考中...","loading");
-  chatLoading=true;
-  document.getElementById("chatSend").disabled=true;
-  var ctx=buildDataContext();
-  var msgs=[];
-  if(chatHistory.length>0){
-    msgs=chatHistory.slice();
-    msgs.push({role:"user",content:"数据上下文:\n"+ctx+"\n\n用户问题: "+text+"\n请基于数据简洁回答。"});
-  }else{
-    msgs.push({role:"system",content:"你是专业的电商运营分析师，根据以下数据回答问题。\n"+ctx});
-    msgs.push({role:"user",content:text});
-  }
-  callDeepSeek(msgs,function(content){
-    loadingEl.remove();
-    addChatMsg(content,"ai");
-    chatHistory.push({role:"user",content:text});
-    chatHistory.push({role:"assistant",content:content});
-    chatLoading=false;
-    document.getElementById("chatSend").disabled=false;
-  },function(err){
-    loadingEl.remove();
-    addChatMsg("请求失败: "+err,"error");
-    chatLoading=false;
-    document.getElementById("chatSend").disabled=false;
   });
 }
 
-function sendQuickMsg(msg){
-  document.getElementById("chatInput").value=msg;
-  sendChatMsg();
+function renderHistory() {
+  var note = document.getElementById("histNote");
+  if (!histData.days.length && !histData.error) { note.textContent = "加载中…"; return; }
+  var d = buildHistData(histWindow);
+  var txt;
+  if (histData.error) {
+    txt = "⚠ 未拿到历史数据（" + histData.error.message + "）：后端不可用，本地也没有缓存；当前仅显示今日数据";
+  } else {
+    txt = "已加载 " + histData.days.length + " 天（" + histData.days[0].d + " ~ " + histData.days[histData.days.length - 1].d + "）｜本期 " +
+      d.a.nd + " 天，上期 " + d.b.nd + " 天";
+    if (histSource) txt += "｜来源：" + histSource;
+  }
+  note.textContent = txt;
+  var label = (histWindow && histWindow < d.rg.total) ? ("近" + histWindow + "天") : ("全部 " + d.rg.total + " 天");
+  if (d.b.nd > 0) {
+    document.getElementById("histGrowthTitle").textContent = "店铺访客环比增长（" + label + " vs 前" + d.b.nd + "天）";
+  }
+  document.getElementById("histTrendTitle").textContent = label + " · " + (d.rg.cur.length > 62 ? "周日均" : "每日") + "总访客趋势";
+  renderHistCards(d);
+  renderHistTable(d);
+  renderHistCharts(d);
+  var empty = document.getElementById("histEmpty");
+  if (!d.rows.length) {
+    empty.style.display = "block";
+    empty.textContent = "这段时间还没有历史数据。确认后端 /history 已灌入历史（scf-backend\\seed-history.ps1）。";
+  } else { empty.style.display = "none"; }
+  var seg = document.getElementById("histSeg");
+  if (seg) {
+    var btns = seg.getElementsByTagName("button");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].className = (parseInt(btns[i].getAttribute("data-n"), 10) === histWindow) ? "on" : "";
+    }
+  }
 }
 
-// textarea自适应高度
-document.getElementById("chatInput").addEventListener("input",function(){
-  this.style.height="auto";
-  this.style.height=Math.min(this.scrollHeight,80)+"px";
-});
-
-// ===== 拖动功能 =====
-function makeDraggable(el,handle){
-  var isDragging=false,startX=0,startY=0,origX=0,origY=0,hasMoved=false;
-  function onStart(e){
-    var touch=e.touches?e.touches[0]:e;
-    isDragging=true;hasMoved=false;
-    startX=touch.clientX;startY=touch.clientY;
-    var rect=el.getBoundingClientRect();
-    origX=rect.left;origY=rect.top;
-    el.classList.add("dragging");
-    e.preventDefault();
-  }
-  function onMove(e){
-    if(!isDragging)return;
-    var touch=e.touches?e.touches[0]:e;
-    var dx=touch.clientX-startX;
-    var dy=touch.clientY-startY;
-    if(Math.abs(dx)>3||Math.abs(dy)>3)hasMoved=true;
-    var newX=origX+dx;
-    var newY=origY+dy;
-    var maxX=window.innerWidth-el.offsetWidth;
-    var maxY=window.innerHeight-el.offsetHeight;
-    newX=Math.max(0,Math.min(newX,maxX));
-    newY=Math.max(0,Math.min(newY,maxY));
-    el.style.left=newX+"px";
-    el.style.top=newY+"px";
-    el.style.right="auto";
-    el.style.bottom="auto";
-    e.preventDefault();
-  }
-  function onEnd(){
-    isDragging=false;
-    el.classList.remove("dragging");
-  }
-  handle.addEventListener("mousedown",onStart);
-  handle.addEventListener("touchstart",onStart,{passive:false});
-  document.addEventListener("mousemove",onMove);
-  document.addEventListener("touchmove",onMove,{passive:false});
-  document.addEventListener("mouseup",onEnd);
-  document.addEventListener("touchend",onEnd);
-  return{hasMoved:function(){return hasMoved}};
+function setHistDays(n) {
+  histWindow = n;
+  ensureDays(n, renderHistory);
 }
 
-var fabDragInfo=makeDraggable(document.getElementById("chatFab"),document.getElementById("chatFab"));
-var panelDragInfo=makeDraggable(document.getElementById("chatPanel"),document.querySelector(".chat-header"));
+function exportHistCsv() {
+  if (!histData.days.length) return;
+  var d = buildHistData(histWindow);
+  var lines = ["日期区间," + d.rg.cur[0].d + " ~ " + d.rg.cur[d.rg.cur.length - 1].d];
+  lines.push("店铺,POP支付,POP订单,POP访客,全托访客,全托销量,本期日均访客,上期日均访客,环比%");
+  d.rows.forEach(function (r) {
+    var x = d.a.byStore[r.store] || { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 };
+    lines.push([r.store, x.pay.toFixed(2), x.orders, x.pvis, x.fvis, x.fsales, Math.round(r.curAvg), Math.round(r.prevAvg), isFinite(r.growth) ? r.growth.toFixed(1) : ""].join(","));
+  });
+  var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "店铺历史_" + (histWindow ? histWindow + "天" : "全部") + "_" + reportDate + ".csv";
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+
+function showHistory() {
+  document.getElementById("overviewPage").style.display = "none";
+  document.querySelectorAll(".store-detail").forEach(function (d) { d.classList.remove("active"); });
+  document.getElementById("historyPage").style.display = "block";
+  document.querySelectorAll(".nav-item").forEach(function (n) { n.classList.remove("active"); });
+  var nav = document.getElementById("nav-history");
+  if (nav) nav.classList.add("active");
+  try { history.replaceState(null, "", window.location.pathname + "#history"); } catch (e) { }
+  scrollToTop();
+  if (window.innerWidth <= 768) closeSidebar();
+  ensureDays(histWindow, renderHistory);
+}
+
+
+// 表格里的周访客增长：等历史数据到位再填
+if (document.getElementById("popTable")) {
+  ensureDays(30, function () { fillWeeklyColumn(); fillStoreKpis(); });
+}
 </script>
 </body>
 </html>
