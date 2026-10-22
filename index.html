@@ -1433,7 +1433,11 @@ function storeTrendSeries(store,metric,days){
   var series=[];
   if(metric==="visitors"){
     series.push({label:"总计",color:"#1a73e8",width:2.6,dash:null,
-      data:days.map(function(d){return histSum2(d,store,3)})});
+      data:days.map(function(d){
+        var a=histVal(d.p,store,3),b=histVal(d.f,store,1);
+        if(a===null&&b===null)return null;
+        return (a||0)+(b||0);
+      })});
     if(hasPop)series.push({label:"POP",color:"#4a90d9",width:1.6,dash:null,
       data:days.map(function(d){return histVal(d.p,store,3)})});
     if(hasFull)series.push({label:"全托管",color:"#7b68ee",width:1.6,dash:null,
