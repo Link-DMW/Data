@@ -422,7 +422,7 @@ var reportDate = "2026-10-21";
 // ===== 后端API配置 =====
 var API_URL="https://1410774605-g9ihge6xir.ap-guangzhou.tencentscf.com/";
 // 历史数据接口：默认与状态接口同一个函数；本地预览可用 ?api=http://127.0.0.1:9100 覆盖
-var HIST_INIT_DAYS=(function(){var m=window.location.search.match(/[?&]days=(\d+)/);return m?parseInt(m[1],10):null;})();
+
 var HIST_API_URL=(function(){
   var m=window.location.search.match(/[?&]api=([^&]+)/);
   if(m){var v=decodeURIComponent(m[1]);return v.charAt(v.length-1)==="/"?v:v+"/";}
@@ -430,6 +430,13 @@ var HIST_API_URL=(function(){
   if(h==="127.0.0.1"||h==="localhost"){return window.location.origin+"/";}
   return API_URL;
 })();
+// 历史页状态：必须早于路由调用（showHistory 会被 #history 触发）
+var histData = { days: [], total: 0, source: '', error: null, loading: null, fetched: 0 };
+var HIST_INIT_DAYS = (function () { var m = window.location.search.match(/[?&]days=(\d+)/); return m ? parseInt(m[1], 10) : null; })();
+var histWindow = (HIST_INIT_DAYS === null ? 7 : HIST_INIT_DAYS);
+var storeWin = {};
+var storeMetric = {};
+var histSource = '';
 var handledStatus={};
 
 function loadHandledStatus(){
@@ -1031,7 +1038,7 @@ function showStore(name){
   details.forEach(function(d){d.classList.remove("active")});
   var el=document.getElementById("store-"+name);
   if(el)el.classList.add("active");
-  if(el){if(historyLoaded){renderStoreTrend(name);}else{loadHistoryData(function(){renderStoreTrend(name);});}}
+  if(el){ensureDays(storeWin[name]||30,function(){renderStoreTrend(name);});}
   document.querySelectorAll(".nav-item").forEach(function(n){n.classList.remove("active")});
   var navEl=document.getElementById("nav-"+name);
   if(navEl)navEl.classList.add("active");
@@ -1136,16 +1143,11 @@ window.addEventListener("hashchange",function(){
 // 加载已处理状态
 loadHandledStatus();
 
-// ===== 历史数据（按天数切换 + 店铺访客增长） =====
-var historyDays = null;
-var historyLoaded = false;
-var historyLoadError = null;
-var histSource = "";
-var histWindow = (HIST_INIT_DAYS===null?7:HIST_INIT_DAYS);   // 0 = 全部
-
-var storeWin = {};           // 每个店铺折线图的天数
-var storeMetric = {};        // 每个店铺折线图的指标
+// ===== 历史数据（按天向后端取数 + 天数切换） =====
 var storeTrendCharts = {};
+
+// 顶部先读 ?days=（避免被后续 replaceState 清掉）
+// HIST_INIT_DAYS 已在顶部定义
 
 function todayOnlyHistory() {
   return [{
@@ -1155,38 +1157,77 @@ function todayOnlyHistory() {
   }];
 }
 
-function loadHistoryData(cb) {
-  if (historyLoaded) { cb(); return; }
-  var urls = [];
-  if (HIST_API_URL) urls.push(HIST_API_URL + "history");
-  urls.push("history.json?v=" + encodeURIComponent(reportDate));
-  var i = 0, lastErr = null;
-  function step() {
-    if (i >= urls.length) {
-      historyDays = todayOnlyHistory();
-      historyLoaded = true;
-      historyLoadError = lastErr || new Error("无可用数据源");
-      cb();
-      return;
-    }
-    var url = urls[i++];
-    fetch(url)
-      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(function (j) {
-        var days = (j && j.data && j.data.days) ? j.data.days : ((j && j.days) ? j.days : []);
-        if (!days.length) throw new Error("空数据");
-        days.sort(function (x, y) { return x.d < y.d ? -1 : 1; });
-        historyDays = days;
-        historyLoaded = true; historyLoadError = null;
-        histSource = (url.indexOf("history.json") === 0) ? "本地 history.json" : "后端 /history";
-        cb();
-      })
-      .catch(function (e) { lastErr = e; step(); });
-  }
-  step();
+function histJsonUrl(qs) {
+  return HIST_API_URL ? (HIST_API_URL + "history" + qs) : null;
 }
 
-// ---------- 基础取值（p: 0店铺 1支付 2订单 3访客；f: 0店铺 1访客 2昨日销量 3七日销量） ----------
+function fetchJson(url) {
+  return fetch(url).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+}
+
+// 索引：拿到总天数，决定要拉多少
+function loadIndex(cb) {
+  var u = HIST_API_URL ? (HIST_API_URL + "history/days") : null;
+  if (!u) return cb(0);
+  fetchJson(u).then(function (j) {
+    var n = (j && typeof j.count === "number") ? j.count : 0;
+    histData.total = n;
+    cb(n);
+  }).catch(function () { cb(0); });
+}
+
+// 按需加载：n=0 表示全部。会多取一倍，保证「上一期」可比
+function ensureDays(n, cb) {
+  var have = histData.days.length;
+  var enough = have > 0 && (n === 0 ? (histData.fetched === 0 || have >= histData.total) : (n * 2 <= have));
+  if (enough) { cb(); return; }
+  if (histData.loading) { histData.loading.push(cb); return; }
+  histData.loading = [cb];
+
+  var finish = function () {
+    var list = histData.loading || [];
+    histData.loading = null;
+    list.forEach(function (f) { try { f(); } catch (e) { console.error(e); } });
+  };
+
+  var doFetch = function (total) {
+    var qs = "";
+    if (n > 0 && total > 0 && n * 2 < total) qs = "?days=" + (n * 2);
+    var url = histJsonUrl(qs);
+    var chain = url ? fetchJson(url) : Promise.reject(new Error("无后端地址"));
+    chain.then(function (j) {
+      var days = (j && j.data && j.data.days) ? j.data.days : ((j && j.days) ? j.days : []);
+      if (!days.length) throw new Error("空数据");
+      days.sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+      histData.days = days;
+      histData.fetched = qs ? parseInt(qs.replace(/\D/g, ""), 10) : 0;
+      histData.error = null;
+      histSource = "后端 /history" + qs;
+      finish();
+    }).catch(function (e1) {
+      // 兜底1：同目录 history.json
+      fetchJson("history.json?v=" + encodeURIComponent(reportDate)).then(function (j) {
+        var days = (j && j.data && j.data.days) ? j.data.days : ((j && j.days) ? j.days : []);
+        if (!days.length) throw new Error("空数据");
+        days.sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+        histData.days = days; histData.fetched = 0; histData.error = null;
+        histSource = "本地 history.json";
+        finish();
+      }).catch(function (e2) {
+        histData.days = todayOnlyHistory();
+        histData.fetched = 0;
+        histData.error = e1;
+        histSource = "";
+        finish();
+      });
+    });
+  };
+
+  if (histData.total > 0) doFetch(histData.total);
+  else loadIndex(doFetch);
+}
+
+// ---------- 取值 ----------
 function histVal(arr, store, idx) {
   if (!arr) return null;
   for (var i = 0; i < arr.length; i++) {
@@ -1206,12 +1247,12 @@ function histOwner(store) {
 }
 
 function histRange(n) {
-  var total = (historyDays || []).length;
+  var all = histData.days || [];
+  var total = all.length;
   var len = (!n || n >= total) ? total : n;
-  var cur = historyDays.slice(total - len);
+  var cur = all.slice(total - len);
   var prevEnd = total - len - 1;
-  var prev = [];
-  if (prevEnd >= 0) prev = historyDays.slice(Math.max(0, prevEnd - len + 1), prevEnd + 1);
+  var prev = prevEnd >= 0 ? all.slice(Math.max(0, prevEnd - len + 1), prevEnd + 1) : [];
   return { len: len, cur: cur, prev: prev, total: total };
 }
 
@@ -1251,33 +1292,30 @@ function buildHistData(n) {
   var names = {};
   Object.keys(a.byStore).forEach(function (s) { names[s] = 1; });
   Object.keys(b.byStore).forEach(function (s) { names[s] = 1; });
-  var rows = [], tot = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0, prevPay: 0, prevOrders: 0, prevPvis: 0, prevFvis: 0, prevFsales: 0 };
+  var rows = [], tot = { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0, prevPay: 0, prevOrders: 0, prevFsales: 0 };
   Object.keys(names).forEach(function (s) {
     var x = a.byStore[s] || { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 };
     var y = b.byStore[s] || { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 };
     var curVis = x.pvis + x.fvis, prevVis = y.pvis + y.fvis;
     var curAvg = a.nd ? curVis / a.nd : 0, prevAvg = b.nd ? prevVis / b.nd : 0;
     var g = (!b.nd) ? NaN : (prevAvg > 0 ? ((curAvg - prevAvg) / prevAvg * 100) : (curAvg > 0 ? 100 : 0));
-    rows.push({
-      store: s, curVis: curVis, prevVis: prevVis, curAvg: curAvg, prevAvg: prevAvg, growth: g,
-      pay: x.pay, orders: x.orders, fsales: x.fsales, owner: histOwner(s)
-    });
+    rows.push({ store: s, curVis: curVis, prevVis: prevVis, curAvg: curAvg, prevAvg: prevAvg, growth: g, pay: x.pay, orders: x.orders, fsales: x.fsales, owner: histOwner(s) });
     tot.pay += x.pay; tot.orders += x.orders; tot.pvis += x.pvis; tot.fvis += x.fvis; tot.fsales += x.fsales;
-    tot.prevPay += y.pay; tot.prevOrders += y.orders; tot.prevPvis += y.pvis; tot.prevFvis += y.fvis; tot.prevFsales += y.fsales;
+    tot.prevPay += y.pay; tot.prevOrders += y.orders; tot.prevFsales += y.fsales;
   });
-  rows.sort(function (m, n2) { return n2.growth - m.growth; });
+  rows.sort(function (m, n2) { return (isNaN(n2.growth) ? -1e9 : n2.growth) - (isNaN(m.growth) ? -1e9 : m.growth); });
   return { rows: rows, rg: rg, a: a, b: b, tot: tot };
 }
 
 function renderHistCards(d) {
   var grid = document.getElementById("histMetricGrid");
   var nd = d.a.nd || 1, pnd = d.b.nd || 1;
+  var hasPrev = d.b.nd > 0;
   var curAvg = (d.tot.pvis + d.tot.fvis) / nd;
   var prevAvg = (d.tot.pvis + d.tot.fvis) / pnd;
   var payAvg = d.tot.pay / nd, payPrev = d.tot.prevPay / pnd;
   var ordAvg = d.tot.orders / nd, ordPrev = d.tot.prevOrders / pnd;
   var saleAvg = d.tot.fsales / nd, salePrev = d.tot.prevFsales / pnd;
-  var hasPrev = d.b.nd > 0;
   function chg(c, p) { return hasPrev ? (p > 0 ? ((c - p) / p * 100) : (c > 0 ? 100 : 0)) : NaN; }
   function card(label, value, unit, pct, sub) {
     var tail = hasPrev ? ((sub || "日均环比") + " " + histDelta(pct)) : "无上一期可对比";
@@ -1295,62 +1333,52 @@ function renderHistCards(d) {
 function renderHistTable(d) {
   var t = document.getElementById("histTable");
   var maxAbs = 1;
-  d.rows.forEach(function (r) { maxAbs = Math.max(maxAbs, Math.abs(r.growth)); });
+  d.rows.forEach(function (r) { if (isFinite(r.growth)) maxAbs = Math.max(maxAbs, Math.abs(r.growth)); });
   var h = '<thead><tr><th>店铺</th><th>本期日均访客</th><th>上期日均访客</th><th>环比</th><th>POP支付</th><th>订单</th><th>全托销量</th><th>负责人</th></tr></thead><tbody>';
   d.rows.forEach(function (r, i) {
-    var w = Math.min(100, Math.abs(r.growth) / maxAbs * 100);
+    var w = isFinite(r.growth) ? Math.min(100, Math.abs(r.growth) / maxAbs * 100) : 0;
     var color = r.growth > 0 ? "#2e7d32" : (r.growth < 0 ? "#d32f2f" : "#9aa3b2");
     h += '<tr>' +
       '<td style="text-align:left">' + rankBadge(i + 1) + ' <span class="store-link" onclick="showStore(\'' + r.store + '\')">' + r.store + '</span></td>' +
       '<td>' + fmtInt(Math.round(r.curAvg)) + '</td>' +
       '<td>' + fmtInt(Math.round(r.prevAvg)) + '</td>' +
       '<td><span class="bar-cell"><span class="bar-track"><span class="bar-fill" style="width:' + w.toFixed(0) + '%;background:' + color + '"></span></span>' + histDelta(r.growth) + '</span></td>' +
-      '<td>' + fmtUSD(r.pay) + '</td>' +
-      '<td>' + fmtInt(r.orders) + '</td>' +
-      '<td>' + fmtInt(r.fsales) + '</td>' +
-      '<td>' + (r.owner || "—") + '</td>' +
-      '</tr>';
+      '<td>' + fmtUSD(r.pay) + '</td><td>' + fmtInt(r.orders) + '</td><td>' + fmtInt(r.fsales) + '</td><td>' + (r.owner || "—") + '</td></tr>';
   });
-  h += '</tbody>';
-  t.innerHTML = h;
+  t.innerHTML = h + '</tbody>';
 }
 
 function renderHistCharts(d) {
   var hasPrev = d.b.nd > 0;
   var gc = document.getElementById('chartHistGrowth');
-  if (gc && gc.parentNode) { gc.parentNode.style.display = hasPrev ? 'block' : 'none'; }
+  if (gc && gc.parentNode) gc.parentNode.style.display = hasPrev ? 'block' : 'none';
   if (!hasPrev) {
     if (charts.histGrowth) { charts.histGrowth.destroy(); charts.histGrowth = null; }
-    document.getElementById("histGrowthTitle").textContent = "店铺访客环比增长（当前区间覆盖全部历史，没有上一期可对比）";
+    document.getElementById("histGrowthTitle").textContent = "店铺访客环比增长（当前区间没有上一期可对比）";
   }
   var top = hasPrev ? d.rows.filter(function (r) { return r.curAvg > 0 || r.prevAvg > 0; }).slice(0, 12) : [];
-  if (charts.histGrowth) charts.histGrowth.destroy();
-  charts.histGrowth = new Chart(document.getElementById("chartHistGrowth").getContext("2d"), {
-    type: "bar",
-    data: {
-      labels: top.map(function (r) { return r.store; }),
-      datasets: [{
-        label: "访客环比",
-        data: top.map(function (r) { return Math.round(r.growth * 10) / 10; }),
-        backgroundColor: top.map(function (r) { return r.growth >= 0 ? "#2e7d32" : "#d32f2f"; }),
-        borderRadius: 4, maxBarThickness: 22
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, indexAxis: "y",
-      onClick: function (ev, els) { if (els && els.length) showStore(top[els[0].index].store); },
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: function (c) { return c.raw + "%"; } } }
+  if (hasPrev) {
+    if (charts.histGrowth) charts.histGrowth.destroy();
+    charts.histGrowth = new Chart(document.getElementById("chartHistGrowth").getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: top.map(function (r) { return r.store; }),
+        datasets: [{
+          label: "访客环比",
+          data: top.map(function (r) { return Math.round(r.growth * 10) / 10; }),
+          backgroundColor: top.map(function (r) { return r.growth >= 0 ? "#2e7d32" : "#d32f2f"; }),
+          borderRadius: 4, maxBarThickness: 22
+        }]
       },
-      scales: {
-        x: { grid: { color: "#f0f2f5" }, ticks: { font: { size: 9 } } },
-        y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+      options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: "y",
+        onClick: function (ev, els) { if (els && els.length) showStore(top[els[0].index].store); },
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function (c) { return c.raw + "%"; } } } },
+        scales: { x: { grid: { color: "#f0f2f5" }, ticks: { font: { size: 9 } } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } }
       }
-    }
-  });
+    });
+  }
 
-  // 趋势：按天；超过 62 天自动按周聚合
   var days = d.rg.cur;
   var weekly = days.length > 62;
   var labels = [], vals = [], sum = 0, cnt = 0, bucket = null;
@@ -1362,7 +1390,7 @@ function renderHistCharts(d) {
     var dt = new Date(day.d + "T00:00:00Z");
     var monday = new Date(dt.getTime() - ((dt.getUTCDay() + 6) % 7) * 86400000).toISOString().slice(0, 10);
     if (bucket !== monday) {
-      if (bucket !== null) { vals.push(cnt ? Math.round(sum / cnt) : null); }
+      if (bucket !== null) vals.push(cnt ? Math.round(sum / cnt) : null);
       labels.push(monday.substring(5)); sum = 0; cnt = 0; bucket = monday;
     }
     if (has) { sum += v; cnt++; }
@@ -1396,19 +1424,18 @@ function renderHistCharts(d) {
 
 function renderHistory() {
   var note = document.getElementById("histNote");
-  if (!historyDays) { note.textContent = "加载中…"; return; }
+  if (!histData.days.length && !histData.error) { note.textContent = "加载中…"; return; }
   var d = buildHistData(histWindow);
-  var total = (historyDays || []).length;
   var txt;
-  if (historyLoadError) {
-    txt = "⚠ 未拿到历史数据（" + historyLoadError.message + "）：后端 /history 不可用，本地也没有缓存；当前仅显示今日数据";
+  if (histData.error) {
+    txt = "⚠ 未拿到历史数据（" + histData.error.message + "）：后端不可用，本地也没有缓存；当前仅显示今日数据";
   } else {
-    txt = "历史数据 " + total + " 天（" + historyDays[0].d + " ~ " + historyDays[total - 1].d + "）｜本期 " +
+    txt = "已加载 " + histData.days.length + " 天（" + histData.days[0].d + " ~ " + histData.days[histData.days.length - 1].d + "）｜本期 " +
       d.a.nd + " 天，上期 " + d.b.nd + " 天";
     if (histSource) txt += "｜来源：" + histSource;
   }
   note.textContent = txt;
-  var label = (histWindow && histWindow < total) ? ("近" + histWindow + "天") : ("全部 " + total + " 天");
+  var label = (histWindow && histWindow < d.rg.total) ? ("近" + histWindow + "天") : ("全部 " + d.rg.total + " 天");
   if (d.b.nd > 0) {
     document.getElementById("histGrowthTitle").textContent = "店铺访客环比增长（" + label + " vs 前" + d.b.nd + "天）";
   }
@@ -1420,40 +1447,35 @@ function renderHistory() {
   if (!d.rows.length) {
     empty.style.display = "block";
     empty.textContent = "这段时间还没有历史数据。确认后端 /history 已灌入历史（scf-backend\\seed-history.ps1）。";
-  } else {
-    empty.style.display = "none";
-  }
+  } else { empty.style.display = "none"; }
   var seg = document.getElementById("histSeg");
   if (seg) {
     var btns = seg.getElementsByTagName("button");
     for (var i = 0; i < btns.length; i++) {
-      var n = parseInt(btns[i].getAttribute("data-n"), 10);
-      btns[i].className = (n === histWindow) ? "on" : "";
+      btns[i].className = (parseInt(btns[i].getAttribute("data-n"), 10) === histWindow) ? "on" : "";
     }
   }
 }
 
 function setHistDays(n) {
   histWindow = n;
-  if (historyDays) renderHistory();
+  ensureDays(n, renderHistory);
 }
 
 function exportHistCsv() {
-  if (!historyDays) return;
+  if (!histData.days.length) return;
   var d = buildHistData(histWindow);
   var lines = ["日期区间," + d.rg.cur[0].d + " ~ " + d.rg.cur[d.rg.cur.length - 1].d];
   lines.push("店铺,POP支付,POP订单,POP访客,全托访客,全托销量,本期日均访客,上期日均访客,环比%");
   d.rows.forEach(function (r) {
     var x = d.a.byStore[r.store] || { pay: 0, orders: 0, pvis: 0, fvis: 0, fsales: 0 };
-    lines.push([r.store, x.pay.toFixed(2), x.orders, x.pvis, x.fvis, x.fsales,
-      Math.round(r.curAvg), Math.round(r.prevAvg), r.growth.toFixed(1)].join(","));
+    lines.push([r.store, x.pay.toFixed(2), x.orders, x.pvis, x.fvis, x.fsales, Math.round(r.curAvg), Math.round(r.prevAvg), isFinite(r.growth) ? r.growth.toFixed(1) : ""].join(","));
   });
   var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
   var a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "店铺历史_" + (histWindow ? histWindow + "天" : "全部") + "_" + reportDate + ".csv";
-  document.body.appendChild(a);
-  a.click();
+  document.body.appendChild(a); a.click();
   setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
 }
 
@@ -1467,13 +1489,13 @@ function showHistory() {
   try { history.replaceState(null, "", window.location.pathname + "#history"); } catch (e) { }
   scrollToTop();
   if (window.innerWidth <= 768) closeSidebar();
-  loadHistoryData(function () { renderHistory(); });
+  ensureDays(histWindow, renderHistory);
 }
 
-// ===== 单个店铺历史折线图（指标 + 天数 双切换） =====
+// ===== 单个店铺历史折线图 =====
 function storeWindowDays(store) {
   var n = storeWin[store] || 30;
-  var total = (historyDays || []).length;
+  var total = (histData.days || []).length;
   return (!n || n >= total) ? total : n;
 }
 
@@ -1506,9 +1528,9 @@ function storeTrendSeries(store, metric, days) {
 
 function renderStoreTrend(store) {
   var canvas = document.getElementById("storeTrend-" + store);
-  if (!canvas || !historyDays || !historyDays.length) return;
+  if (!canvas || !histData.days.length) return;
   var len = storeWindowDays(store);
-  var days = historyDays.slice(-len);
+  var days = histData.days.slice(-len);
   if (days.length < 2) return;
   var metric = storeMetric[store] || "visitors";
   var series = storeTrendSeries(store, metric, days);
@@ -1574,10 +1596,11 @@ function setStoreWin(store, n) {
       btns[i].className = (parseInt(btns[i].getAttribute("data-n"), 10) === n) ? "on" : "";
     }
   }
-  renderStoreTrend(store);
+  ensureDays(n, function () { renderStoreTrend(store); });
 }
 
-
+// 初始化窗口：URL ?days= 优先，否则 7 天
+// histWindow 已在顶部按 ?days= 初始化
 </script>
 </body>
 </html>
