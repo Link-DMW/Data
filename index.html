@@ -187,6 +187,13 @@ tbody tr:hover{background:#f9f9fb}
 .date-nav .dn-date .dn-sub{display:block;font-weight:400;font-size:11px;color:#8a94a6;margin-top:2px}
 .date-nav .dn-today{border:1px solid #4a90d9;color:#0f3460;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
 .date-nav .dn-today:hover{background:#eaf3fd}
+/* 周访客增长列 */
+.wow{font-weight:700;white-space:nowrap}
+.wow .ar{font-size:10px;margin-right:2px}
+.wow-up{color:#2e7d32}
+.wow-down{color:#d32f2f}
+.wow-flat{color:#9aa3b2;font-weight:600}
+.wow-wait{color:#c9ced6}
 @media(max-width:768px){.date-nav{gap:6px;padding:6px 8px}.date-nav .dn-date{font-size:13px}}
 .trend-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
 .trend-head h3{font-size:14px;font-weight:600;margin:0;flex:1 1 auto}
@@ -791,7 +798,7 @@ fullData.forEach(function(d){
   var html="<thead><tr>"+
     "<th>排名</th><th>店铺</th><th>支付金额</th><th>曝光量</th><th>访客数</th>"+
     "<th>点击率</th><th>订单</th><th>转化率</th><th>7天广告</th><th>投产</th>"+
-    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>负责人</th><th>异常是否处理</th>"+
+    "<th>余额</th><th>纠纷</th><th>到期</th><th>商品错误</th><th>人工审核</th><th>邮寄错误</th><th>过期订单</th><th>负责人</th><th>周访客增长</th><th>异常是否处理</th>"+
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
@@ -824,6 +831,7 @@ fullData.forEach(function(d){
       "<td>"+disputeTag(d.mailErr)+"</td>"+
       "<td>"+disputeTag(d.expired)+"</td>"+
       "<td>"+owner+"</td>"+
+      '<td class="wow-cell" data-store="'+d.store+'" data-kind="pop">—</td>'+
       "<td>"+singleHandleBtn(d.store)+"</td>"+
     "</tr>";
   });
@@ -838,7 +846,7 @@ fullData.forEach(function(d){
   var rows=sorted.concat(noSales);
   var html="<thead><tr>"+
     "<th>排名</th><th>店铺</th><th>浏览量</th><th>访客数</th><th>转化率</th>"+
-    "<th>昨日销量</th><th>7日销量</th><th>纠纷</th><th>到期</th><th>负责人</th><th>异常是否处理</th>"+
+    "<th>昨日销量</th><th>7日销量</th><th>纠纷</th><th>到期</th><th>负责人</th><th>周访客增长</th><th>异常是否处理</th>"+
   "</tr></thead><tbody>";
   rows.forEach(function(d,idx){
     var rank=idx+1;
@@ -859,6 +867,7 @@ fullData.forEach(function(d){
       "<td>"+disputeTagTri(d.dispute)+"</td>"+
       "<td>"+disputeTagTri(d.disputeExpire)+"</td>"+
       "<td>"+owner+"</td>"+
+      '<td class="wow-cell" data-store="'+d.store+'" data-kind="full">—</td>'+
       "<td>"+singleHandleBtn(d.store,"full")+"</td>"+
     "</tr>";
   });
@@ -1220,6 +1229,43 @@ loadHandledStatus();
 // ===== 历史数据（按天向后端取数 + 天数切换） =====
 
 // 顶部先读 ?days=（避免被后续 replaceState 清掉）
+// ===== 表格「周访客增长」列 =====
+function weekVisitors(store, kind, days) {
+  var sum = 0;
+  for (var i = 0; i < days.length; i++) {
+    var day = days[i];
+    var v = kind === "full" ? histVal(day.f, store, 1) : histVal(day.p, store, 3);
+    if (v !== null) sum += v;
+  }
+  return sum / (days.length || 1);
+}
+
+function fillWeeklyColumn() {
+  var all = (histData.days || []).filter(function (d) { return d.d <= reportDate; });
+  if (all.length < 8) return;
+  var cur = all.slice(-7), prev = all.slice(-14, -7);
+  var cells = document.querySelectorAll(".wow-cell");
+  for (var i = 0; i < cells.length; i++) {
+    var el = cells[i];
+    var store = el.getAttribute("data-store");
+    var kind = el.getAttribute("data-kind");
+    var a = weekVisitors(store, kind, cur);
+    var b = weekVisitors(store, kind, prev);
+    var html;
+    if (!b) {
+      html = '<span class="wow wow-flat">—</span>';
+    } else {
+      var g = (a - b) / b * 100;
+      var cls = g > 0.05 ? "wow-up" : (g < -0.05 ? "wow-down" : "wow-flat");
+      var arrow = g > 0.05 ? "▲" : (g < -0.05 ? "▼" : "•");
+      var sign = g > 0 ? "+" : "";
+      html = '<span class="wow ' + cls + '" title="近7天日均 ' + Math.round(a) + ' 人 vs 前7天 ' + Math.round(b) + ' 人">' +
+        '<span class="ar">' + arrow + '</span>' + sign + g.toFixed(1) + '%</span>';
+    }
+    el.innerHTML = html;
+  }
+}
+
 // HIST_INIT_DAYS 已在顶部定义
 
 function todayOnlyHistory() {
@@ -1565,6 +1611,11 @@ function showHistory() {
   ensureDays(histWindow, renderHistory);
 }
 
+
+// 表格里的周访客增长：等历史数据到位再填
+if (document.getElementById("popTable")) {
+  ensureDays(14, fillWeeklyColumn);
+}
 </script>
 </body>
 </html>
