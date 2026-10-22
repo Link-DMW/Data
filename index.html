@@ -190,8 +190,8 @@ tbody tr:hover{background:#f9f9fb}
 /* 周访客增长列 */
 .wow{font-weight:700;white-space:nowrap}
 .wow .ar{font-size:10px;margin-right:2px}
-.wow-up{color:#2e7d32}
-.wow-down{color:#d32f2f}
+.wow-up{color:#d32f2f}
+.wow-down{color:#2e7d32}
 .wow-flat{color:#9aa3b2;font-weight:600}
 .wow-wait{color:#c9ced6}
 @media(max-width:768px){.date-nav{gap:6px;padding:6px 8px}.date-nav .dn-date{font-size:13px}}
@@ -206,8 +206,8 @@ tbody tr:hover{background:#f9f9fb}
 .metric-card .m-value{font-size:19px;font-weight:700;color:#1a1a2e;word-break:break-all}
 .metric-card .m-value .unit{font-size:12px;font-weight:500;color:#666;margin-left:2px}
 .metric-card .m-delta{font-size:11px;margin-top:5px;color:#8a94a6}
-.growth-up{color:#2e7d32;font-weight:700}
-.growth-down{color:#d32f2f;font-weight:700}
+.growth-up{color:#d32f2f;font-weight:700}
+.growth-down{color:#2e7d32;font-weight:700}
 .growth-flat{color:#8a94a6;font-weight:600}
 .bar-cell{display:flex;align-items:center;gap:6px;min-width:90px}
 .bar-track{display:block;flex:1;height:6px;background:#eef1f6;border-radius:3px;overflow:hidden}
@@ -1456,7 +1456,7 @@ function renderHistTable(d) {
   var h = '<thead><tr><th>店铺</th><th>本期日均访客</th><th>上期日均访客</th><th>环比</th><th>POP支付</th><th>订单</th><th>全托销量</th><th>负责人</th></tr></thead><tbody>';
   d.rows.forEach(function (r, i) {
     var w = isFinite(r.growth) ? Math.min(100, Math.abs(r.growth) / maxAbs * 100) : 0;
-    var color = r.growth > 0 ? "#2e7d32" : (r.growth < 0 ? "#d32f2f" : "#9aa3b2");
+    var color = r.growth > 0 ? "#d32f2f" : (r.growth < 0 ? "#2e7d32" : "#9aa3b2");
     h += '<tr>' +
       '<td style="text-align:left">' + rankBadge(i + 1) + ' <span class="store-link" onclick="showStore(\'' + r.store + '\')">' + r.store + '</span></td>' +
       '<td>' + fmtInt(Math.round(r.curAvg)) + '</td>' +
@@ -1485,7 +1485,7 @@ function renderHistCharts(d) {
         datasets: [{
           label: "访客环比",
           data: top.map(function (r) { return Math.round(r.growth * 10) / 10; }),
-          backgroundColor: top.map(function (r) { return r.growth >= 0 ? "#2e7d32" : "#d32f2f"; }),
+          backgroundColor: top.map(function (r) { return r.growth >= 0 ? "#d32f2f" : "#2e7d32"; }),
           borderRadius: 4, maxBarThickness: 22
         }]
       },
