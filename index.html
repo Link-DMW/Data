@@ -901,6 +901,7 @@ fullData.forEach(function(d){
     html+='<div class="store-detail" id="store-'+s+'">';
     html+='<h2>📊 '+s+' 店铺详情</h2>';
     html+=dateNavHtml();
+    html+='<div class="metric-grid" id="storeKpi-'+s+'"></div>';
     html+='<div class="store-sum" id="storeSum-'+s+'"></div>';
     // 雷达图放在顶部
     var radarData=null;
@@ -1311,11 +1312,44 @@ function renderStoreSummary(store) {
     '</tbody></table>';
 }
 
+function fillStoreKpis() {
+  var list = (typeof allStores !== "undefined" && allStores) ? allStores : [];
+  list.forEach(function (s) { renderStoreKpi(s); });
+}
+
 function fillStoreSummaries() {
   var list = (typeof allStores !== "undefined" && allStores) ? allStores : [];
   list.forEach(function (s) { renderStoreSummary(s); });
 }
 
+// ===== 店铺页 KPI：本周（近7天）汇总 + 周访客增长 =====
+function renderStoreKpi(store) {
+  var box = document.getElementById("storeKpi-" + store);
+  if (!box) return;
+  var w = storePeriod(store, 7);
+  if (!w) { box.innerHTML = ""; return; }
+  var cur = w.cur, prev = w.prev;
+  var curVis = cur.pvis + cur.fvis;
+  var prevVis = prev.pvis + prev.fvis;
+  var curAvg = cur.nd ? curVis / cur.nd : 0;
+  var prevAvg = prev.nd ? prevVis / prev.nd : 0;
+  var g = (w.havePrev && prevAvg > 0) ? ((curAvg - prevAvg) / prevAvg * 100) : NaN;
+  var cls = !isFinite(g) ? "wow-flat" : (g > 0.05 ? "wow-up" : (g < -0.05 ? "wow-down" : "wow-flat"));
+  var arrow = !isFinite(g) ? "—" : (g > 0.05 ? "▲" : (g < -0.05 ? "▼" : "•"));
+  var gTxt = !isFinite(g) ? "—" : (arrow + (g > 0 ? "+" : "") + g.toFixed(1) + "%");
+
+  function card(label, value, unit, valueCls) {
+    return '<div class="metric-card"><div class="m-label">' + label + '</div>' +
+      '<div class="m-value ' + (valueCls || "") + '">' + value +
+      (unit ? '<span class="unit">' + unit + '</span>' : '') + '</div></div>';
+  }
+
+  box.innerHTML =
+    card("周访客增长（近7天）", gTxt, "", cls) +
+    card("POP 支付（近7天）", fmtUSD(cur.pay), "") +
+    card("POP 订单（近7天）", fmtInt(cur.orders), "单") +
+    card("全托销量（近7天）", fmtInt(cur.fsales), "件");
+}
 // ===== 表格「周访客增长」列 =====
 function weekVisitors(store, kind, days) {
   var sum = 0;
@@ -1701,7 +1735,7 @@ function showHistory() {
 
 // 表格里的周访客增长：等历史数据到位再填
 if (document.getElementById("popTable")) {
-  ensureDays(30, function () { fillWeeklyColumn(); fillStoreSummaries(); });
+  ensureDays(30, function () { fillWeeklyColumn(); fillStoreKpis(); fillStoreSummaries(); });
 }
 </script>
 </body>
