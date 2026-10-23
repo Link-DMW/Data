@@ -485,7 +485,7 @@ function hydrateDay(d) {
   if (!base) return false;
   try {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", base + "history/day?d=" + d, false);
+    xhr.open("GET", base + "history/day?d=" + d + "\u0026_=" + Date.now(), false);
     xhr.send(null);
     if (xhr.status !== 200) return false;
     var j = JSON.parse(xhr.responseText);
@@ -546,7 +546,7 @@ function goToday() {
   if (nav) nav.innerHTML = dateNavHtml();
   var base = (typeof HIST_API_URL === "string" && HIST_API_URL) ? HIST_API_URL : "";
   if (!base) return;
-  fetch(base + "history/days").then(function (r) { return r.json(); }).then(function (j) {
+  fetch(base + "history/days?_=" + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
     if (j && Array.isArray(j.dates) && j.dates.length) DATE_LIST = j.dates.slice().sort();
   }).catch(function () { });
 })();
@@ -1399,7 +1399,8 @@ function todayOnlyHistory() {
 }
 
 function histJsonUrl(qs) {
-  return HIST_API_URL ? (HIST_API_URL + "history" + qs) : null;
+  if (!HIST_API_URL) return null;
+  return HIST_API_URL + "history" + (qs ? qs + "\u0026" : "?") + "_=" + Date.now();
 }
 
 function fetchJson(url) {
@@ -1408,7 +1409,7 @@ function fetchJson(url) {
 
 // 索引：拿到总天数，决定要拉多少
 function loadIndex(cb) {
-  var u = HIST_API_URL ? (HIST_API_URL + "history/days") : null;
+  var u = HIST_API_URL ? (HIST_API_URL + "history/days?_=" + Date.now()) : null;
   if (!u) return cb(0);
   fetchJson(u).then(function (j) {
     var n = (j && typeof j.count === "number") ? j.count : 0;
