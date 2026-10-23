@@ -206,7 +206,7 @@ tbody tr:hover{background:#f9f9fb}
 .store-sum td:first-child,.store-sum th:first-child{text-align:left;color:#5a6473}
 .store-sum tbody tr:last-child td{border-bottom:none}
 .store-sum .ss-num{font-weight:700;color:#1a1a2e}
-@media(min-width:769px){.metric-grid.mg5{grid-template-columns:repeat(5,1fr)}}
+@media(min-width:769px){.metric-grid.mg5{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
 .store-sum .ss-avg{display:block;font-size:10px;color:#9aa3b2;font-weight:400;margin-top:2px}
 @media(max-width:768px){.store-sum table{font-size:11px}.store-sum td,.store-sum th{padding:6px 5px}}
 @media(max-width:768px){.date-nav{gap:6px;padding:6px 8px}.date-nav .dn-date{font-size:13px}}
@@ -748,13 +748,14 @@ document.getElementById("sidebarDate").textContent=reportDate;
 document.getElementById("topbarDate").textContent=reportDate;
 
 // ===== 合并店铺列表（保持POP顺序） =====
-var allStores=popData.map(function(d){return d.store});
+var popStores=popData.map(function(d){return d.store});
+var allStores=popStores.concat(fullData.map(function(d){return d.store}).filter(function(x){return popStores.indexOf(x)===-1}));
 
 // ===== 侧边栏店铺导航 =====
 (function(){
   var nav=document.getElementById("storeNav");
   var html="";
-  allStores.forEach(function(s){
+  popStores.forEach(function(s){
     var p=popData.find(function(d){return d.store===s});
     var amt="";
     if(p&&p.pay!==null&&p.pay>0)amt="$"+fmtNum(p.pay,2);
@@ -1307,11 +1308,16 @@ function fillStoreKpis() {
 function renderStoreKpi(store) {
   var box = document.getElementById("storeKpi-" + store);
   if (!box) return;
+  var p = popData.find(function (d) { return d.store === store; });
+  var f = fullData.find(function (d) { return d.store === store; });
+  var hasPop = !!(p && p.pay !== null);                 // 有 POP 业务
+  var hasFull = !!(f && (f.salesYest !== null || f.sales7d !== null || f.visitors !== null)); // 有全托业务
+
   var w = storePeriod(store, 7);
   var mo = storePeriod(store, 30);
   if (!w || !mo) { box.innerHTML = ""; return; }
 
-  function vis(p) { return p.pvis + p.fvis; }
+  function vis(x) { return x.pvis + x.fvis; }
   var curVis = vis(w.cur), prevVis = vis(w.prev);
   var curAvg = w.cur.nd ? curVis / w.cur.nd : 0;
   var prevAvg = w.prev.nd ? prevVis / w.prev.nd : 0;
@@ -1326,15 +1332,24 @@ function renderStoreKpi(store) {
       (unit ? '<span class="unit">' + unit + '</span>' : '') + '</div>' +
       (sub ? '<div class="m-delta">' + sub + '</div>' : '') + '</div>';
   }
-  function avgTxt(p, val) { return p.nd ? fmtInt(Math.round(val / p.nd)) : "0"; }
+  function avgTxt(period, val) { return period.nd ? fmtInt(Math.round(val / period.nd)) : "0"; }
 
-  box.innerHTML =
-    '<div class="metric-note">环比 = 本周期日均 vs 上一周期日均（周 = 近 7 天，月 = 近 30 天）</div>' +
-    card("周访客增长", gTxt, "", cls) +
-    card("周销量（全托）", fmtInt(w.cur.fsales), "件", "", "日均 " + avgTxt(w.cur, w.cur.fsales) + " 件") +
-    card("周访客", fmtInt(curVis), "人", "", "日均 " + avgTxt(w.cur, curVis) + " 人") +
-    card("月销量（全托）", fmtInt(mo.cur.fsales), "件", "", "日均 " + avgTxt(mo.cur, mo.cur.fsales) + " 件") +
-    card("月访客", fmtInt(vis(mo.cur)), "人", "", "日均 " + avgTxt(mo.cur, vis(mo.cur)) + " 人");
+  var cards = [];
+  // 周访客增长：有访客数据才给
+  if (hasPop || hasFull || curVis > 0 || prevVis > 0) {
+    cards.push(card("周访客增长", gTxt, "", cls));
+  }
+  // 全托销量：只有全托业务的店才有
+  if (hasFull) {
+    cards.push(card("周销量（全托）", fmtInt(w.cur.fsales), "件", "", "日均 " + avgTxt(w.cur, w.cur.fsales) + " 件"));
+  }
+  cards.push(card("周访客", fmtInt(curVis), "人", "", "日均 " + avgTxt(w.cur, curVis) + " 人"));
+  if (hasFull) {
+    cards.push(card("月销量（全托）", fmtInt(mo.cur.fsales), "件", "", "日均 " + avgTxt(mo.cur, mo.cur.fsales) + " 件"));
+  }
+  cards.push(card("月访客", fmtInt(vis(mo.cur)), "人", "", "日均 " + avgTxt(mo.cur, vis(mo.cur)) + " 人"));
+
+  box.innerHTML = '<div class="metric-note">环比 = 本周期日均 vs 上一周期日均（周 = 近 7 天，月 = 近 30 天）</div>' + cards.join("");
 }
 // ===== 表格「周访客增长」列 =====
 function weekVisitors(store, kind, days) {
