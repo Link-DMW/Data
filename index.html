@@ -514,7 +514,7 @@ function dateNavHtml() {
   return '<div class="date-nav">' +
     '<button class="dn-btn" onclick="goDay(-1)" aria-label="前一天">‹</button>' +
     '<div class="dn-date">' + reportDate +
-    '<span class="dn-sub">' + (isToday ? "今天 · 实时看板" : "历史数据 · 只读") + '</span></div>' +
+    '<span class="dn-sub">' + (isToday ? "昨天" : "历史数据 · 只读") + '</span></div>' +
     '<button class="dn-btn" onclick="goDay(1)" aria-label="后一天">›</button>' +
     (isToday ? "" : '<button class="dn-today" onclick="goToday()">回到今天</button>') +
     '</div>';
