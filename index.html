@@ -480,6 +480,19 @@ function shiftDate(dstr, n) {
   return d.getUTCFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (dd < 10 ? "0" : "") + dd;
 }
 
+// ===== 负责人覆盖表 =====
+// 上面的 popData / fullData 数据块每天 08:05 会被自动更新整块重写（负责人也会被刷回原值），
+// 所以覆盖表放在数据块之外。要改负责人，只改这里，不要改上面的数据行。
+var OWNER_OVERRIDE = {
+  "Petery": { pop: "Amy", full: "Amy" },
+  "Eric": { pop: "Lina", full: "Lina" }
+};
+function applyOwnerOverride() {
+  (popData || []).forEach(function (r) { var o = OWNER_OVERRIDE[r.store]; if (o && o.pop) r.owner = o.pop; });
+  (fullData || []).forEach(function (r) { var o = OWNER_OVERRIDE[r.store]; if (o && o.full) r.owner = o.full; });
+}
+applyOwnerOverride();
+
 function hydrateDay(d) {
   var base = (typeof HIST_API_URL === "string" && HIST_API_URL) ? HIST_API_URL : "";
   if (!base) return false;
@@ -501,6 +514,7 @@ function hydrateDay(d) {
       return { store: r[0], visitors: r[1], salesYest: r[2], sales7d: r[3], views: r[4], cvr: r[5],
         dispute: r[6], disputeExpire: r[7], deadStock: r[8], owner: r[9] };
     });
+    applyOwnerOverride();
     return true;
   } catch (e) { return false; }
 }
